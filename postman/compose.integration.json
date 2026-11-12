@@ -1,0 +1,532 @@
+{
+  "name": "kirenz-integration",
+  "services": {
+    "postgres": {
+      "image": "postgres:16-alpine",
+      "environment": {
+        "POSTGRES_USER": "kirenz_it",
+        "POSTGRES_PASSWORD": "kirenz_it_local_only",
+        "POSTGRES_DB": "postgres"
+      },
+      "ports": [
+        "127.0.0.1:15439:5432"
+      ],
+      "volumes": [
+        "postgres-data:/var/lib/postgresql/data",
+        "./docker/init-databases.sql:/docker-entrypoint-initdb.d/01-databases.sql:ro"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD-SHELL",
+          "pg_isready -U kirenz_it"
+        ],
+        "interval": "3s",
+        "timeout": "3s",
+        "retries": 30
+      }
+    },
+    "mongo": {
+      "image": "mongo:7.0",
+      "volumes": [
+        "mongo-data:/data/db"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "mongosh",
+          "--quiet",
+          "--eval",
+          "db.adminCommand({ping:1})"
+        ],
+        "interval": "5s",
+        "timeout": "5s",
+        "retries": 30
+      }
+    },
+    "redis": {
+      "image": "redis:7.2",
+      "command": [
+        "redis-server",
+        "--requirepass",
+        "kirenz-it-redis"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "redis-cli",
+          "-a",
+          "kirenz-it-redis",
+          "ping"
+        ],
+        "interval": "3s",
+        "timeout": "3s",
+        "retries": 30
+      }
+    },
+    "kafka": {
+      "image": "apache/kafka:3.9.1",
+      "hostname": "kafka",
+      "environment": {
+        "KAFKA_NODE_ID": 1,
+        "KAFKA_PROCESS_ROLES": "broker,controller",
+        "KAFKA_LISTENER_SECURITY_PROTOCOL_MAP": "PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT",
+        "KAFKA_LISTENERS": "PLAINTEXT://:29092,CONTROLLER://:29093",
+        "KAFKA_ADVERTISED_LISTENERS": "PLAINTEXT://kafka:29092",
+        "KAFKA_INTER_BROKER_LISTENER_NAME": "PLAINTEXT",
+        "KAFKA_CONTROLLER_LISTENER_NAMES": "CONTROLLER",
+        "KAFKA_CONTROLLER_QUORUM_VOTERS": "1@kafka:29093",
+        "KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR": 1,
+        "KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR": 1,
+        "KAFKA_TRANSACTION_STATE_LOG_MIN_ISR": 1,
+        "KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS": 0,
+        "KAFKA_HEAP_OPTS": "-Xms128m -Xmx256m",
+        "CLUSTER_ID": "MkU3OEVBNTcwNTJENDM2Qk"
+      },
+      "healthcheck": {
+        "test": [
+          "CMD-SHELL",
+          "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:29092 >/dev/null 2>&1"
+        ],
+        "interval": "5s",
+        "timeout": "10s",
+        "retries": 30
+      }
+    },
+    "mailbox": {
+      "image": "python:3.13-alpine",
+      "command": [
+        "python",
+        "/app/mailbox.py"
+      ],
+      "volumes": [
+        "./docker/mailbox.py:/app/mailbox.py:ro"
+      ],
+      "ports": [
+        "127.0.0.1:18090:1080"
+      ]
+    },
+    "discovery-service": {
+      "image": "kirenz-it-discovery-service:2af12e5",
+      "build": {
+        "context": "${KIRENZ_SOURCE_DIR:-D:/Kirenz-platform}",
+        "dockerfile": "spring-service.Dockerfile",
+        "args": {
+          "SERVICE_DIR": "discovery-service"
+        }
+      },
+      "environment": {
+        "JAVA_TOOL_OPTIONS": "-Xms64m -Xmx256m -XX:MaxMetaspaceSize=160m"
+      },
+      "ports": [
+        "127.0.0.1:18761:8761"
+      ],
+      "mem_limit": "480m"
+    },
+    "identity-service": {
+      "image": "kirenz-it-identity-service:2af12e5",
+      "build": {
+        "context": "${KIRENZ_SOURCE_DIR:-D:/Kirenz-platform}",
+        "dockerfile": "spring-service.Dockerfile",
+        "args": {
+          "SERVICE_DIR": "identity-service"
+        }
+      },
+      "environment": {
+        "JWT_SECRET": "0123456789abcdef0123456789abcdef",
+        "KAFKA_BOOTSTRAP_SERVERS": "kafka:29092",
+        "REDIS_HOST": "redis",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "kirenz-it-redis",
+        "EUREKA_ENABLED": "true",
+        "EUREKA_DEFAULT_ZONE": "http://discovery-service:8761/eureka/",
+        "IDENTITY_SERVICE_URL": "http://identity-service:8081",
+        "USER_SERVICE_URL": "http://user-service:8082",
+        "CLOUDINARY_CLOUD_NAME": "local-test",
+        "CLOUDINARY_API_KEY": "local-test",
+        "CLOUDINARY_API_SECRET": "local-test",
+        "BREVO_API_KEY": "local-test-stub-only",
+        "BREVO_BASE_URL": "http://mailbox:1080/v3/smtp/email",
+        "BREVO_SENDER_EMAIL": "test@kirenz.invalid",
+        "BREVO_SENDER_NAME": "Kirenz Integration",
+        "JAVA_TOOL_OPTIONS": "-Xms64m -Xmx256m -XX:MaxMetaspaceSize=160m",
+        "MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE": "health,info",
+        "LOGGING_LEVEL_ORG_HIBERNATE_SQL": "WARN",
+        "SPRING_JPA_SHOW_SQL": "false",
+        "IDENTITY_DATABASE_URL": "jdbc:postgresql://postgres:5432/kirenz_identity",
+        "DATABASE_USERNAME": "kirenz_it",
+        "DATABASE_PASSWORD": "kirenz_it_local_only",
+        "IDENTITY_LIQUIBASE_ENABLED": "true"
+      },
+      "ports": [
+        "127.0.0.1:18081:8081"
+      ],
+      "mem_limit": "480m",
+      "depends_on": {
+        "postgres": {
+          "condition": "service_healthy"
+        },
+        "mongo": {
+          "condition": "service_healthy"
+        },
+        "redis": {
+          "condition": "service_healthy"
+        },
+        "kafka": {
+          "condition": "service_healthy"
+        },
+        "mailbox": {
+          "condition": "service_started"
+        }
+      }
+    },
+    "user-service": {
+      "image": "kirenz-it-user-service:2af12e5",
+      "build": {
+        "context": "${KIRENZ_SOURCE_DIR:-D:/Kirenz-platform}",
+        "dockerfile": "spring-service.Dockerfile",
+        "args": {
+          "SERVICE_DIR": "user-service"
+        }
+      },
+      "environment": {
+        "JWT_SECRET": "0123456789abcdef0123456789abcdef",
+        "KAFKA_BOOTSTRAP_SERVERS": "kafka:29092",
+        "REDIS_HOST": "redis",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "kirenz-it-redis",
+        "EUREKA_ENABLED": "true",
+        "EUREKA_DEFAULT_ZONE": "http://discovery-service:8761/eureka/",
+        "IDENTITY_SERVICE_URL": "http://identity-service:8081",
+        "USER_SERVICE_URL": "http://user-service:8082",
+        "CLOUDINARY_CLOUD_NAME": "local-test",
+        "CLOUDINARY_API_KEY": "local-test",
+        "CLOUDINARY_API_SECRET": "local-test",
+        "BREVO_API_KEY": "local-test-stub-only",
+        "BREVO_BASE_URL": "http://mailbox:1080/v3/smtp/email",
+        "BREVO_SENDER_EMAIL": "test@kirenz.invalid",
+        "BREVO_SENDER_NAME": "Kirenz Integration",
+        "JAVA_TOOL_OPTIONS": "-Xms64m -Xmx256m -XX:MaxMetaspaceSize=160m",
+        "MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE": "health,info",
+        "LOGGING_LEVEL_ORG_HIBERNATE_SQL": "WARN",
+        "SPRING_JPA_SHOW_SQL": "false",
+        "USER_DATABASE_URL": "jdbc:postgresql://postgres:5432/kirenz_user",
+        "DATABASE_USERNAME": "kirenz_it",
+        "DATABASE_PASSWORD": "kirenz_it_local_only",
+        "USER_LIQUIBASE_ENABLED": "true"
+      },
+      "ports": [
+        "127.0.0.1:18082:8082"
+      ],
+      "mem_limit": "480m",
+      "depends_on": {
+        "postgres": {
+          "condition": "service_healthy"
+        },
+        "mongo": {
+          "condition": "service_healthy"
+        },
+        "redis": {
+          "condition": "service_healthy"
+        },
+        "kafka": {
+          "condition": "service_healthy"
+        },
+        "mailbox": {
+          "condition": "service_started"
+        }
+      }
+    },
+    "social-service": {
+      "image": "kirenz-it-social-service:2af12e5",
+      "build": {
+        "context": "${KIRENZ_SOURCE_DIR:-D:/Kirenz-platform}",
+        "dockerfile": "spring-service.Dockerfile",
+        "args": {
+          "SERVICE_DIR": "social-service"
+        }
+      },
+      "environment": {
+        "JWT_SECRET": "0123456789abcdef0123456789abcdef",
+        "KAFKA_BOOTSTRAP_SERVERS": "kafka:29092",
+        "REDIS_HOST": "redis",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "kirenz-it-redis",
+        "EUREKA_ENABLED": "true",
+        "EUREKA_DEFAULT_ZONE": "http://discovery-service:8761/eureka/",
+        "IDENTITY_SERVICE_URL": "http://identity-service:8081",
+        "USER_SERVICE_URL": "http://user-service:8082",
+        "CLOUDINARY_CLOUD_NAME": "local-test",
+        "CLOUDINARY_API_KEY": "local-test",
+        "CLOUDINARY_API_SECRET": "local-test",
+        "BREVO_API_KEY": "local-test-stub-only",
+        "BREVO_BASE_URL": "http://mailbox:1080/v3/smtp/email",
+        "BREVO_SENDER_EMAIL": "test@kirenz.invalid",
+        "BREVO_SENDER_NAME": "Kirenz Integration",
+        "JAVA_TOOL_OPTIONS": "-Xms64m -Xmx256m -XX:MaxMetaspaceSize=160m",
+        "MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE": "health,info",
+        "LOGGING_LEVEL_ORG_HIBERNATE_SQL": "WARN",
+        "SPRING_JPA_SHOW_SQL": "false",
+        "MONGODB_URI": "mongodb://mongo:27017/kirenz_it_social"
+      },
+      "ports": [
+        "127.0.0.1:18083:8083"
+      ],
+      "mem_limit": "480m",
+      "depends_on": {
+        "postgres": {
+          "condition": "service_healthy"
+        },
+        "mongo": {
+          "condition": "service_healthy"
+        },
+        "redis": {
+          "condition": "service_healthy"
+        },
+        "kafka": {
+          "condition": "service_healthy"
+        },
+        "mailbox": {
+          "condition": "service_started"
+        }
+      }
+    },
+    "chat-service": {
+      "image": "kirenz-it-chat-service:2af12e5",
+      "build": {
+        "context": "${KIRENZ_SOURCE_DIR:-D:/Kirenz-platform}",
+        "dockerfile": "spring-service.Dockerfile",
+        "args": {
+          "SERVICE_DIR": "chat-service"
+        }
+      },
+      "environment": {
+        "JWT_SECRET": "0123456789abcdef0123456789abcdef",
+        "KAFKA_BOOTSTRAP_SERVERS": "kafka:29092",
+        "REDIS_HOST": "redis",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "kirenz-it-redis",
+        "EUREKA_ENABLED": "true",
+        "EUREKA_DEFAULT_ZONE": "http://discovery-service:8761/eureka/",
+        "IDENTITY_SERVICE_URL": "http://identity-service:8081",
+        "USER_SERVICE_URL": "http://user-service:8082",
+        "CLOUDINARY_CLOUD_NAME": "local-test",
+        "CLOUDINARY_API_KEY": "local-test",
+        "CLOUDINARY_API_SECRET": "local-test",
+        "BREVO_API_KEY": "local-test-stub-only",
+        "BREVO_BASE_URL": "http://mailbox:1080/v3/smtp/email",
+        "BREVO_SENDER_EMAIL": "test@kirenz.invalid",
+        "BREVO_SENDER_NAME": "Kirenz Integration",
+        "JAVA_TOOL_OPTIONS": "-Xms64m -Xmx256m -XX:MaxMetaspaceSize=160m",
+        "MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE": "health,info",
+        "LOGGING_LEVEL_ORG_HIBERNATE_SQL": "WARN",
+        "SPRING_JPA_SHOW_SQL": "false",
+        "MONGODB_URI": "mongodb://mongo:27017/kirenz_it_chat",
+        "LIVEKIT_URL": "wss://livekit.invalid",
+        "LIVEKIT_API_KEY": "kirenz-it-key",
+        "LIVEKIT_API_SECRET": "kirenz-it-local-provider-unavailable-secret",
+        "LIVEKIT_RING_TIMEOUT": "PT60S"
+      },
+      "ports": [
+        "127.0.0.1:18084:8084"
+      ],
+      "mem_limit": "480m",
+      "depends_on": {
+        "postgres": {
+          "condition": "service_healthy"
+        },
+        "mongo": {
+          "condition": "service_healthy"
+        },
+        "redis": {
+          "condition": "service_healthy"
+        },
+        "kafka": {
+          "condition": "service_healthy"
+        },
+        "mailbox": {
+          "condition": "service_started"
+        }
+      }
+    },
+    "notification-service": {
+      "image": "kirenz-it-notification-service:2af12e5",
+      "build": {
+        "context": "${KIRENZ_SOURCE_DIR:-D:/Kirenz-platform}",
+        "dockerfile": "spring-service.Dockerfile",
+        "args": {
+          "SERVICE_DIR": "notification-service"
+        }
+      },
+      "environment": {
+        "JWT_SECRET": "0123456789abcdef0123456789abcdef",
+        "KAFKA_BOOTSTRAP_SERVERS": "kafka:29092",
+        "REDIS_HOST": "redis",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "kirenz-it-redis",
+        "EUREKA_ENABLED": "true",
+        "EUREKA_DEFAULT_ZONE": "http://discovery-service:8761/eureka/",
+        "IDENTITY_SERVICE_URL": "http://identity-service:8081",
+        "USER_SERVICE_URL": "http://user-service:8082",
+        "CLOUDINARY_CLOUD_NAME": "local-test",
+        "CLOUDINARY_API_KEY": "local-test",
+        "CLOUDINARY_API_SECRET": "local-test",
+        "BREVO_API_KEY": "local-test-stub-only",
+        "BREVO_BASE_URL": "http://mailbox:1080/v3/smtp/email",
+        "BREVO_SENDER_EMAIL": "test@kirenz.invalid",
+        "BREVO_SENDER_NAME": "Kirenz Integration",
+        "JAVA_TOOL_OPTIONS": "-Xms64m -Xmx256m -XX:MaxMetaspaceSize=160m",
+        "MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE": "health,info",
+        "LOGGING_LEVEL_ORG_HIBERNATE_SQL": "WARN",
+        "SPRING_JPA_SHOW_SQL": "false",
+        "DATABASE_URL": "jdbc:postgresql://postgres:5432/kirenz_notification",
+        "DATABASE_USERNAME": "kirenz_it",
+        "DATABASE_PASSWORD": "kirenz_it_local_only",
+        "NOTIFICATION_LIQUIBASE_ENABLED": "true"
+      },
+      "ports": [
+        "127.0.0.1:18085:8085"
+      ],
+      "mem_limit": "480m",
+      "depends_on": {
+        "postgres": {
+          "condition": "service_healthy"
+        },
+        "mongo": {
+          "condition": "service_healthy"
+        },
+        "redis": {
+          "condition": "service_healthy"
+        },
+        "kafka": {
+          "condition": "service_healthy"
+        },
+        "mailbox": {
+          "condition": "service_started"
+        }
+      }
+    },
+    "admin-service": {
+      "image": "kirenz-it-admin-service:2af12e5",
+      "build": {
+        "context": "${KIRENZ_SOURCE_DIR:-D:/Kirenz-platform}",
+        "dockerfile": "spring-service.Dockerfile",
+        "args": {
+          "SERVICE_DIR": "admin-service"
+        }
+      },
+      "environment": {
+        "JWT_SECRET": "0123456789abcdef0123456789abcdef",
+        "KAFKA_BOOTSTRAP_SERVERS": "kafka:29092",
+        "REDIS_HOST": "redis",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "kirenz-it-redis",
+        "EUREKA_ENABLED": "true",
+        "EUREKA_DEFAULT_ZONE": "http://discovery-service:8761/eureka/",
+        "IDENTITY_SERVICE_URL": "http://identity-service:8081",
+        "USER_SERVICE_URL": "http://user-service:8082",
+        "CLOUDINARY_CLOUD_NAME": "local-test",
+        "CLOUDINARY_API_KEY": "local-test",
+        "CLOUDINARY_API_SECRET": "local-test",
+        "BREVO_API_KEY": "local-test-stub-only",
+        "BREVO_BASE_URL": "http://mailbox:1080/v3/smtp/email",
+        "BREVO_SENDER_EMAIL": "test@kirenz.invalid",
+        "BREVO_SENDER_NAME": "Kirenz Integration",
+        "JAVA_TOOL_OPTIONS": "-Xms64m -Xmx256m -XX:MaxMetaspaceSize=160m",
+        "MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE": "health,info",
+        "LOGGING_LEVEL_ORG_HIBERNATE_SQL": "WARN",
+        "SPRING_JPA_SHOW_SQL": "false",
+        "ADMIN_DATABASE_URL": "jdbc:postgresql://postgres:5432/kirenz_admin",
+        "ADMIN_DATABASE_USERNAME": "kirenz_it",
+        "ADMIN_DATABASE_PASSWORD": "kirenz_it_local_only",
+        "ADMIN_LIQUIBASE_ENABLED": "true",
+        "ADMIN_DASHBOARD_CACHE_TTL": "PT0S"
+      },
+      "ports": [
+        "127.0.0.1:18086:8086"
+      ],
+      "mem_limit": "480m",
+      "depends_on": {
+        "postgres": {
+          "condition": "service_healthy"
+        },
+        "mongo": {
+          "condition": "service_healthy"
+        },
+        "redis": {
+          "condition": "service_healthy"
+        },
+        "kafka": {
+          "condition": "service_healthy"
+        },
+        "mailbox": {
+          "condition": "service_started"
+        }
+      }
+    },
+    "api-gateway": {
+      "image": "kirenz-it-api-gateway:2af12e5",
+      "build": {
+        "context": "${KIRENZ_SOURCE_DIR:-D:/Kirenz-platform}",
+        "dockerfile": "spring-service.Dockerfile",
+        "args": {
+          "SERVICE_DIR": "api-gateway"
+        }
+      },
+      "environment": {
+        "JWT_SECRET": "0123456789abcdef0123456789abcdef",
+        "KAFKA_BOOTSTRAP_SERVERS": "kafka:29092",
+        "REDIS_HOST": "redis",
+        "REDIS_PORT": "6379",
+        "REDIS_PASSWORD": "kirenz-it-redis",
+        "EUREKA_ENABLED": "true",
+        "EUREKA_DEFAULT_ZONE": "http://discovery-service:8761/eureka/",
+        "IDENTITY_SERVICE_URL": "http://identity-service:8081",
+        "USER_SERVICE_URL": "http://user-service:8082",
+        "CLOUDINARY_CLOUD_NAME": "local-test",
+        "CLOUDINARY_API_KEY": "local-test",
+        "CLOUDINARY_API_SECRET": "local-test",
+        "BREVO_API_KEY": "local-test-stub-only",
+        "BREVO_BASE_URL": "http://mailbox:1080/v3/smtp/email",
+        "BREVO_SENDER_EMAIL": "test@kirenz.invalid",
+        "BREVO_SENDER_NAME": "Kirenz Integration",
+        "JAVA_TOOL_OPTIONS": "-Xms64m -Xmx256m -XX:MaxMetaspaceSize=160m",
+        "MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE": "health,info",
+        "LOGGING_LEVEL_ORG_HIBERNATE_SQL": "WARN",
+        "SPRING_JPA_SHOW_SQL": "false",
+        "IDENTITY_SERVICE_URI": "http://identity-service:8081",
+        "USER_SERVICE_URI": "http://user-service:8082",
+        "SOCIAL_SERVICE_URI": "http://social-service:8083",
+        "CHAT_SERVICE_URI": "http://chat-service:8084",
+        "NOTIFICATION_SERVICE_URI": "http://notification-service:8085",
+        "ADMIN_SERVICE_URI": "http://admin-service:8086",
+        "CHAT_WS_SERVICE_URI": "http://chat-service:8084",
+        "NOTIFICATION_WS_SERVICE_URI": "http://notification-service:8085"
+      },
+      "ports": [
+        "127.0.0.1:18080:8080"
+      ],
+      "mem_limit": "480m",
+      "depends_on": {
+        "postgres": {
+          "condition": "service_healthy"
+        },
+        "mongo": {
+          "condition": "service_healthy"
+        },
+        "redis": {
+          "condition": "service_healthy"
+        },
+        "kafka": {
+          "condition": "service_healthy"
+        },
+        "mailbox": {
+          "condition": "service_started"
+        }
+      }
+    }
+  },
+  "volumes": {
+    "postgres-data": {},
+    "mongo-data": {}
+  }
+}

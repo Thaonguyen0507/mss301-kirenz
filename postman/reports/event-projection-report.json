@@ -1,0 +1,119 @@
+{
+  "suite": "Identity -> Kafka -> User owner-DB projection",
+  "startedAt": "2026-11-12T14:36:49.890Z",
+  "finishedAt": "2026-11-12T14:37:00.153Z",
+  "environmentFile": "runtime.postman_environment.json",
+  "project": "kirenz-integration",
+  "database": "kirenz_user",
+  "table": "public.privacy_settings",
+  "fixtureId": "1f8d0f1a-08d7-463f-ab21-48db8f3dd4fc",
+  "topic": "user-created",
+  "consumerGroup": "user-service-group",
+  "readOnly": true,
+  "source": {
+    "producer": "identity-service/src/main/java/com/kirenz/identity_service/auth/service/AuthService.java",
+    "consumer": "user-service/src/main/java/com/kirenz/user_service/identity/listener/UserEventListener.java",
+    "migration": "user-service/src/main/resources/db/changelog/003-add-privacy-settings-schema.sql"
+  },
+  "proofBoundary": "Fixture is created by Identity registration. Harness must not call a User privacy endpoint for this administrator before this check, because those endpoints can lazily create rows and mask Kafka failures.",
+  "summary": {
+    "total": 4,
+    "passed": 3,
+    "failed": 1,
+    "skipped": 0
+  },
+  "observations": [
+    {
+      "elapsedMs": 388,
+      "rowCount": 0,
+      "defaultsValid": false
+    },
+    {
+      "elapsedMs": 1147,
+      "rowCount": 0,
+      "defaultsValid": false
+    },
+    {
+      "elapsedMs": 1897,
+      "rowCount": 0,
+      "defaultsValid": false
+    },
+    {
+      "elapsedMs": 2740,
+      "rowCount": 0,
+      "defaultsValid": false
+    },
+    {
+      "elapsedMs": 3498,
+      "rowCount": 0,
+      "defaultsValid": false
+    },
+    {
+      "elapsedMs": 4241,
+      "rowCount": 0,
+      "defaultsValid": false
+    },
+    {
+      "elapsedMs": 4969,
+      "rowCount": 0,
+      "defaultsValid": false
+    },
+    {
+      "elapsedMs": 5694,
+      "rowCount": 0,
+      "defaultsValid": false
+    },
+    {
+      "elapsedMs": 6496,
+      "rowCount": 0,
+      "defaultsValid": false
+    },
+    {
+      "elapsedMs": 7475,
+      "rowCount": 0,
+      "defaultsValid": false
+    },
+    {
+      "elapsedMs": 8228,
+      "rowCount": 0,
+      "defaultsValid": false
+    },
+    {
+      "elapsedMs": 8943,
+      "rowCount": 0,
+      "defaultsValid": false
+    }
+  ],
+  "cases": [
+    {
+      "name": "Runtime administrator fixture is available",
+      "status": "passed",
+      "durationMs": 6,
+      "details": {
+        "fixture": "administrator created through Identity registration; no User privacy API called"
+      }
+    },
+    {
+      "name": "PostgreSQL belongs to kirenz-integration Compose project",
+      "status": "passed",
+      "durationMs": 521,
+      "details": {
+        "project": "kirenz-integration",
+        "service": "postgres",
+        "database": "kirenz_user",
+        "access": "SELECT only; default_transaction_read_only=on"
+      }
+    },
+    {
+      "name": "User owner schema exposes privacy_settings.user_id UUID",
+      "status": "passed",
+      "durationMs": 382
+    },
+    {
+      "name": "Identity user-created Kafka event creates exactly one User privacy projection",
+      "status": "failed",
+      "durationMs": 9346,
+      "error": "IDENTITY-USER-CREATED-PROJECTION: expected one privacy_settings row from Kafka for untouched administrator fixture; observed 0 within 10000 ms\n\n0 !== 1\n"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "generatedAt": "2026-11-12T15:13:37.063Z",
+  "status": "passed",
+  "validation": {
+    "officialSchema": true,
+    "postmanSdk": true,
+    "javascriptSyntax": true,
+    "sandboxBindings": true,
+    "declaredVariables": true,
+    "shippedSecrets": true
+  },
+  "inventories": [
+    {
+      "file": "admin.json",
+      "endpoints": 22
+    },
+    {
+      "file": "chat.json",
+      "endpoints": 22
+    },
+    {
+      "file": "identity-user.json",
+      "endpoints": 43
+    },
+    {
+      "file": "social-notifications.json",
+      "endpoints": 38
+    }
+  ],
+  "collections": [
+    {
+      "file": "Kirenz-API.postman_collection.json",
+      "name": "Kirenz | API Reference",
+      "requests": 125,
+      "scripts": 126,
+      "sdkRequests": 125
+    },
+    {
+      "file": "Kirenz-Integration.postman_collection.json",
+      "name": "Kirenz | Integration & cross-service regression",
+      "requests": 122,
+      "scripts": 124,
+      "sdkRequests": 122
+    }
+  ],
+  "environment": {
+    "file": "Kirenz-Local.postman_environment.json",
+    "name": "Kirenz | isolated Docker local",
+    "variables": 69
+  },
+  "coverage": {
+    "totalEndpoints": 125,
+    "coveredEndpoints": 125,
+    "missing": [],
+    "unexpected": [],
+    "duplicates": []
+  },
+  "issues": [],
+  "warnings": []
+}

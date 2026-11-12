@@ -1,0 +1,1059 @@
+{
+  "services": [
+    {
+      "name": "admin-service",
+      "baseVariable": "admin_base_url",
+      "httpControllerCount": 8,
+      "endpointCount": 22
+    }
+  ],
+  "endpoints": [
+    {
+      "id": "admin_create_report",
+      "service": "admin-service",
+      "folder": "Moderation / My reports",
+      "name": "Submit report",
+      "method": "POST",
+      "path": "/api/reports",
+      "auth": "user",
+      "expectedStatuses": [
+        201
+      ],
+      "body": {
+        "targetType": "USER",
+        "targetId": "{{user_b_id}}",
+        "reason": "OTHER",
+        "description": "Integration fixture report {{run_id}}"
+      },
+      "captures": [
+        {
+          "variable": "report_id",
+          "path": "data.id"
+        }
+      ],
+      "tags": [
+        "writes",
+        "cross-service"
+      ],
+      "description": "Authenticated reporter. targetType POST|COMMENT|USER|STORY; targetId nonblank max255; reason SPAM|HARASSMENT|HATE_SPEECH|VIOLENCE|NUDITY|FALSE_INFORMATION|IMPERSONATION|OTHER; description max1000. Duplicate open report for same reporter/target returns400. POST/COMMENT currently call an ADMIN-only social endpoint with reporter's USER token: intended201 is a cross-service regression target, not a reason to bless403.",
+      "source": "admin-service/src/main/java/com/example/admin_service/report/ReportController.java"
+    },
+    {
+      "id": "admin_my_reports",
+      "service": "admin-service",
+      "folder": "Moderation / My reports",
+      "name": "List own reports",
+      "method": "GET",
+      "path": "/api/reports/me",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "page",
+          "value": "0",
+          "required": false
+        },
+        {
+          "key": "size",
+          "value": "20",
+          "required": false
+        }
+      ],
+      "responseType": "envelope-page",
+      "description": "Only the current reporter's reports; data.content[],page,size,totalElements,totalPages. Page>=0, size clamped1..100.",
+      "source": "admin-service/src/main/java/com/example/admin_service/report/ReportController.java"
+    },
+    {
+      "id": "admin_report_search",
+      "service": "admin-service",
+      "folder": "Admin / Reports",
+      "name": "Search reports",
+      "method": "GET",
+      "path": "/api/admin/reports",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "status",
+          "value": "PENDING",
+          "required": false
+        },
+        {
+          "key": "targetType",
+          "value": "USER",
+          "required": false
+        },
+        {
+          "key": "reason",
+          "value": "OTHER",
+          "required": false
+        },
+        {
+          "key": "page",
+          "value": "0",
+          "required": false
+        },
+        {
+          "key": "size",
+          "value": "20",
+          "required": false
+        }
+      ],
+      "responseType": "envelope-page",
+      "description": "status PENDING|REVIEWING|RESOLVED|DISMISSED; optional targetType and reason enums. All filters can be omitted.",
+      "source": "admin-service/src/main/java/com/example/admin_service/report/AdminReportController.java"
+    },
+    {
+      "id": "admin_report_detail",
+      "service": "admin-service",
+      "folder": "Admin / Reports",
+      "name": "Report detail with content enrichment",
+      "method": "GET",
+      "path": "/api/admin/reports/{{report_id}}",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "description": "data.report holds ReportResponse; data.aggregateReportCount,moderationReason,adminNote,targetContent,partialData,unavailableComponents. POST/COMMENT targetContent fetched through social Feign; assert partialData=false for a healthy integration.",
+      "source": "admin-service/src/main/java/com/example/admin_service/report/AdminReportController.java"
+    },
+    {
+      "id": "admin_report_review",
+      "service": "admin-service",
+      "folder": "Admin / Reports",
+      "name": "Start report review",
+      "method": "POST",
+      "path": "/api/admin/reports/{{report_id}}/review",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "adminNote": "Integration fixture review {{run_id}}"
+      },
+      "tags": [
+        "writes"
+      ],
+      "description": "Only PENDING can transition to REVIEWING; duplicate/nonpending start400. adminNote optional max2000. Records REPORT_REVIEW_STARTED audit action.",
+      "source": "admin-service/src/main/java/com/example/admin_service/report/AdminReportController.java"
+    },
+    {
+      "id": "admin_report_dismiss",
+      "service": "admin-service",
+      "folder": "Admin / Reports",
+      "name": "Dismiss report",
+      "method": "POST",
+      "path": "/api/admin/reports/{{report_id}}/dismiss",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "moderationReason": "OTHER",
+        "adminNote": "Integration fixture dismissed after review"
+      },
+      "tags": [
+        "writes",
+        "kafka"
+      ],
+      "description": "Open report -> DISMISSED with resolution NO_VIOLATION. moderationReason required enum, adminNote max2000. Records audit and publishes REPORT_UPDATE to reporter; alreadyclosed400.",
+      "source": "admin-service/src/main/java/com/example/admin_service/report/AdminReportController.java"
+    },
+    {
+      "id": "admin_report_resolve",
+      "service": "admin-service",
+      "folder": "Admin / Reports",
+      "name": "Resolve report with moderation action",
+      "method": "POST",
+      "path": "/api/admin/reports/{{report_id}}/resolve",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "action": "SEND_WARNING",
+        "moderationReason": "OTHER",
+        "adminNote": "Integration fixture warning resolution"
+      },
+      "tags": [
+        "writes",
+        "cross-service",
+        "kafka",
+        "destructive"
+      ],
+      "description": "action HIDE_CONTENT|REMOVE_CONTENT|SEND_WARNING|SUSPEND_USER|BAN_USER. Content actions support only POST/COMMENT reports; account actions only USER reports. SUSPEND_USER also needs future suspendedUntil. Optional evidenceUrl max1000. Updates owner service through Feign, audit, RESOLVED report and Kafka notifications. Use only disposable fixture targets.",
+      "source": "admin-service/src/main/java/com/example/admin_service/report/AdminReportController.java"
+    },
+    {
+      "id": "admin_user_summary",
+      "service": "admin-service",
+      "folder": "Admin / Users",
+      "name": "User summary through identity-service",
+      "method": "GET",
+      "path": "/api/admin/users/summary",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "description": "Forwards ADMIN bearer to identity internal/admin summary. Assert real identity totals rather than onlyHTTP200.",
+      "source": "admin-service/src/main/java/com/example/admin_service/user/AdminUserController.java"
+    },
+    {
+      "id": "admin_user_search",
+      "service": "admin-service",
+      "folder": "Admin / Users",
+      "name": "Search users through identity-service",
+      "method": "GET",
+      "path": "/api/admin/users",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "query",
+          "value": "{{run_id}}",
+          "required": false
+        },
+        {
+          "key": "status",
+          "value": "ACTIVE",
+          "required": false
+        },
+        {
+          "key": "emailVerified",
+          "value": "false",
+          "required": false
+        },
+        {
+          "key": "page",
+          "value": "0",
+          "required": false
+        },
+        {
+          "key": "size",
+          "value": "20",
+          "required": false
+        }
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "responseType": "envelope-page",
+      "description": "Optional status ACTIVE|BANNED|SUSPENDED|DEACTIVATED, emailVerified boolean and query. Returns identity-sourced AdminUserResponse in data.content.",
+      "source": "admin-service/src/main/java/com/example/admin_service/user/AdminUserController.java"
+    },
+    {
+      "id": "admin_user_detail",
+      "service": "admin-service",
+      "folder": "Admin / Users",
+      "name": "User detail through identity-service",
+      "method": "GET",
+      "path": "/api/admin/users/{{user_b_id}}",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "description": "data.id,email,username,displayName,avatarUrl,role,status,emailVerified,createdAt,lastLoginAt,suspendedUntil. Missinguser404.",
+      "source": "admin-service/src/main/java/com/example/admin_service/user/AdminUserController.java"
+    },
+    {
+      "id": "admin_user_ban",
+      "service": "admin-service",
+      "folder": "Admin / Users",
+      "name": "Ban disposable user",
+      "method": "POST",
+      "path": "/api/admin/users/{{user_b_id}}/ban",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "reason": "OTHER",
+        "note": "Integration fixture moderation {{run_id}}",
+        "evidenceUrl": "https://example.test/integration/{{run_id}}"
+      },
+      "tags": [
+        "writes",
+        "cross-service",
+        "kafka",
+        "destructive"
+      ],
+      "description": "reason nonblank max50; note max2000; evidenceUrl max1000. ADMIN cannot moderate own account (400). Calls identity ban, records BAN_ACCOUNT audit and publishes ADMIN_BAN. Login/refresh of fixture should403 afterward; restore with unban.",
+      "source": "admin-service/src/main/java/com/example/admin_service/user/AdminUserController.java"
+    },
+    {
+      "id": "admin_user_unban",
+      "service": "admin-service",
+      "folder": "Admin / Users",
+      "name": "Unban disposable user",
+      "method": "POST",
+      "path": "/api/admin/users/{{user_b_id}}/unban",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "reason": "OTHER",
+        "note": "Integration fixture moderation {{run_id}}",
+        "evidenceUrl": "https://example.test/integration/{{run_id}}"
+      },
+      "tags": [
+        "writes",
+        "cross-service"
+      ],
+      "description": "Calls identity unban and records UNBAN_ACCOUNT audit. Same reason/note/evidenceUrl DTO as ban; selfmoderation400.",
+      "source": "admin-service/src/main/java/com/example/admin_service/user/AdminUserController.java"
+    },
+    {
+      "id": "admin_user_warn",
+      "service": "admin-service",
+      "folder": "Admin / Users",
+      "name": "Warn disposable user",
+      "method": "POST",
+      "path": "/api/admin/users/{{user_b_id}}/warnings",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "reason": "OTHER",
+        "note": "Integration fixture moderation {{run_id}}",
+        "evidenceUrl": "https://example.test/integration/{{run_id}}",
+        "message": "Integration-only warning for disposable fixture"
+      },
+      "captures": [
+        {
+          "variable": "action_id",
+          "path": "data.id"
+        }
+      ],
+      "tags": [
+        "writes",
+        "cross-service",
+        "kafka"
+      ],
+      "description": "reason nonblank max50; message nonblank max1000; note max2000; evidenceUrl max1000. Validates target in identity, records SEND_WARNING audit, waits for Kafka publish and emits ADMIN_WARNING. Rollbacks audit on failed warning publish. data is AdminActionResponse.",
+      "source": "admin-service/src/main/java/com/example/admin_service/user/AdminUserController.java"
+    },
+    {
+      "id": "admin_user_suspend",
+      "service": "admin-service",
+      "folder": "Admin / Users",
+      "name": "Suspend disposable user",
+      "method": "POST",
+      "path": "/api/admin/users/{{user_b_id}}/suspend",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "suspendedUntil": "{{suspended_until}}",
+        "moderationReason": "OTHER",
+        "note": "Integration fixture temporary suspension",
+        "evidenceUrl": "https://example.test/integration/{{run_id}}"
+      },
+      "tags": [
+        "writes",
+        "cross-service",
+        "kafka",
+        "destructive"
+      ],
+      "description": "suspendedUntil required future ISOInstant; moderationReason required max50; note max2000; evidenceUrl max1000. Calls identity suspend, records SUSPEND_ACCOUNT and publishes ADMIN_SUSPENSION. Restore disposable target to ACTIVE after test.",
+      "source": "admin-service/src/main/java/com/example/admin_service/user/AdminUserController.java"
+    },
+    {
+      "id": "admin_user_actions",
+      "service": "admin-service",
+      "folder": "Admin / Users",
+      "name": "User moderation history",
+      "method": "GET",
+      "path": "/api/admin/users/{{user_b_id}}/actions",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "page",
+          "value": "0",
+          "required": false
+        },
+        {
+          "key": "size",
+          "value": "20",
+          "required": false
+        }
+      ],
+      "responseType": "envelope-page",
+      "description": "AdminActionResponse in data.content, filtered targetType=USER,targetId=user_b_id. Capture desired data.content[index].id by actionType rather than assuming fixed index.",
+      "source": "admin-service/src/main/java/com/example/admin_service/user/AdminUserController.java"
+    },
+    {
+      "id": "admin_action_search",
+      "service": "admin-service",
+      "folder": "Admin / Audit",
+      "name": "Search admin audit actions",
+      "method": "GET",
+      "path": "/api/admin/actions",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "adminId",
+          "value": "{{admin_user_id}}",
+          "required": false
+        },
+        {
+          "key": "targetType",
+          "value": "USER",
+          "required": false
+        },
+        {
+          "key": "targetId",
+          "value": "{{user_b_id}}",
+          "required": false
+        },
+        {
+          "key": "page",
+          "value": "0",
+          "required": false
+        },
+        {
+          "key": "size",
+          "value": "20",
+          "required": false
+        }
+      ],
+      "responseType": "envelope-page",
+      "description": "targetType REPORT|USER|POST|COMMENT|STORY. ActionType BAN_ACCOUNT|UNBAN_ACCOUNT|SEND_WARNING|REPORT_REVIEW_STARTED|REPORT_DISMISSED|REPORT_RESOLVED|CONTENT_HIDDEN|CONTENT_REMOVED|SUSPEND_ACCOUNT. Supports adminId UUID filter.",
+      "source": "admin-service/src/main/java/com/example/admin_service/audit/AdminActionController.java"
+    },
+    {
+      "id": "admin_target_action_detail",
+      "service": "admin-service",
+      "folder": "Moderation / My actions",
+      "name": "Read own moderation action",
+      "method": "GET",
+      "path": "/api/moderation/actions/{{action_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "description": "Only account target of a USER audit action can read it; other user or wrong targetType returns404. data.id,actionType,reason,evidenceUrl,createdAt; intentionally excludes private admin note.",
+      "source": "admin-service/src/main/java/com/example/admin_service/audit/UserModerationController.java"
+    },
+    {
+      "id": "admin_dashboard_summary",
+      "service": "admin-service",
+      "folder": "Admin / Dashboard",
+      "name": "Dashboard aggregate summary",
+      "method": "GET",
+      "path": "/api/admin/dashboard/summary",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "description": "Aggregates identity user counters, social content counters and local report counts. data.partialData and unavailableComponents expose degraded owner services. Assert false/empty for healthy integration. Cache default30s; set ADMIN_DASHBOARD_CACHE_TTL=PT0S in isolated teststack or poll pastTTL for counters.",
+      "source": "admin-service/src/main/java/com/example/admin_service/dashboard/AdminDashboardController.java"
+    },
+    {
+      "id": "admin_dashboard_user_growth",
+      "service": "admin-service",
+      "folder": "Admin / Dashboard",
+      "name": "User growth through identity-service",
+      "method": "GET",
+      "path": "/api/admin/dashboard/user-growth",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "from",
+          "value": "{{from_date}}",
+          "required": true
+        },
+        {
+          "key": "to",
+          "value": "{{to_date}}",
+          "required": true
+        },
+        {
+          "key": "granularity",
+          "value": "DAY",
+          "required": false
+        }
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "description": "ISOdates ordered from<=to and range<=2years; granularity DAY|MONTH(defaultDAY). Invalidrange/granularity400. data.series[],partialData,unavailableComponents; assert partialData=false.",
+      "source": "admin-service/src/main/java/com/example/admin_service/dashboard/AdminDashboardController.java"
+    },
+    {
+      "id": "admin_dashboard_content_growth",
+      "service": "admin-service",
+      "folder": "Admin / Dashboard",
+      "name": "Content growth through social-service",
+      "method": "GET",
+      "path": "/api/admin/dashboard/content-growth",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "from",
+          "value": "{{from_date}}",
+          "required": true
+        },
+        {
+          "key": "to",
+          "value": "{{to_date}}",
+          "required": true
+        },
+        {
+          "key": "granularity",
+          "value": "DAY",
+          "required": false
+        }
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "description": "Same ordereddate/range/granularity validation as usergrowth. data.series[] contentgrowth plus partialData and unavailableComponents; assert healthy, not merely200.",
+      "source": "admin-service/src/main/java/com/example/admin_service/dashboard/AdminDashboardController.java"
+    },
+    {
+      "id": "admin_monitoring",
+      "service": "admin-service",
+      "folder": "Admin / Monitoring",
+      "name": "System service/infrastructure monitoring",
+      "method": "GET",
+      "path": "/api/admin/monitoring",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "description": "data.services[] with serviceName,status,registeredInstances,instances[]; infrastructure[] with component,status,sources[]; partialData,checkedAt. Services discovered through Eureka and actuator health probes. Use expected active service names +UP statuses, not onlyHTTP200.",
+      "source": "admin-service/src/main/java/com/example/admin_service/monitoring/AdminMonitoringController.java"
+    },
+    {
+      "id": "admin_ping",
+      "service": "admin-service",
+      "folder": "Admin / Monitoring",
+      "name": "Admin authorization ping",
+      "method": "GET",
+      "path": "/api/admin/ping",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "description": "data.service='admin-service',status='UP',adminId=current administrator UUID. No JWT401; ordinaryUSER403.",
+      "source": "admin-service/src/main/java/com/example/admin_service/health/AdminPingController.java"
+    }
+  ],
+  "enums": {
+    "ReportTargetType": [
+      "POST",
+      "COMMENT",
+      "USER",
+      "STORY"
+    ],
+    "ReportStatus": [
+      "PENDING",
+      "REVIEWING",
+      "RESOLVED",
+      "DISMISSED"
+    ],
+    "ReportReason": [
+      "SPAM",
+      "HARASSMENT",
+      "HATE_SPEECH",
+      "VIOLENCE",
+      "NUDITY",
+      "FALSE_INFORMATION",
+      "IMPERSONATION",
+      "OTHER"
+    ],
+    "ModerationReason": [
+      "SPAM",
+      "HARASSMENT",
+      "HATE_SPEECH",
+      "VIOLENCE",
+      "NUDITY",
+      "FALSE_INFORMATION",
+      "IMPERSONATION",
+      "OTHER"
+    ],
+    "ReportResolutionAction": [
+      "HIDE_CONTENT",
+      "REMOVE_CONTENT",
+      "SEND_WARNING",
+      "SUSPEND_USER",
+      "BAN_USER"
+    ],
+    "AdminTargetType": [
+      "REPORT",
+      "USER",
+      "POST",
+      "COMMENT",
+      "STORY"
+    ],
+    "AdminActionType": [
+      "BAN_ACCOUNT",
+      "UNBAN_ACCOUNT",
+      "SEND_WARNING",
+      "REPORT_REVIEW_STARTED",
+      "REPORT_DISMISSED",
+      "REPORT_RESOLVED",
+      "CONTENT_HIDDEN",
+      "CONTENT_REMOVED",
+      "SUSPEND_ACCOUNT"
+    ]
+  },
+  "flows": [
+    {
+      "name": "Admin authorization boundaries",
+      "description": "Verify distinct authentication and role failures on the public admin gateway routes.",
+      "steps": [
+        {
+          "endpointId": "admin_ping",
+          "actor": "admin",
+          "assertions": [
+            "data.status UP; data.adminId matches provisionedadmin"
+          ]
+        },
+        {
+          "endpointId": "admin_ping",
+          "actor": "a",
+          "overrides": {
+            "expectedStatuses": [
+              403
+            ]
+          },
+          "assertions": [
+            "403 Administrator access is required"
+          ]
+        },
+        {
+          "endpointId": "admin_ping",
+          "actor": "a",
+          "overrides": {
+            "auth": "none",
+            "expectedStatuses": [
+              401
+            ]
+          },
+          "assertions": [
+            "401"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Report review/dismiss and notification delivery",
+      "description": "A reports disposableB USERtarget, adminreviews anddismisses, reporter sees updatedstatus and eventuallyREPORT_UPDATE notification matchingreportID.",
+      "steps": [
+        {
+          "endpointId": "admin_create_report",
+          "actor": "a",
+          "assertions": [
+            "201; reporterId A; targetType USER; targetId B; status PENDING; capturereport_id"
+          ]
+        },
+        {
+          "endpointId": "admin_create_report",
+          "actor": "a",
+          "overrides": {
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "400 duplicate open report"
+          ]
+        },
+        {
+          "endpointId": "admin_my_reports",
+          "actor": "a",
+          "assertions": [
+            "data.content contains own report"
+          ]
+        },
+        {
+          "endpointId": "admin_my_reports",
+          "actor": "outsider",
+          "assertions": [
+            "data.content does not contain A's report"
+          ]
+        },
+        {
+          "endpointId": "admin_report_review",
+          "actor": "admin",
+          "assertions": [
+            "data.status REVIEWING"
+          ]
+        },
+        {
+          "endpointId": "admin_report_review",
+          "actor": "admin",
+          "overrides": {
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "400 onlypending canstartreview"
+          ]
+        },
+        {
+          "endpointId": "admin_report_dismiss",
+          "actor": "admin",
+          "assertions": [
+            "data.status DISMISSED; resolution NO_VIOLATION"
+          ]
+        },
+        {
+          "endpointId": "admin_report_detail",
+          "actor": "admin",
+          "assertions": [
+            "data.report.id report_id; status DISMISSED; private adminNote available onlytoadmin"
+          ]
+        },
+        {
+          "endpointId": "admin_report_dismiss",
+          "actor": "admin",
+          "overrides": {
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "400 reportalreadyclosed"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Warning audit and target visibility through Kafka",
+      "description": "Admin warns B; auditrecordandnotificationtargetactionID; B can inspectpublicmoderationdetail butA cannot. Userstatus remainsACTIVE.",
+      "steps": [
+        {
+          "endpointId": "admin_user_warn",
+          "actor": "admin",
+          "assertions": [
+            "data.actionType SEND_WARNING; targetType USER; targetId B; captureaction_id"
+          ]
+        },
+        {
+          "endpointId": "admin_user_actions",
+          "actor": "admin",
+          "assertions": [
+            "content contains action_id with SEND_WARNING"
+          ]
+        },
+        {
+          "endpointId": "admin_target_action_detail",
+          "actor": "b",
+          "assertions": [
+            "data.id action_id; reason OTHER; no adminnote property"
+          ]
+        },
+        {
+          "endpointId": "admin_target_action_detail",
+          "actor": "a",
+          "overrides": {
+            "expectedStatuses": [
+              404
+            ]
+          },
+          "assertions": [
+            "404 hides another user's moderationaction"
+          ]
+        },
+        {
+          "endpointId": "admin_user_detail",
+          "actor": "admin",
+          "assertions": [
+            "data.status ACTIVE"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin ban/unban traverses identity and login",
+      "description": "Runonlyon disposableB. AdminpublicAPI forwardsADMINJWT throughFeign toidentity, then audit andmoderationnotification provefanout. Login/refreshassertionscomeidentityinventory.",
+      "steps": [
+        {
+          "endpointId": "admin_user_ban",
+          "actor": "admin",
+          "assertions": [
+            "data.id B; status BANNED"
+          ]
+        },
+        {
+          "endpointId": "admin_user_detail",
+          "actor": "admin",
+          "assertions": [
+            "status BANNED"
+          ]
+        },
+        {
+          "endpointId": "admin_user_actions",
+          "actor": "admin",
+          "assertions": [
+            "contains BAN_ACCOUNT event"
+          ]
+        },
+        {
+          "endpointId": "admin_user_unban",
+          "actor": "admin",
+          "assertions": [
+            "status ACTIVE"
+          ]
+        },
+        {
+          "endpointId": "admin_user_actions",
+          "actor": "admin",
+          "assertions": [
+            "contains UNBAN_ACCOUNT event"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Report resolution warns a user",
+      "description": "Create freshUSERreportafterpreviousoneisclosed, resolveSEND_WARNING throughidentitylookup+audit+Kafka thenreportworkflowRESOLVED.",
+      "steps": [
+        {
+          "endpointId": "admin_create_report",
+          "actor": "a"
+        },
+        {
+          "endpointId": "admin_report_resolve",
+          "actor": "admin",
+          "overrides": {
+            "body": {
+              "action": "SEND_WARNING",
+              "moderationReason": "OTHER",
+              "adminNote": "Integration fixture resolve with warning"
+            }
+          },
+          "assertions": [
+            "status RESOLVED; resolution USER_WARNED"
+          ]
+        },
+        {
+          "endpointId": "admin_user_actions",
+          "actor": "admin",
+          "assertions": [
+            "new SEND_WARNING action"
+          ]
+        },
+        {
+          "endpointId": "admin_action_search",
+          "actor": "admin",
+          "overrides": {
+            "query": [
+              {
+                "key": "targetType",
+                "value": "REPORT"
+              },
+              {
+                "key": "targetId",
+                "value": "{{report_id}}"
+              }
+            ]
+          },
+          "assertions": [
+            "contains REPORT_RESOLVED audit"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Content report integration regression and moderation",
+      "description": "A reports B's validfixturepost withUSERbearer. Expected201despitecurrentsourcebugpotential403downstream. IfsuccessadminresolvesHIDE_CONTENT, owner/read/feedmustreflectmoderation; do notconvert403intoacceptedstatus.",
+      "steps": [
+        {
+          "endpointId": "admin_create_report",
+          "actor": "a",
+          "overrides": {
+            "body": {
+              "targetType": "POST",
+              "targetId": "{{post_id}}",
+              "reason": "OTHER",
+              "description": "Integration contentreport {{run_id}}"
+            },
+            "expectedStatuses": [
+              201
+            ]
+          },
+          "assertions": [
+            "201 ordinaryUSERcanreportexistingPOST; potentialbugReportServicecallsADMIN-onlysocialdetail"
+          ]
+        },
+        {
+          "endpointId": "admin_report_detail",
+          "actor": "admin",
+          "assertions": [
+            "targetContent.id post_id; partialData false; unavailableComponents empty"
+          ]
+        },
+        {
+          "endpointId": "admin_report_resolve",
+          "actor": "admin",
+          "overrides": {
+            "body": {
+              "action": "HIDE_CONTENT",
+              "moderationReason": "OTHER",
+              "adminNote": "Integration fixture hidecontent"
+            }
+          },
+          "assertions": [
+            "status RESOLVED; resolution CONTENT_HIDDEN"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dashboard cross-service completeness",
+      "description": "Withallowner serviceshealthy, aggregatequeriesmustnotusepartialfallback. Countersdelays mustaccountfor30s cacheorlocalTTLoverride.",
+      "steps": [
+        {
+          "endpointId": "admin_user_summary",
+          "actor": "admin",
+          "assertions": [
+            "identity totals >=fixture actors"
+          ]
+        },
+        {
+          "endpointId": "admin_dashboard_summary",
+          "actor": "admin",
+          "assertions": [
+            "partialData false; unavailableComponents empty; totalUsers >=fixtureactors"
+          ]
+        },
+        {
+          "endpointId": "admin_dashboard_user_growth",
+          "actor": "admin",
+          "assertions": [
+            "partialData false; seriesarray"
+          ]
+        },
+        {
+          "endpointId": "admin_dashboard_content_growth",
+          "actor": "admin",
+          "assertions": [
+            "partialData false; seriesarray"
+          ]
+        },
+        {
+          "endpointId": "admin_monitoring",
+          "actor": "admin",
+          "assertions": [
+            "services include expectedowners; eachregisteredactiveownerUP; checkedAtvalidtimestamp"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin validation",
+      "description": "Exactnegativevalidation: missingreason,invaliddaterange andselfmoderation.",
+      "steps": [
+        {
+          "endpointId": "admin_user_warn",
+          "actor": "admin",
+          "overrides": {
+            "body": {
+              "reason": "",
+              "message": ""
+            },
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "400 invalidrequest"
+          ]
+        },
+        {
+          "endpointId": "admin_dashboard_user_growth",
+          "actor": "admin",
+          "overrides": {
+            "query": [
+              {
+                "key": "from",
+                "value": "2026-11-12"
+              },
+              {
+                "key": "to",
+                "value": "2026-11-11"
+              },
+              {
+                "key": "granularity",
+                "value": "DAY"
+              }
+            ],
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "400 reversedrange"
+          ]
+        },
+        {
+          "endpointId": "admin_user_ban",
+          "actor": "admin",
+          "overrides": {
+            "path": "/api/admin/users/{{admin_user_id}}/ban",
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "400 selfmoderationdenied"
+          ]
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Inventory source SHA2af12e55ffad68d583db2aea50ad3949fde76035. No API calls or code changes were performed by inventory agent.",
+    "All public admin-service endpoints return ApiResponse on success; errors use ErrorResponse or minimal authfailure JSON. /api/admin/** requiresADMIN; /api/reports/** and /api/moderation/** requireauthenticatedUSER.",
+    "ADMIN bearer comesfromadmin_access_token; provision dedicatedadmin only in isolatedtestdatabase; never modifyexistingprodaccountroles.",
+    "Known integration candidate: ordinaryUSERreportPOST/COMMENT calls ADMIN-onlysocialmoderationdetail via forwardedUSER token and mayfail403. Keep expected201 testasregression ratherthanpermit403.",
+    "Reports targetUSERUUID do not verifyaccount existence duringcreation; existencecheckedlaterbyidentitymoderationflow.",
+    "Duplicate openreport and illegalreportstatetransitions return400, not409. USERmoderationactiondetail forunrelatedactor returns404.",
+    "Only POST/COMMENT contentactions are implemented even thoughReportTargetType alsoacceptsSTORY. STORYtargetreport can becreated butHIDE/REMOVE resolutionreturns400.",
+    "Contentreportresolve callsowner-service thenupdateslocalworkflow; verifybothownerstateandreport/audit, notjuststatuscode.",
+    "Dashboard GET200maycontainpartialData=true; defaultcacheTTL30scanholdolddataordegra dedstate. ConfigureADMIN_DASHBOARD_CACHE_TTL=PT0S inisolatedstackfor deterministiccountertests.",
+    "Kafka notificationpublish waits5seconds; warningscompensateauditonfailedpublish. Pollnotificationservice bytype+targetId+receiver scopedtofixture, withboundedtimeout.",
+    "No admincontrollerendpointdeletesreport/auditrecords. FixturecleanupthroughAPIs cannotremovethese; isolatedDockerDBteardownkeepsproductionunaffected.",
+    "Do notrunban/suspend/removecontent againstsuppliedrealaccounts orrealcontent; onlyUUIDs/IDs capturedfromrun-scopedfixtures."
+  ]
+}

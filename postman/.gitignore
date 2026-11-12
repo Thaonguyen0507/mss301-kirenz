@@ -1,0 +1,16 @@
+node_modules/
+reports/*
+!reports/.gitkeep
+.local/
+*.local.postman_environment.json
+!reports/TEST-RESULTS.md
+!reports/findings.md
+!reports/chat-findings.md
+!reports/social-findings.md
+!reports/summary.json
+!reports/collection-coverage.json
+!reports/newman-report.json
+!reports/newman-junit.xml
+!reports/websocket-report.json
+!reports/event-projection-report.json
+!reports/resilience-report.json

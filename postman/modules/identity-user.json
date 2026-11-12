@@ -1,0 +1,1500 @@
+{
+  "services": [
+    {
+      "name": "identity-service",
+      "baseVariable": "identity_base_url",
+      "httpControllerCount": 4,
+      "endpointCount": 21
+    },
+    {
+      "name": "user-service",
+      "baseVariable": "user_base_url",
+      "httpControllerCount": 4,
+      "endpointCount": 22
+    }
+  ],
+  "endpoints": [
+    {
+      "id": "identity_register",
+      "service": "identity-service",
+      "folder": "Identity / Authentication",
+      "name": "Register disposable actor",
+      "method": "POST",
+      "path": "/api/auth/register",
+      "auth": "none",
+      "expectedStatuses": [
+        201
+      ],
+      "body": {
+        "email": "{{email_a}}",
+        "username": "{{username_a}}",
+        "password": "{{password_a}}",
+        "displayName": "{{display_name_a}}"
+      },
+      "captures": [
+        {
+          "variable": "user_a_id",
+          "path": "data.id"
+        }
+      ],
+      "tags": [
+        "bootstrap",
+        "writes",
+        "sends-email"
+      ],
+      "description": "Register a unique run-scoped email/username. Always creates USER, ACTIVE, emailVerified=false and publishes user-created Kafka event. Attempts OTP email; send failure is caught and otpSent=false still returns 201. Re-registering an existing unverified email deletes/recreates that user; never use an existing real account.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/auth/controller/AuthController.java"
+    },
+    {
+      "id": "identity_login",
+      "service": "identity-service",
+      "folder": "Identity / Authentication",
+      "name": "Login actor A",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "auth": "none",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "email": "{{email_a}}",
+        "password": "{{password_a}}"
+      },
+      "captures": [
+        {
+          "variable": "access_token_a",
+          "path": "data.accessToken"
+        },
+        {
+          "variable": "refresh_token_a",
+          "path": "data.refreshToken"
+        }
+      ],
+      "description": "Returns Bearer access/refresh tokens and expiresIn=900. USER role and UUID are in JWT; obtain canonical ID through GET /api/users/me. Current implementation does not require emailVerified=true.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/auth/controller/AuthController.java"
+    },
+    {
+      "id": "identity_google_login",
+      "service": "identity-service",
+      "folder": "Identity / Authentication",
+      "name": "Google ID-token login",
+      "method": "POST",
+      "path": "/api/auth/google",
+      "auth": "none",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "idToken": "{{google_id_token}}"
+      },
+      "tags": [
+        "manual",
+        "external-provider"
+      ],
+      "description": "Requires a real, unexpired Google ID token accepted by configured OAuth audience. Creates/links account and marks email verified; use a dedicated test Google account.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/auth/controller/AuthController.java"
+    },
+    {
+      "id": "identity_refresh",
+      "service": "identity-service",
+      "folder": "Identity / Authentication",
+      "name": "Refresh tokens",
+      "method": "POST",
+      "path": "/api/auth/refresh",
+      "auth": "none",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "refreshToken": "{{refresh_token_a}}"
+      },
+      "captures": [
+        {
+          "variable": "access_token_a",
+          "path": "data.accessToken"
+        },
+        {
+          "variable": "refresh_token_a",
+          "path": "data.refreshToken"
+        }
+      ],
+      "description": "Refreshes tokens for an allowed account. Invalid token401; banned/deactivated/suspended403. Current service does not explicitly check refresh type claim; security regression should require rejection of an access token.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/auth/controller/AuthController.java"
+    },
+    {
+      "id": "identity_current_profile",
+      "service": "identity-service",
+      "folder": "Identity / Profiles",
+      "name": "Get current profile",
+      "method": "GET",
+      "path": "/api/users/me",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "captures": [
+        {
+          "variable": "user_a_id",
+          "path": "data.id"
+        }
+      ],
+      "description": "ApiResponse.data is UserProfileDTO: id,email,username,displayName,avatarUrl,coverPhotoUrl,bio,birthDate,gender,location,website,role,emailVerified,createdAt,updatedAt.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/user/controller/UserController.java"
+    },
+    {
+      "id": "identity_update_profile",
+      "service": "identity-service",
+      "folder": "Identity / Profiles",
+      "name": "Update own profile",
+      "method": "PATCH",
+      "path": "/api/users/me",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "displayName": "{{profile_display_name}}",
+        "bio": "{{profile_bio}}",
+        "birthDate": "2000-05-07",
+        "gender": "PREFER_NOT_TO_SAY",
+        "location": "Integration fixture",
+        "website": "https://example.test"
+      },
+      "tags": [
+        "writes"
+      ],
+      "description": "Updates provided profile fields; Gender is MALE,FEMALE,OTHER,PREFER_NOT_TO_SAY. Use only disposable actors; preserve/restore before running against reused test accounts.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/user/controller/UserController.java"
+    },
+    {
+      "id": "identity_upload_avatar",
+      "service": "identity-service",
+      "folder": "Identity / Profiles",
+      "name": "Upload avatar",
+      "method": "POST",
+      "path": "/api/users/me/avatar",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "formData": [
+        {
+          "key": "file",
+          "type": "file",
+          "src": "{{image_file}}"
+        }
+      ],
+      "tags": [
+        "manual",
+        "external-provider",
+        "writes"
+      ],
+      "description": "multipart/form-data file field; uploads through Cloudinary then saves avatarUrl. Do not set Content-Type boundary manually. Requires provider credentials and a local image.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/user/controller/UserController.java"
+    },
+    {
+      "id": "identity_upload_cover",
+      "service": "identity-service",
+      "folder": "Identity / Profiles",
+      "name": "Upload cover photo",
+      "method": "POST",
+      "path": "/api/users/me/cover",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "formData": [
+        {
+          "key": "file",
+          "type": "file",
+          "src": "{{image_file}}"
+        }
+      ],
+      "tags": [
+        "manual",
+        "external-provider",
+        "writes"
+      ],
+      "description": "multipart/form-data file field; uploads through Cloudinary then saves coverPhotoUrl. Requires provider credentials and a local image.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/user/controller/UserController.java"
+    },
+    {
+      "id": "identity_internal_search",
+      "service": "identity-service",
+      "folder": "Identity / Internal profiles",
+      "name": "Search profiles (service-to-service)",
+      "method": "GET",
+      "path": "/api/users/internal/search",
+      "auth": "internal",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "q",
+          "value": "{{query}}",
+          "required": true
+        },
+        {
+          "key": "excludeId",
+          "value": "{{user_a_id}}",
+          "required": true
+        },
+        {
+          "key": "limit",
+          "value": "10",
+          "required": false
+        }
+      ],
+      "tags": [
+        "internal",
+        "direct-service"
+      ],
+      "responseType": "envelope-array",
+      "description": "Controller requires q and UUID excludeId; optional limit is clamped1..20 (default10). Service security permits this internal route without bearer; intended Feign consumer user-service. Gateway behavior must be checked independently.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/user/controller/UserController.java"
+    },
+    {
+      "id": "identity_internal_profiles",
+      "service": "identity-service",
+      "folder": "Identity / Internal profiles",
+      "name": "Batch profiles (service-to-service)",
+      "method": "GET",
+      "path": "/api/users/internal/profiles",
+      "auth": "internal",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "ids",
+          "value": "{{user_a_id}},{{user_b_id}}",
+          "required": true
+        }
+      ],
+      "tags": [
+        "internal",
+        "direct-service"
+      ],
+      "responseType": "envelope-array",
+      "description": "Returns ApiResponse<List<UserProfileDTO>> for known UUIDs; missing IDs are omitted. Service security permits route without bearer; intended inter-service enrichment.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/user/controller/UserController.java"
+    },
+    {
+      "id": "identity_internal_birthdays",
+      "service": "identity-service",
+      "folder": "Identity / Internal profiles",
+      "name": "Today's birthdays (service-to-service)",
+      "method": "GET",
+      "path": "/api/users/internal/birthdays",
+      "auth": "internal",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "internal",
+        "direct-service"
+      ],
+      "responseType": "envelope-array",
+      "description": "Uses server LocalDate month/day and returns matching profiles. Direct-service internal endpoint.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/user/controller/UserController.java"
+    },
+    {
+      "id": "identity_profile_by_id",
+      "service": "identity-service",
+      "folder": "Identity / Profiles",
+      "name": "Get profile by ID",
+      "method": "GET",
+      "path": "/api/users/{{target_user_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "description": "Returns UserProfileDTO for target UUID; missing user404. JWT authentication required.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/user/controller/UserController.java"
+    },
+    {
+      "id": "identity_send_otp",
+      "service": "identity-service",
+      "folder": "Identity / Email verification",
+      "name": "Send email OTP",
+      "method": "POST",
+      "path": "/api/verification/send-otp",
+      "auth": "none",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "email": "{{otp_email}}"
+      },
+      "tags": [
+        "manual",
+        "sends-email",
+        "external-provider"
+      ],
+      "description": "Requires existing unverified email. Sends real email; valid200, unknown404, already-verified400, within60s429 (Retry-After:60), provider failure500. Separate from automated disposable-account run.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/verification/controller/VerificationController.java"
+    },
+    {
+      "id": "identity_verify_otp",
+      "service": "identity-service",
+      "folder": "Identity / Email verification",
+      "name": "Verify email OTP",
+      "method": "POST",
+      "path": "/api/verification/verify-otp",
+      "auth": "none",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "email": "{{otp_email}}",
+        "otp": "{{otp_code}}"
+      },
+      "tags": [
+        "manual"
+      ],
+      "description": "OTP must be six decimal digits and currently valid in Redis; sets emailVerified=true and returns data.emailVerifiedAt. Invalid/expired OTP400.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/verification/controller/VerificationController.java"
+    },
+    {
+      "id": "identity_admin_summary",
+      "service": "identity-service",
+      "folder": "Identity / Internal admin",
+      "name": "Admin user summary",
+      "method": "GET",
+      "path": "/api/users/internal/admin/summary",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "internal",
+        "direct-service",
+        "admin"
+      ],
+      "requiredRole": "ADMIN",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/admin/controller/InternalAdminUserController.java"
+    },
+    {
+      "id": "identity_admin_growth",
+      "service": "identity-service",
+      "folder": "Identity / Internal admin",
+      "name": "Admin growth series",
+      "method": "GET",
+      "path": "/api/users/internal/admin/growth",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "from",
+          "value": "{{date_from}}",
+          "required": false
+        },
+        {
+          "key": "to",
+          "value": "{{date_to}}",
+          "required": false
+        },
+        {
+          "key": "granularity",
+          "value": "DAY",
+          "required": false
+        }
+      ],
+      "tags": [
+        "internal",
+        "direct-service",
+        "admin"
+      ],
+      "requiredRole": "ADMIN",
+      "description": "Optional ISO LocalDate from/to and granularity(default DAY); returns list GrowthPointResponse.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/admin/controller/InternalAdminUserController.java"
+    },
+    {
+      "id": "identity_admin_user",
+      "service": "identity-service",
+      "folder": "Identity / Internal admin",
+      "name": "Admin user detail",
+      "method": "GET",
+      "path": "/api/users/internal/admin/{{target_user_id}}",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "internal",
+        "direct-service",
+        "admin"
+      ],
+      "requiredRole": "ADMIN",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/admin/controller/InternalAdminUserController.java"
+    },
+    {
+      "id": "identity_admin_search",
+      "service": "identity-service",
+      "folder": "Identity / Internal admin",
+      "name": "Admin user search",
+      "method": "GET",
+      "path": "/api/users/internal/admin",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "query",
+          "value": "{{query}}",
+          "required": false
+        },
+        {
+          "key": "status",
+          "value": "ACTIVE",
+          "required": false
+        },
+        {
+          "key": "emailVerified",
+          "value": "false",
+          "required": false
+        },
+        {
+          "key": "page",
+          "value": "0",
+          "required": false
+        },
+        {
+          "key": "size",
+          "value": "20",
+          "required": false
+        }
+      ],
+      "tags": [
+        "internal",
+        "direct-service",
+        "admin"
+      ],
+      "requiredRole": "ADMIN",
+      "description": "Status enum ACTIVE,SUSPENDED,BANNED,DEACTIVATED. ApiResponse.data is paginated AdminUserResponse.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/admin/controller/InternalAdminUserController.java"
+    },
+    {
+      "id": "identity_admin_ban",
+      "service": "identity-service",
+      "folder": "Identity / Internal admin",
+      "name": "Ban disposable user",
+      "method": "POST",
+      "path": "/api/users/internal/admin/{{target_user_id}}/ban",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "internal",
+        "direct-service",
+        "admin",
+        "writes",
+        "destructive"
+      ],
+      "requiredRole": "ADMIN",
+      "description": "Only run against a disposable actor UUID. Changes account status, so login/refresh must reject it; other services may retain already-issued JWT until expiry.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/admin/controller/InternalAdminUserController.java"
+    },
+    {
+      "id": "identity_admin_unban",
+      "service": "identity-service",
+      "folder": "Identity / Internal admin",
+      "name": "Unban disposable user",
+      "method": "POST",
+      "path": "/api/users/internal/admin/{{target_user_id}}/unban",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "internal",
+        "direct-service",
+        "admin",
+        "writes"
+      ],
+      "requiredRole": "ADMIN",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/admin/controller/InternalAdminUserController.java"
+    },
+    {
+      "id": "identity_admin_suspend",
+      "service": "identity-service",
+      "folder": "Identity / Internal admin",
+      "name": "Suspend disposable user",
+      "method": "POST",
+      "path": "/api/users/internal/admin/{{target_user_id}}/suspend",
+      "auth": "admin",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "suspendedUntil": "{{suspended_until}}",
+        "moderationReason": "Integration fixture suspension"
+      },
+      "tags": [
+        "internal",
+        "direct-service",
+        "admin",
+        "writes",
+        "destructive"
+      ],
+      "requiredRole": "ADMIN",
+      "description": "suspendedUntil must be a future ISOInstant; moderationReason nonblank max255. Use disposable actor and restore through admin workflow.",
+      "source": "identity-service/src/main/java/com/kirenz/identity_service/admin/controller/InternalAdminUserController.java"
+    },
+    {
+      "id": "user_send_friend_request",
+      "service": "user-service",
+      "folder": "Users / Friends",
+      "name": "Send friend request",
+      "method": "POST",
+      "path": "/api/friends/requests",
+      "auth": "user",
+      "expectedStatuses": [
+        201
+      ],
+      "body": {
+        "receiverId": "{{user_b_id}}"
+      },
+      "captures": [
+        {
+          "variable": "friend_request_id",
+          "path": "data.id"
+        }
+      ],
+      "tags": [
+        "writes",
+        "kafka",
+        "cross-service"
+      ],
+      "description": "Publishes FRIEND_REQUEST notification-events. Self400; blocked403; already friends/duplicate/crossing pending409. Pending response has id,requesterId,receiverId,status=PENDING.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/friend/FriendController.java"
+    },
+    {
+      "id": "user_incoming_requests",
+      "service": "user-service",
+      "folder": "Users / Friends",
+      "name": "Incoming friend requests",
+      "method": "GET",
+      "path": "/api/friends/requests/incoming",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "responseType": "envelope-array",
+      "description": "Enriches requester profiles through identity-service Feign; assert username/displayName to detect swallowed dependency errors.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/friend/FriendController.java"
+    },
+    {
+      "id": "user_outgoing_requests",
+      "service": "user-service",
+      "folder": "Users / Friends",
+      "name": "Outgoing friend requests",
+      "method": "GET",
+      "path": "/api/friends/requests/outgoing",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "responseType": "envelope-array",
+      "description": "Enriches receiver profiles through identity-service Feign; assert username/displayName, not only200.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/friend/FriendController.java"
+    },
+    {
+      "id": "user_accept_friend_request",
+      "service": "user-service",
+      "folder": "Users / Friends",
+      "name": "Accept friend request",
+      "method": "POST",
+      "path": "/api/friends/requests/{{friend_request_id}}/accept",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "writes",
+        "cross-service",
+        "kafka"
+      ],
+      "captures": [
+        {
+          "variable": "friendship_id",
+          "path": "data.friendshipId"
+        }
+      ],
+      "description": "Only receiver of a pending request may accept; wrong actor/notpending404, blocked403. Creates friendship, enriches friend profile through identity Feign and publishes FRIEND_ACCEPT.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/friend/FriendController.java"
+    },
+    {
+      "id": "user_decline_friend_request",
+      "service": "user-service",
+      "folder": "Users / Friends",
+      "name": "Decline friend request",
+      "method": "POST",
+      "path": "/api/friends/requests/{{friend_request_id}}/decline",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "writes"
+      ],
+      "description": "Only receiver of pending request; returns status DECLINED; wrong actor/notpending404.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/friend/FriendController.java"
+    },
+    {
+      "id": "user_cancel_friend_request",
+      "service": "user-service",
+      "folder": "Users / Friends",
+      "name": "Cancel outgoing friend request",
+      "method": "DELETE",
+      "path": "/api/friends/requests/{{friend_request_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "writes"
+      ],
+      "description": "Only requester of pending request; returns status CANCELLED; wrong actor/notpending404.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/friend/FriendController.java"
+    },
+    {
+      "id": "user_list_friends",
+      "service": "user-service",
+      "folder": "Users / Friends",
+      "name": "List own friends",
+      "method": "GET",
+      "path": "/api/friends",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "responseType": "envelope-array",
+      "description": "FriendResponse includes friendshipId,friendId,username,displayName,avatarUrl,bio,createdAt. Enriched through identity-service; fallback Kirenz User/null can hide Feign outage.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/friend/FriendController.java"
+    },
+    {
+      "id": "user_list_target_friends",
+      "service": "user-service",
+      "folder": "Users / Friends",
+      "name": "List target user's friends",
+      "method": "GET",
+      "path": "/api/friends/user/{{target_user_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "responseType": "envelope-array",
+      "description": "Returns target user's friendships with identity profile enrichment.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/friend/FriendController.java"
+    },
+    {
+      "id": "user_friend_suggestions",
+      "service": "user-service",
+      "folder": "Users / Friends",
+      "name": "Friend suggestions",
+      "method": "GET",
+      "path": "/api/friends/suggestions",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "limit",
+          "value": "10",
+          "required": false
+        }
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "responseType": "envelope-array",
+      "description": "Ranks friends-of-friends by mutualFriendCount, excludes self/existing friends/outgoing blocks/pending requests; controller caps limit20. Needs three-actor graph for nonempty assertion.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/friend/FriendController.java"
+    },
+    {
+      "id": "user_unfriend",
+      "service": "user-service",
+      "folder": "Users / Friends",
+      "name": "Remove friendship",
+      "method": "DELETE",
+      "path": "/api/friends/{{user_b_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "writes"
+      ],
+      "description": "Deletes only actor-pair friendship. Self400; no friendship404; success data=null.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/friend/FriendController.java"
+    },
+    {
+      "id": "user_friend_status",
+      "service": "user-service",
+      "folder": "Users / Friends",
+      "name": "Relationship status",
+      "method": "GET",
+      "path": "/api/friends/status/{{target_user_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "description": "data.status is SELF,BLOCKED,BLOCKED_BY_TARGET,FRIENDS,OUTGOING_REQUEST,INCOMING_REQUEST,NONE.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/friend/FriendController.java"
+    },
+    {
+      "id": "user_block",
+      "service": "user-service",
+      "folder": "Users / Blocks",
+      "name": "Block disposable user",
+      "method": "POST",
+      "path": "/api/blocks/{{user_b_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        201
+      ],
+      "tags": [
+        "writes"
+      ],
+      "description": "Deletes existing friendship and closes pending requests between pair. Self400; already blocked409.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/block/BlockController.java"
+    },
+    {
+      "id": "user_unblock",
+      "service": "user-service",
+      "folder": "Users / Blocks",
+      "name": "Unblock disposable user",
+      "method": "DELETE",
+      "path": "/api/blocks/{{user_b_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "writes"
+      ],
+      "description": "Unknown block404; success data=null. Unblocking does not restore friendship.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/block/BlockController.java"
+    },
+    {
+      "id": "user_list_blocks",
+      "service": "user-service",
+      "folder": "Users / Blocks",
+      "name": "List blocked users",
+      "method": "GET",
+      "path": "/api/blocks",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseType": "envelope-array",
+      "source": "user-service/src/main/java/com/kirenz/user_service/block/BlockController.java"
+    },
+    {
+      "id": "user_block_status",
+      "service": "user-service",
+      "folder": "Users / Blocks",
+      "name": "Block status",
+      "method": "GET",
+      "path": "/api/blocks/status/{{target_user_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "description": "data.viewerId,targetUserId,blockedByViewer,blockedViewer. Self returns both booleans=false.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/block/BlockController.java"
+    },
+    {
+      "id": "user_privacy_me",
+      "service": "user-service",
+      "folder": "Users / Privacy",
+      "name": "Get own privacy settings",
+      "method": "GET",
+      "path": "/api/privacy/me",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "description": "Creates defaults if absent: PUBLIC/PUBLIC,allowDirectMessages=true,showOnlineStatus=true. user-created Kafka listener also initializes defaults.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/privacy/controller/PrivacySettingController.java"
+    },
+    {
+      "id": "user_privacy_target",
+      "service": "user-service",
+      "folder": "Users / Privacy",
+      "name": "Get target privacy settings",
+      "method": "GET",
+      "path": "/api/privacy/user/{{target_user_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "description": "Returns target's PrivacySettingResponse; missing settings are created with defaults.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/privacy/controller/PrivacySettingController.java"
+    },
+    {
+      "id": "user_update_privacy",
+      "service": "user-service",
+      "folder": "Users / Privacy",
+      "name": "Update own privacy settings",
+      "method": "PUT",
+      "path": "/api/privacy/me",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "profileVisibility": "PUBLIC",
+        "postVisibility": "PUBLIC",
+        "allowDirectMessages": true,
+        "showOnlineStatus": true
+      },
+      "tags": [
+        "writes"
+      ],
+      "description": "Visibility enum PUBLIC,FRIENDS_ONLY,PRIVATE. Non-null fields updated. allowDirectMessages=false restricts DMs to friends; it does not disable DMs from friends.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/privacy/controller/PrivacySettingController.java"
+    },
+    {
+      "id": "user_can_message",
+      "service": "user-service",
+      "folder": "Users / Privacy",
+      "name": "Can current actor message receiver",
+      "method": "GET",
+      "path": "/api/privacy/can-message/{{user_b_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "description": "ApiResponse.data is boolean; false if receiver disallows anyone and pair are not friends. Does not itself apply block check; chat-service separately applies relationship checks.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/privacy/controller/PrivacySettingController.java"
+    },
+    {
+      "id": "user_internal_check_dm",
+      "service": "user-service",
+      "folder": "Users / Internal privacy",
+      "name": "DM permission (service-to-service)",
+      "method": "GET",
+      "path": "/api/privacy/internal/check-dm",
+      "auth": "internal",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "senderId",
+          "value": "{{user_a_id}}",
+          "required": true
+        },
+        {
+          "key": "receiverId",
+          "value": "{{user_b_id}}",
+          "required": true
+        }
+      ],
+      "responseType": "raw-boolean",
+      "tags": [
+        "internal",
+        "direct-service",
+        "cross-service"
+      ],
+      "description": "Raw JSON true/false, NOT ApiResponse envelope. Service security permitAll; consumed by chat-service Feign. Never apply generic envelope assertion to this route.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/privacy/controller/PrivacySettingController.java"
+    },
+    {
+      "id": "user_search",
+      "service": "user-service",
+      "folder": "Users / Search and mutual friends",
+      "name": "Search users",
+      "method": "GET",
+      "path": "/api/users/search",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "q",
+          "value": "{{query}}",
+          "required": true
+        },
+        {
+          "key": "limit",
+          "value": "10",
+          "required": false
+        }
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "responseType": "envelope-array",
+      "description": "User-service calls identity internal/search and enriches relationshipStatus. Assert desired fixture id,username,displayName plus nonself identity.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/user/UserRelationshipController.java"
+    },
+    {
+      "id": "user_mutual_friends",
+      "service": "user-service",
+      "folder": "Users / Search and mutual friends",
+      "name": "Get mutual friends",
+      "method": "GET",
+      "path": "/api/users/{{target_user_id}}/mutual-friends",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "tags": [
+        "cross-service"
+      ],
+      "responseType": "envelope-array",
+      "description": "Self400; blockedpair403. Intersects friendships then gets profiles via identity-service. Requires third fixture actor to assert common friend.",
+      "source": "user-service/src/main/java/com/kirenz/user_service/user/UserRelationshipController.java"
+    }
+  ],
+  "bootstrap": {
+    "mode": "disposable-registration",
+    "canLoginWithoutOtp": true,
+    "reason": "AuthService.login checks credentials and account status only; User.isEnabled checks status != DEACTIVATED. emailVerified is not an authentication gate.",
+    "actors": [
+      "a",
+      "b",
+      "outsider"
+    ],
+    "useUniqueRunScopedEmails": true,
+    "sendEmailSideEffect": true,
+    "registrationEmailFailureNonfatal": true,
+    "cleanup": "No public account-deletion/logout endpoints. End-to-end suites may clean friendship,block,posts,conversation artifacts they created; disposable identities remain without a separate owner-managed DB teardown.",
+    "admin": "ADMIN role cannot be selected during registration. Use a separately provisioned dedicated admin test account; keep moderation suite opt-in.",
+    "google": "Requires a real Google ID token; manual/opt-in provider flow.",
+    "otp": "Separate manual/opt-in mailbox flow; requires existing unverified actor, six-digit code, Redis and email provider; resend cooldown60s."
+  },
+  "flows": [
+    {
+      "name": "Register/login/profile across gateway",
+      "description": "Bootstrap unique A,B,outsider; register creates identities then login and me resolves IDs without reading token contents.",
+      "steps": [
+        {
+          "endpointId": "identity_register",
+          "actor": "a",
+          "assertions": [
+            "201; data.id UUID; data.otpSent boolean"
+          ]
+        },
+        {
+          "endpointId": "identity_login",
+          "actor": "a",
+          "assertions": [
+            "200; nonempty data.accessToken and refreshToken; tokenType Bearer"
+          ]
+        },
+        {
+          "endpointId": "identity_current_profile",
+          "actor": "a",
+          "assertions": [
+            "data.id equals registration id; role USER; email equals fixture email"
+          ]
+        },
+        {
+          "endpointId": "user_privacy_me",
+          "actor": "a",
+          "assertions": [
+            "data.userId equals identity id; defaults true/PUBLIC. HTTP get creates missing defaults, so this alone does not prove Kafka consumption."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Identity profile enrichment through user-service Feign",
+      "description": "Change disposable actor A displayName/bio, then search and friend-list views through user-service must show the current identity values, not fallback fields.",
+      "steps": [
+        {
+          "endpointId": "identity_update_profile",
+          "actor": "a",
+          "assertions": [
+            "data.displayName equals run-scoped fixture name"
+          ]
+        },
+        {
+          "endpointId": "user_search",
+          "actor": "b",
+          "overrides": {
+            "query": [
+              {
+                "key": "q",
+                "value": "{{username_a}}"
+              }
+            ]
+          },
+          "assertions": [
+            "data contains user_a_id; username/displayName equal current identity profile"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Friend request lifecycle and notification fan-out",
+      "description": "A->B pending, verify incoming/outgoing profile enrichment, enforce receiver-only accept, then friends/status both directions; poll notification service by type/targetId rather than assume synchronous delivery.",
+      "steps": [
+        {
+          "endpointId": "user_send_friend_request",
+          "actor": "a",
+          "assertions": [
+            "201; requesterId=A; receiverId=B; status PENDING; capture request ID"
+          ]
+        },
+        {
+          "endpointId": "user_incoming_requests",
+          "actor": "b",
+          "assertions": [
+            "contains request ID with requester profile matching identity A"
+          ]
+        },
+        {
+          "endpointId": "user_outgoing_requests",
+          "actor": "a",
+          "assertions": [
+            "contains request ID with receiver profile matching identity B"
+          ]
+        },
+        {
+          "endpointId": "user_accept_friend_request",
+          "actor": "outsider",
+          "overrides": {
+            "expectedStatuses": [
+              404
+            ]
+          },
+          "assertions": [
+            "404; outsider cannot accept another actor's pending request"
+          ]
+        },
+        {
+          "endpointId": "user_accept_friend_request",
+          "actor": "b",
+          "assertions": [
+            "200; data.friendId=A; enriched fields match identity A"
+          ]
+        },
+        {
+          "endpointId": "user_list_friends",
+          "actor": "a",
+          "assertions": [
+            "contains B; enriched username/displayName match identity B"
+          ]
+        },
+        {
+          "endpointId": "user_friend_status",
+          "actor": "b",
+          "overrides": {
+            "path": "/api/friends/status/{{user_a_id}}"
+          },
+          "assertions": [
+            "data.status FRIENDS"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Privacy restriction propagates into chat authorization",
+      "description": "For nonfriends, B disallows anyone DMs; A permission returns false and chat direct-conversation creation must be403. Then establish friendship and permission must become true. Use fresh pair without pre-existing conversation to avoid existing-conversation semantics.",
+      "steps": [
+        {
+          "endpointId": "user_update_privacy",
+          "actor": "b",
+          "overrides": {
+            "body": {
+              "allowDirectMessages": false
+            }
+          },
+          "assertions": [
+            "data.allowDirectMessages false"
+          ]
+        },
+        {
+          "endpointId": "user_can_message",
+          "actor": "a",
+          "assertions": [
+            "data false"
+          ]
+        },
+        {
+          "endpointId": "user_internal_check_dm",
+          "actor": "a",
+          "assertions": [
+            "raw false (direct-service opt-in request)"
+          ]
+        },
+        {
+          "endpointId": "user_send_friend_request",
+          "actor": "a"
+        },
+        {
+          "endpointId": "user_accept_friend_request",
+          "actor": "b"
+        },
+        {
+          "endpointId": "user_can_message",
+          "actor": "a",
+          "assertions": [
+            "data true because friends override allowDirectMessages=false"
+          ]
+        },
+        {
+          "endpointId": "user_update_privacy",
+          "actor": "b",
+          "overrides": {
+            "body": {
+              "allowDirectMessages": true
+            }
+          },
+          "assertions": [
+            "restore disposable actor privacy"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Block removes friendship and denies relationship operations",
+      "description": "Start with A/B friends; A blocks B, lists and statuses reflect both directions and new friend request is forbidden; unblock does not recreate friendship.",
+      "steps": [
+        {
+          "endpointId": "user_block",
+          "actor": "a",
+          "assertions": [
+            "201; data.blockedUserId=B"
+          ]
+        },
+        {
+          "endpointId": "user_list_friends",
+          "actor": "a",
+          "assertions": [
+            "does not contain B"
+          ]
+        },
+        {
+          "endpointId": "user_friend_status",
+          "actor": "a",
+          "overrides": {
+            "path": "/api/friends/status/{{user_b_id}}"
+          },
+          "assertions": [
+            "data.status BLOCKED"
+          ]
+        },
+        {
+          "endpointId": "user_block_status",
+          "actor": "b",
+          "overrides": {
+            "path": "/api/blocks/status/{{user_a_id}}"
+          },
+          "assertions": [
+            "data.blockedViewer true"
+          ]
+        },
+        {
+          "endpointId": "user_send_friend_request",
+          "actor": "b",
+          "overrides": {
+            "body": {
+              "receiverId": "{{user_a_id}}"
+            },
+            "expectedStatuses": [
+              403
+            ]
+          },
+          "assertions": [
+            "403"
+          ]
+        },
+        {
+          "endpointId": "user_unblock",
+          "actor": "a"
+        },
+        {
+          "endpointId": "user_friend_status",
+          "actor": "a",
+          "overrides": {
+            "path": "/api/friends/status/{{user_b_id}}"
+          },
+          "assertions": [
+            "data.status NONE"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Friend request cancel and decline",
+      "description": "Use separate sequential pending requests; cancel only by sender, decline only by receiver, terminal requests disappear from pending lists.",
+      "steps": [
+        {
+          "endpointId": "user_send_friend_request",
+          "actor": "a"
+        },
+        {
+          "endpointId": "user_cancel_friend_request",
+          "actor": "b",
+          "overrides": {
+            "expectedStatuses": [
+              404
+            ]
+          },
+          "assertions": [
+            "404 because actor is receiver"
+          ]
+        },
+        {
+          "endpointId": "user_cancel_friend_request",
+          "actor": "a",
+          "assertions": [
+            "data.status CANCELLED"
+          ]
+        },
+        {
+          "endpointId": "user_send_friend_request",
+          "actor": "a"
+        },
+        {
+          "endpointId": "user_decline_friend_request",
+          "actor": "b",
+          "assertions": [
+            "data.status DECLINED"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Three-actor mutual friend and suggestion enrichment",
+      "description": "Create A-C and B-C friendships; A/B remain nonfriends. Mutual friends A/B must include C and A suggestions must include B with mutualFriendCount>=1. Validate identity-derived profile fields.",
+      "steps": [
+        {
+          "endpointId": "user_send_friend_request",
+          "actor": "a",
+          "overrides": {
+            "body": {
+              "receiverId": "{{user_outsider_id}}"
+            }
+          }
+        },
+        {
+          "endpointId": "user_accept_friend_request",
+          "actor": "outsider"
+        },
+        {
+          "endpointId": "user_send_friend_request",
+          "actor": "b",
+          "overrides": {
+            "body": {
+              "receiverId": "{{user_outsider_id}}"
+            }
+          }
+        },
+        {
+          "endpointId": "user_accept_friend_request",
+          "actor": "outsider"
+        },
+        {
+          "endpointId": "user_mutual_friends",
+          "actor": "a",
+          "overrides": {
+            "path": "/api/users/{{user_b_id}}/mutual-friends"
+          },
+          "assertions": [
+            "data contains user_outsider_id and correct identity profile"
+          ]
+        },
+        {
+          "endpointId": "user_friend_suggestions",
+          "actor": "a",
+          "assertions": [
+            "data contains B with mutualFriendCount>=1 and correct profile"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Validation and duplicate guards",
+      "description": "Exact negative outcomes from application exceptions.",
+      "steps": [
+        {
+          "endpointId": "user_send_friend_request",
+          "actor": "a",
+          "overrides": {
+            "body": {
+              "receiverId": "{{user_a_id}}"
+            },
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "400 self-request"
+          ]
+        },
+        {
+          "endpointId": "user_block",
+          "actor": "a",
+          "overrides": {
+            "path": "/api/blocks/{{user_a_id}}",
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "400 self-block"
+          ]
+        },
+        {
+          "endpointId": "user_mutual_friends",
+          "actor": "a",
+          "overrides": {
+            "path": "/api/users/{{user_a_id}}/mutual-friends",
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "400 self-mutual-friends"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Authentication and internal admin role denial",
+      "description": "No bearer on public protected profiles gives401. A normal USER must not reach internal admin endpoints even though other internal profiles routes are permitAll.",
+      "steps": [
+        {
+          "endpointId": "identity_current_profile",
+          "actor": "outsider",
+          "overrides": {
+            "auth": "none",
+            "expectedStatuses": [
+              401
+            ]
+          },
+          "assertions": [
+            "401"
+          ]
+        },
+        {
+          "endpointId": "identity_admin_summary",
+          "actor": "a",
+          "overrides": {
+            "expectedStatuses": [
+              403
+            ]
+          },
+          "assertions": [
+            "403 with USER token"
+          ]
+        },
+        {
+          "endpointId": "identity_login",
+          "actor": "a",
+          "overrides": {
+            "body": {
+              "email": "{{email_a}}",
+              "password": "WrongPassword_123!"
+            },
+            "expectedStatuses": [
+              401
+            ]
+          },
+          "assertions": [
+            "401"
+          ]
+        },
+        {
+          "endpointId": "identity_refresh",
+          "actor": "a",
+          "overrides": {
+            "body": {
+              "refreshToken": "invalid-not-a-jwt"
+            },
+            "expectedStatuses": [
+              401
+            ]
+          },
+          "assertions": [
+            "401"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Account moderation propagation (opt-in ADMIN)",
+      "description": "Use isolated disposable target, ADMIN token, and restore status. Login and refresh enforce state from identity DB; cross-service JWT revocation behavior requires separate assertions.",
+      "steps": [
+        {
+          "endpointId": "identity_admin_ban",
+          "actor": "admin"
+        },
+        {
+          "endpointId": "identity_login",
+          "actor": "a",
+          "overrides": {
+            "expectedStatuses": [
+              403
+            ]
+          },
+          "assertions": [
+            "403 BANNED"
+          ]
+        },
+        {
+          "endpointId": "identity_refresh",
+          "actor": "a",
+          "overrides": {
+            "expectedStatuses": [
+              403
+            ]
+          },
+          "assertions": [
+            "403 BANNED"
+          ]
+        },
+        {
+          "endpointId": "identity_admin_unban",
+          "actor": "admin"
+        },
+        {
+          "endpointId": "identity_login",
+          "actor": "a",
+          "assertions": [
+            "200 after restore"
+          ]
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Inventory is source-derived for SHA2af12e55ffad68d583db2aea50ad3949fde76035; no endpoints were called by this agent.",
+    "No logout/password-reset/delete-account controller route exists in these two modules; do not invent them.",
+    "All success responses use {success,message,data} except GET /api/privacy/internal/check-dm returning bare JSON boolean.",
+    "User-service error bodies are ErrorResponse {success:false,message,...}; identity errors usually ApiResponse.error wrapping ErrorResponse in data. Missing/invalid bearer returns minimal {success:false,message:'Unauthorized'}.",
+    "Internal profile and privacy endpoints are permitAll at owning service security, whereas /api/users/internal/admin/** requires ADMIN. Verify gateway blocks internal access before counting it as secure.",
+    "Frontend and service auth currently allow unverified-email account login; OTP verification must not be represented as required bootstrap behavior unless code is changed.",
+    "Friend-service profile enrichment swallows Feign errors and may return username:null/displayName:'Kirenz User'; assert values to detect cross-service failure.",
+    "Privacy permission endpoint does not evaluate block repository; chat-service must apply separate block/relationship checks.",
+    "Registration user-created producer catches Kafka send exceptions and is not transactionally guaranteed. GET privacy/me creates defaults synchronously, so a200 here cannot prove asynchronous user-created delivery; use Kafka/DB fixture observation or downstream birthday scheduling verification.",
+    "Refresh endpoint lacks explicit token-type validation; a negative security test using accessToken as refreshToken should flag acceptance rather than treating it as a supported contract.",
+    "Fresh run-scoped fixtures prevent duplicate request409 and avoid modifying real friendships/privacy or re-registering a real unverified account. No actual credentials or environment secrets are included."
+  ]
+}

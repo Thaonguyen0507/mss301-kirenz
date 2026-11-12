@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-11-12T14:37:26.801Z",
+  "sourceRepository": "Thaonguyen0507/mss301-kirenz",
+  "sourceTree": "5e439abc2ded3f0efdefbce0941f6ce07dd0bbcf",
+  "sourceCommit": "2af12e55ffad68d583db2aea50ad3949fde76035",
+  "target": "Docker project kirenz-integration / http://localhost:18080",
+  "collectionValidation": "passed",
+  "apiRequests": 125,
+  "suites": [
+    {
+      "name": "HTTP integration / cross-service",
+      "requests": 122,
+      "total": 321,
+      "passed": 315,
+      "failed": 6,
+      "skipped": 0,
+      "report": "newman-report.json"
+    },
+    {
+      "name": "STOMP/WebSocket",
+      "total": 13,
+      "passed": 11,
+      "failed": 2,
+      "skipped": 0,
+      "report": "websocket-report.json"
+    },
+    {
+      "name": "Identity → Kafka → User projection",
+      "total": 4,
+      "passed": 3,
+      "failed": 1,
+      "skipped": 0,
+      "report": "event-projection-report.json"
+    },
+    {
+      "name": "Dependency failure and recovery",
+      "total": 7,
+      "passed": 7,
+      "failed": 0,
+      "stoppedServiceRestored": true,
+      "report": "resilience-report.json"
+    }
+  ],
+  "status": "failed",
+  "limits": [
+    "HTTP catalogue coverage does not mean every provider/internal request was executed.",
+    "Brevo email delivery uses a local HTTP stub.",
+    "LiveKit orchestration and provider-unavailable failure are tested; no media or real Cloud token success is claimed.",
+    "The application source was not modified to hide failing assertions.",
+    "Tokens/passwords are kept only in ignored .local runtime files."
+  ]
+}

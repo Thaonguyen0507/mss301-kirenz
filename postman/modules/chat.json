@@ -1,0 +1,1139 @@
+{
+  "services": [
+    "chat-service"
+  ],
+  "sourceCommit": "2af12e55ffad68d583db2aea50ad3949fde76035",
+  "endpointCount": 22,
+  "endpoints": [
+    {
+      "id": "chat_conversation_create",
+      "service": "chat-service",
+      "folder": "Chat / Conversations",
+      "name": "Create group conversation",
+      "method": "POST",
+      "path": "/api/conversations",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "body": {
+        "type": "GROUP",
+        "name": "Postman group {{run_id}}",
+        "participantIds": [
+          "{{user_b_id}}",
+          "{{user_outsider_id}}"
+        ]
+      },
+      "captures": [
+        {
+          "variable": "group_conversation_id",
+          "path": "data.id"
+        }
+      ],
+      "description": "GROUP requires nonblank name and at least three distinct participants including current user. DIRECT requires exactly two. Creator is automatically included; GROUP creator is initial admin. Calls User DM-permission endpoint for every invitee, then Identity profiles. DIRECT creation is idempotent.",
+      "source": "chat-service/src/main/java/com/example/chat_service/conversation/controller/ConversationController.java",
+      "constraints": {
+        "type": [
+          "DIRECT",
+          "GROUP"
+        ],
+        "participantIds": "nonempty UUID array",
+        "groupMinimumDistinctParticipants": 3
+      },
+      "negativeCases": [
+        {
+          "body": {
+            "type": "GROUP",
+            "name": "",
+            "participantIds": [
+              "{{user_b_id}}",
+              "{{user_outsider_id}}"
+            ]
+          },
+          "status": 400
+        },
+        {
+          "body": {
+            "type": "GROUP",
+            "name": "Too small",
+            "participantIds": [
+              "{{user_b_id}}"
+            ]
+          },
+          "status": 400
+        },
+        {
+          "body": {
+            "type": "DIRECT",
+            "participantIds": [
+              "{{user_b_id}}",
+              "{{user_outsider_id}}"
+            ]
+          },
+          "status": 400
+        }
+      ],
+      "tags": [
+        "cross-service",
+        "mutating"
+      ]
+    },
+    {
+      "id": "chat_conversation_direct",
+      "service": "chat-service",
+      "folder": "Chat / Conversations",
+      "name": "Get or create direct conversation",
+      "method": "POST",
+      "path": "/api/conversations/direct/{{user_b_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "captures": [
+        {
+          "variable": "conversation_id",
+          "path": "data.id"
+        }
+      ],
+      "description": "Idempotently creates/returns ACTIVE DIRECT conversation. User-service check-dm must permit sender/receiver. Identity profile lookup enriches participants but falls back to Unknown profiles on dependency failure.",
+      "source": "chat-service/src/main/java/com/example/chat_service/conversation/controller/ConversationController.java",
+      "negativeCases": [
+        {
+          "description": "Recipient privacy disallows nonfriend DM",
+          "status": 403
+        }
+      ],
+      "tags": [
+        "cross-service",
+        "mutating"
+      ]
+    },
+    {
+      "id": "chat_conversation_list",
+      "service": "chat-service",
+      "folder": "Chat / Conversations",
+      "name": "List current user's active conversations",
+      "method": "GET",
+      "path": "/api/conversations",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "description": "Returns only current user's ACTIVE conversations ordered by updatedAt descending, enriched from Identity and unreadCount from chat MongoDB.",
+      "source": "chat-service/src/main/java/com/example/chat_service/conversation/controller/ConversationController.java",
+      "tags": [
+        "cross-service"
+      ]
+    },
+    {
+      "id": "chat_conversation_get",
+      "service": "chat-service",
+      "folder": "Chat / Conversations",
+      "name": "Get direct conversation details",
+      "method": "GET",
+      "path": "/api/conversations/{{conversation_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "description": "Membership required. Unknown/deleted conversation404, authenticated outsider400 in current implementation (not403).",
+      "source": "chat-service/src/main/java/com/example/chat_service/conversation/controller/ConversationController.java",
+      "negativeCases": [
+        {
+          "actor": "outsider",
+          "status": 400
+        },
+        {
+          "path": "/api/conversations/not-existing-{{run_id}}",
+          "status": 404
+        }
+      ],
+      "tags": [
+        "cross-service"
+      ]
+    },
+    {
+      "id": "chat_conversation_rename",
+      "service": "chat-service",
+      "folder": "Chat / Conversations",
+      "name": "Rename group conversation",
+      "method": "PATCH",
+      "path": "/api/conversations/{{group_conversation_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "body": {
+        "name": "Renamed group {{run_id}}"
+      },
+      "description": "Requires GROUP and current group admin. Name is trimmed and cannot be blank; direct-chat/nonadmin/nonparticipant request400.",
+      "source": "chat-service/src/main/java/com/example/chat_service/conversation/controller/ConversationController.java",
+      "negativeCases": [
+        {
+          "actor": "b",
+          "description": "Before B is promoted",
+          "status": 400
+        },
+        {
+          "body": {
+            "name": ""
+          },
+          "status": 400
+        }
+      ],
+      "tags": [
+        "mutating"
+      ]
+    },
+    {
+      "id": "chat_conversation_delete",
+      "service": "chat-service",
+      "folder": "Chat / Conversations",
+      "name": "Delete group conversation",
+      "method": "DELETE",
+      "path": "/api/conversations/{{group_conversation_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "description": "Admin-only GROUP soft delete; status becomes DELETED, HTTP200/data:null. Direct-chat/nonadmin400. Future details404 and removed from active lists.",
+      "source": "chat-service/src/main/java/com/example/chat_service/conversation/controller/ConversationController.java",
+      "tags": [
+        "mutating",
+        "cleanup"
+      ]
+    },
+    {
+      "id": "chat_conversation_add_participant",
+      "service": "chat-service",
+      "folder": "Chat / Conversations",
+      "name": "Add group participant",
+      "method": "POST",
+      "path": "/api/conversations/{{group_conversation_id}}/participants",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "query": [
+        {
+          "key": "userId",
+          "value": "{{user_outsider_id}}",
+          "required": true
+        }
+      ],
+      "description": "Requires group admin; invitee must pass User-service DM privacy check. Already-present participant is idempotent. In automated lifecycle remove outsider first then add back so three fixture accounts suffice.",
+      "source": "chat-service/src/main/java/com/example/chat_service/conversation/controller/ConversationController.java",
+      "tags": [
+        "cross-service",
+        "mutating"
+      ]
+    },
+    {
+      "id": "chat_conversation_remove_participant",
+      "service": "chat-service",
+      "folder": "Chat / Conversations",
+      "name": "Remove group participant",
+      "method": "DELETE",
+      "path": "/api/conversations/{{group_conversation_id}}/participants/{{user_outsider_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "description": "Requires group admin. Removing self400 (use leave endpoint); missing participant is idempotent. If final admin leaves, first remaining participant is promoted.",
+      "source": "chat-service/src/main/java/com/example/chat_service/conversation/controller/ConversationController.java",
+      "tags": [
+        "mutating"
+      ]
+    },
+    {
+      "id": "chat_conversation_leave",
+      "service": "chat-service",
+      "folder": "Chat / Conversations",
+      "name": "Leave group conversation",
+      "method": "POST",
+      "path": "/api/conversations/{{group_conversation_id}}/leave",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "description": "Any group participant may leave; response200/data:null. Last participant leaving soft-deletes group. Otherwise creates SYSTEM message; remaining first participant promoted when no admins remain.",
+      "source": "chat-service/src/main/java/com/example/chat_service/conversation/controller/ConversationController.java",
+      "tags": [
+        "mutating"
+      ]
+    },
+    {
+      "id": "chat_conversation_promote",
+      "service": "chat-service",
+      "folder": "Chat / Conversations",
+      "name": "Promote group participant to admin",
+      "method": "POST",
+      "path": "/api/conversations/{{group_conversation_id}}/admins/{{user_b_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "description": "Requires current group admin; target must already be group participant. Adds admin id idempotently; target-nonparticipant400.",
+      "source": "chat-service/src/main/java/com/example/chat_service/conversation/controller/ConversationController.java",
+      "tags": [
+        "mutating"
+      ]
+    },
+    {
+      "id": "chat_conversation_nickname",
+      "service": "chat-service",
+      "folder": "Chat / Conversations",
+      "name": "Set participant nickname",
+      "method": "PATCH",
+      "path": "/api/conversations/{{conversation_id}}/nicknames/{{user_b_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "body": {
+        "nickname": "Postman peer {{run_id}}"
+      },
+      "description": "Any participant may set another member's nickname, including DIRECT. Target must belong to conversation; normalized blank clears nickname. Creates durable SYSTEM message and broadcasts it; useful HTTP-only message-history setup.",
+      "source": "chat-service/src/main/java/com/example/chat_service/conversation/controller/ConversationController.java",
+      "tags": [
+        "mutating",
+        "cross-service"
+      ]
+    },
+    {
+      "id": "chat_message_history",
+      "service": "chat-service",
+      "folder": "Chat / Messages",
+      "name": "Get conversation message history",
+      "method": "GET",
+      "path": "/api/messages/{{conversation_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "query": [
+        {
+          "key": "page",
+          "value": "0",
+          "required": false
+        },
+        {
+          "key": "size",
+          "value": "50",
+          "required": false
+        }
+      ],
+      "description": "Member-only; returns array sorted newest first. Reading history ALSO marks messages read. Authenticated outsider400. page>=0,size>=1 are Spring PageRequest constraints; invalid values are not explicitly mapped by this controller's exception handler.",
+      "source": "chat-service/src/main/java/com/example/chat_service/message/controller/MessageController.java",
+      "negativeCases": [
+        {
+          "actor": "outsider",
+          "status": 400
+        }
+      ],
+      "tags": [
+        "cross-service",
+        "read-side-effect"
+      ]
+    },
+    {
+      "id": "chat_message_read",
+      "service": "chat-service",
+      "folder": "Chat / Messages",
+      "name": "Mark conversation messages read",
+      "method": "POST",
+      "path": "/api/messages/{{conversation_id}}/read",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "description": "Expected for members:200/data:null. SOURCE SECURITY FINDING: service does not verify caller membership or conversation existence before updating/broadcasting, so outsider/nonexistent IDs currently also receive200. Keep a separate negative security assertion expecting rejection; do not silently accept200 as authorization-correct.",
+      "source": "chat-service/src/main/java/com/example/chat_service/message/controller/MessageController.java",
+      "negativeCases": [
+        {
+          "actor": "outsider",
+          "expectedSecurityStatuses": [
+            403,
+            404
+          ],
+          "observedSourceStatus": 200,
+          "findingId": "CHAT-READ-MEMBERSHIP"
+        }
+      ],
+      "tags": [
+        "mutating",
+        "security-finding"
+      ]
+    },
+    {
+      "id": "chat_presence_status",
+      "service": "chat-service",
+      "folder": "Chat / Presence",
+      "name": "Get users' online presence",
+      "method": "GET",
+      "path": "/api/presence/status",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "query": [
+        {
+          "key": "userIds",
+          "value": "{{user_a_id}},{{user_b_id}}",
+          "required": true
+        }
+      ],
+      "description": "UUID set may be comma separated or repeated userIds query keys. Response data is object keyed by UUID, values {isOnline:boolean,lastSeen:number|null}; Redis-backed presence is driven by STOMP sessions.",
+      "source": "chat-service/src/main/java/com/example/chat_service/presence/controller/PresenceController.java",
+      "tags": [
+        "redis"
+      ]
+    },
+    {
+      "id": "chat_call_start",
+      "service": "chat-service",
+      "folder": "Chat / Video calls",
+      "name": "Start one-to-one video call",
+      "method": "POST",
+      "path": "/api/calls",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "body": {
+        "conversationId": "{{conversation_id}}"
+      },
+      "captures": [
+        {
+          "variable": "call_id",
+          "path": "data.id"
+        }
+      ],
+      "description": "Must be participant of ACTIVE DIRECT conversation with exactly2 distinct participants; checks User DM privacy, then requires configured LiveKit, then serializes both users using Redis locks. New call RINGING, repeat caller idempotent, crossing callee start accepts existing call. Requires LiveKit settings but does not call provider network until video-access.",
+      "source": "chat-service/src/main/java/com/example/chat_service/call/VideoCallController.java",
+      "requiredHeadersOnSuccess": {
+        "Cache-Control": "no-store"
+      },
+      "negativeCases": [
+        {
+          "body": {
+            "conversationId": ""
+          },
+          "status": 400
+        },
+        {
+          "actor": "outsider",
+          "status": 403
+        },
+        {
+          "body": {
+            "conversationId": "{{group_conversation_id}}"
+          },
+          "status": 409
+        },
+        {
+          "description": "LiveKit credentials missing/placeholder",
+          "status": 503
+        },
+        {
+          "description": "Either participant busy in another call or lock wait exhausted",
+          "status": 409
+        }
+      ],
+      "tags": [
+        "cross-service",
+        "provider-config-required",
+        "redis",
+        "mutating"
+      ]
+    },
+    {
+      "id": "chat_call_active",
+      "service": "chat-service",
+      "folder": "Chat / Video calls",
+      "name": "Get current user's active call",
+      "method": "GET",
+      "path": "/api/calls/active",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "description": "Returns data:null when no active call. Calls expire ringing/heartbeat timestamps before returning. CallView excludes roomName/participantIdentity/token/credentials.",
+      "source": "chat-service/src/main/java/com/example/chat_service/call/VideoCallController.java",
+      "requiredHeadersOnSuccess": {
+        "Cache-Control": "no-store"
+      },
+      "tags": [
+        "redis"
+      ]
+    },
+    {
+      "id": "chat_call_get",
+      "service": "chat-service",
+      "folder": "Chat / Video calls",
+      "name": "Get call state",
+      "method": "GET",
+      "path": "/api/calls/{{call_id}}",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "description": "Caller/callee only; outsider403, missing404; may expire stale call as read-side effect.",
+      "source": "chat-service/src/main/java/com/example/chat_service/call/VideoCallController.java",
+      "requiredHeadersOnSuccess": {
+        "Cache-Control": "no-store"
+      },
+      "negativeCases": [
+        {
+          "actor": "outsider",
+          "status": 403
+        },
+        {
+          "path": "/api/calls/not-existing-{{run_id}}",
+          "status": 404
+        }
+      ],
+      "tags": [
+        "redis"
+      ]
+    },
+    {
+      "id": "chat_call_accept",
+      "service": "chat-service",
+      "folder": "Chat / Video calls",
+      "name": "Accept incoming call",
+      "method": "POST",
+      "path": "/api/calls/{{call_id}}/accept",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "description": "Callee-only. RINGING->ACCEPTED sets both heartbeat timestamps. Caller403; ended409; accepted idempotent for callee. Rechecks active direct conversation and caller->callee DM privacy.",
+      "source": "chat-service/src/main/java/com/example/chat_service/call/VideoCallController.java",
+      "requiredHeadersOnSuccess": {
+        "Cache-Control": "no-store"
+      },
+      "negativeCases": [
+        {
+          "actor": "a",
+          "status": 403
+        },
+        {
+          "description": "Ended invitation",
+          "status": 409
+        }
+      ],
+      "tags": [
+        "cross-service",
+        "redis",
+        "mutating"
+      ]
+    },
+    {
+      "id": "chat_call_decline",
+      "service": "chat-service",
+      "folder": "Chat / Video calls",
+      "name": "Decline incoming call",
+      "method": "POST",
+      "path": "/api/calls/{{call_id}}/decline",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "description": "Callee-only; RINGING->ENDED/endReasonDECLINED. Caller403. ACCEPTED conflict409. Repeating decline on already-ended call returns current state.",
+      "source": "chat-service/src/main/java/com/example/chat_service/call/VideoCallController.java",
+      "requiredHeadersOnSuccess": {
+        "Cache-Control": "no-store"
+      },
+      "tags": [
+        "redis",
+        "mutating"
+      ]
+    },
+    {
+      "id": "chat_call_end",
+      "service": "chat-service",
+      "folder": "Chat / Video calls",
+      "name": "End or cancel call",
+      "method": "POST",
+      "path": "/api/calls/{{call_id}}/end",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "description": "Either member. RINGING->ENDED/CANCELLED, ACCEPTED->ENDED/ENDED. Persists termination first; writes SYSTEM message to conversation; attempts room cleanup if video-access had marked roomCreated. Repeating end is idempotent and retries pending cleanup. No media room ever created =>mediaClosed:true.",
+      "source": "chat-service/src/main/java/com/example/chat_service/call/VideoCallController.java",
+      "requiredHeadersOnSuccess": {
+        "Cache-Control": "no-store"
+      },
+      "tags": [
+        "redis",
+        "mutating",
+        "cleanup"
+      ]
+    },
+    {
+      "id": "chat_call_heartbeat",
+      "service": "chat-service",
+      "folder": "Chat / Video calls",
+      "name": "Refresh accepted call heartbeat",
+      "method": "POST",
+      "path": "/api/calls/{{call_id}}/heartbeat",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "description": "Member-only. Updates only own seenAt for ACCEPTED call; expiration may end abandoned call. Default disconnect timeout45s, maintenance every5s.",
+      "source": "chat-service/src/main/java/com/example/chat_service/call/VideoCallController.java",
+      "requiredHeadersOnSuccess": {
+        "Cache-Control": "no-store"
+      },
+      "tags": [
+        "redis",
+        "mutating"
+      ]
+    },
+    {
+      "id": "chat_call_video_access",
+      "service": "chat-service",
+      "folder": "Chat / Video calls",
+      "name": "Get short-lived LiveKit media access",
+      "method": "POST",
+      "path": "/api/calls/{{call_id}}/video-access",
+      "auth": "user",
+      "expectedStatuses": [
+        200
+      ],
+      "responseShape": "ApiResponse {success:boolean,message:string,data:any}; errors {success:false,message:string}",
+      "description": "Member of ACCEPTED active direct call only. Invokes real LiveKit room creation then signs participant-scoped token; response data{serverUrl,participantToken,expiresAt}. No persistent capture of token in inventory; provider unavailable503, not-accepted/ended409, outsider403. RoomCreated is marked before network so failed creation can leave cleanup pending.",
+      "source": "chat-service/src/main/java/com/example/chat_service/call/VideoCallController.java",
+      "requiredHeadersOnSuccess": {
+        "Cache-Control": "no-store"
+      },
+      "negativeCases": [
+        {
+          "description": "RINGING or ENDED call",
+          "status": 409
+        },
+        {
+          "actor": "outsider",
+          "status": 403
+        },
+        {
+          "description": "LiveKit unavailable",
+          "status": 503
+        }
+      ],
+      "tags": [
+        "cross-service",
+        "external-provider",
+        "sensitive-response",
+        "mutating"
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "name": "Identity/User -> Chat direct conversation",
+      "description": "Prerequisite A and B verified ACTIVE with DMallowed. Proves User-service permission query and Identity-service participant enrichment, idempotence and membership protection.",
+      "steps": [
+        {
+          "endpointId": "chat_conversation_direct",
+          "actor": "a",
+          "assertions": [
+            "data.type===DIRECT",
+            "data.participants has actual user_a_id and user_b_id; usernames are not Unknown",
+            "capture data.id -> conversation_id"
+          ]
+        },
+        {
+          "endpointId": "chat_conversation_direct",
+          "actor": "a",
+          "assertions": [
+            "same conversation_id"
+          ]
+        },
+        {
+          "endpointId": "chat_conversation_list",
+          "actor": "b",
+          "assertions": [
+            "contains conversation_id"
+          ]
+        },
+        {
+          "endpointId": "chat_conversation_get",
+          "actor": "b",
+          "assertions": [
+            "same2participants"
+          ]
+        },
+        {
+          "endpointId": "chat_conversation_get",
+          "actor": "outsider",
+          "overrides": {
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "success===false; no participant details disclosed"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Group lifecycle and membership/admin permissions",
+      "description": "Uses A/B/outsider as initial3members. Outsider is a group participant in this flow but remains outsider to A/Bdirect conversation. No fourth fixture needed.",
+      "steps": [
+        {
+          "endpointId": "chat_conversation_create",
+          "actor": "a",
+          "assertions": [
+            "GROUP has3members and Aadmin"
+          ]
+        },
+        {
+          "endpointId": "chat_conversation_rename",
+          "actor": "b",
+          "overrides": {
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "nonadmin rejected"
+          ]
+        },
+        {
+          "endpointId": "chat_conversation_rename",
+          "actor": "a",
+          "assertions": [
+            "new trimmed name"
+          ]
+        },
+        {
+          "endpointId": "chat_conversation_remove_participant",
+          "actor": "a",
+          "assertions": [
+            "outsider removed"
+          ]
+        },
+        {
+          "endpointId": "chat_conversation_add_participant",
+          "actor": "a",
+          "assertions": [
+            "outsider re-added with Identity profile"
+          ]
+        },
+        {
+          "endpointId": "chat_conversation_promote",
+          "actor": "a",
+          "assertions": [
+            "B in adminIds"
+          ]
+        },
+        {
+          "endpointId": "chat_conversation_get",
+          "actor": "b",
+          "overrides": {
+            "path": "/api/conversations/{{group_conversation_id}}"
+          },
+          "assertions": [
+            "currentUserAdmin===true"
+          ]
+        },
+        {
+          "endpointId": "chat_conversation_leave",
+          "actor": "outsider",
+          "assertions": [
+            "success,data:null"
+          ]
+        },
+        {
+          "endpointId": "chat_conversation_delete",
+          "actor": "a",
+          "assertions": [
+            "success,data:null"
+          ]
+        },
+        {
+          "endpointId": "chat_conversation_get",
+          "actor": "a",
+          "overrides": {
+            "path": "/api/conversations/{{group_conversation_id}}",
+            "expectedStatuses": [
+              404
+            ]
+          },
+          "assertions": [
+            "deleted group not available"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "HTTP-originated system message -> history -> read",
+      "description": "Nickname mutation creates a real SYSTEM message without inventing REST send-message API; STOMP send/receive has separate runner.",
+      "steps": [
+        {
+          "endpointId": "chat_conversation_nickname",
+          "actor": "a",
+          "assertions": [
+            "Bnickname persisted"
+          ]
+        },
+        {
+          "endpointId": "chat_message_history",
+          "actor": "b",
+          "assertions": [
+            "SYSTEM message nickname change exists; Identity sender enrichment present"
+          ]
+        },
+        {
+          "endpointId": "chat_message_read",
+          "actor": "b",
+          "assertions": [
+            "success,data:null"
+          ]
+        },
+        {
+          "endpointId": "chat_conversation_get",
+          "actor": "b",
+          "assertions": [
+            "unreadCount===0"
+          ]
+        },
+        {
+          "endpointId": "chat_message_history",
+          "actor": "outsider",
+          "overrides": {
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "nonmember rejected"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Read-receipt authorization regression",
+      "description": "Security expectation should FAIL current implementation: outsider must not mark or broadcast read state for someone else's conversation.",
+      "steps": [
+        {
+          "endpointId": "chat_message_read",
+          "actor": "outsider",
+          "overrides": {
+            "expectedStatuses": [
+              403,
+              404
+            ]
+          },
+          "assertions": [
+            "reject nonmember; current source returns200, tracked findingCHAT-READ-MEMBERSHIP"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Call API without provider configured",
+      "description": "Run on isolated default stack with blankLiveKit settings; assert graceful unavailable and input/auth/invalid-target paths, do not mark successful media coverage.",
+      "steps": [
+        {
+          "endpointId": "chat_call_active",
+          "actor": "a",
+          "assertions": [
+            "data===null",
+            "Cache-Control no-store"
+          ]
+        },
+        {
+          "endpointId": "chat_call_start",
+          "actor": "a",
+          "overrides": {
+            "expectedStatuses": [
+              503
+            ]
+          },
+          "assertions": [
+            "error message configuration; no provider secrets"
+          ]
+        },
+        {
+          "endpointId": "chat_call_start",
+          "actor": "a",
+          "overrides": {
+            "body": {
+              "conversationId": ""
+            },
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "validation rejects blankconversationId"
+          ]
+        },
+        {
+          "endpointId": "chat_call_start",
+          "actor": "outsider",
+          "overrides": {
+            "expectedStatuses": [
+              403
+            ]
+          },
+          "assertions": [
+            "membership rejected before providercheck"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Call orchestration lifecycle (provider config required, no media network)",
+      "description": "Requires configured URL/key/secret. May use clearly identified local unavailable-provider values for orchestration-only tests; do not call video-access in this flow so no provider network and roomCreatedfalse. Do not claim successful Cloud/media verification.",
+      "steps": [
+        {
+          "endpointId": "chat_call_start",
+          "actor": "a",
+          "assertions": [
+            "RINGING, callerA,calleeB;capturecall_id"
+          ]
+        },
+        {
+          "endpointId": "chat_call_get",
+          "actor": "outsider",
+          "overrides": {
+            "expectedStatuses": [
+              403
+            ]
+          },
+          "assertions": [
+            "no access to another call"
+          ]
+        },
+        {
+          "endpointId": "chat_call_accept",
+          "actor": "a",
+          "overrides": {
+            "expectedStatuses": [
+              403
+            ]
+          },
+          "assertions": [
+            "caller cannot accept"
+          ]
+        },
+        {
+          "endpointId": "chat_call_video_access",
+          "actor": "a",
+          "overrides": {
+            "expectedStatuses": [
+              409
+            ]
+          },
+          "assertions": [
+            "media unavailable beforeaccept"
+          ]
+        },
+        {
+          "endpointId": "chat_call_accept",
+          "actor": "b",
+          "assertions": [
+            "ACCEPTED"
+          ]
+        },
+        {
+          "endpointId": "chat_call_heartbeat",
+          "actor": "a",
+          "assertions": [
+            "ACCEPTED"
+          ]
+        },
+        {
+          "endpointId": "chat_call_heartbeat",
+          "actor": "b",
+          "assertions": [
+            "ACCEPTED"
+          ]
+        },
+        {
+          "endpointId": "chat_call_end",
+          "actor": "b",
+          "assertions": [
+            "ENDED,endReasonENDED,mediaClosedtrue"
+          ]
+        },
+        {
+          "endpointId": "chat_call_video_access",
+          "actor": "a",
+          "overrides": {
+            "expectedStatuses": [
+              409
+            ]
+          },
+          "assertions": [
+            "ended call cannot mint token"
+          ]
+        },
+        {
+          "endpointId": "chat_call_active",
+          "actor": "a",
+          "assertions": [
+            "data===null"
+          ]
+        },
+        {
+          "endpointId": "chat_message_history",
+          "actor": "a",
+          "assertions": [
+            "SYSTEM call summary exists"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Call cancellation and decline",
+      "description": "Provider config required; no provider network until media-access.",
+      "steps": [
+        {
+          "endpointId": "chat_call_start",
+          "actor": "a",
+          "assertions": [
+            "RINGING"
+          ]
+        },
+        {
+          "endpointId": "chat_call_decline",
+          "actor": "b",
+          "assertions": [
+            "ENDED,endReasonDECLINED"
+          ]
+        },
+        {
+          "endpointId": "chat_call_start",
+          "actor": "a",
+          "assertions": [
+            "newcallid,RINGING"
+          ]
+        },
+        {
+          "endpointId": "chat_call_end",
+          "actor": "a",
+          "assertions": [
+            "ENDED,endReasonCANCELLED"
+          ]
+        }
+      ]
+    }
+  ],
+  "websocket": {
+    "transport": "SockJS + STOMP1.2",
+    "gatewayEndpoint": "{{base_url}}/ws/chat",
+    "directServiceEndpoint": "{{chat_url}}/ws",
+    "connectHeaders": {
+      "Authorization": "Bearer {{access_token_a}}"
+    },
+    "send": [
+      {
+        "destination": "/app/chat.send",
+        "body": {
+          "conversationId": "{{conversation_id}}",
+          "content": "Postman integration message {{run_id}}",
+          "attachments": []
+        },
+        "constraints": "content.trim nonempty OR nonempty attachments; <=10IMAGE attachments; attachment.type IMAGE|VIDEO|FILE and url nonblank"
+      },
+      {
+        "destination": "/app/chat.typing",
+        "body": {
+          "conversationId": "{{conversation_id}}",
+          "isTyping": true
+        }
+      }
+    ],
+    "subscribe": [
+      {
+        "destination": "/user/queue/messages",
+        "payload": "ConversationUpdateMessage {conversationId,conversationName,lastMessage,unreadCount,updatedAt}"
+      },
+      {
+        "destination": "/user/queue/calls",
+        "payload": "CallView {id,conversationId,caller,callee,status,endReason,createdAt,ringingExpiresAt,acceptedAt,endedAt,mediaClosed,revision}"
+      },
+      {
+        "destination": "/topic/conversation.{{conversation_id}}",
+        "payload": "MessageResponse {id,conversationId,senderId,senderName,senderAvatar,content,type,attachments,sentAt,status}"
+      },
+      {
+        "destination": "/topic/conversation.{{conversation_id}}.typing",
+        "payload": "{userId,isTyping}"
+      },
+      {
+        "destination": "/topic/presence",
+        "payload": "{userId,status:ONLINE|OFFLINE,lastSeen:epochMs}"
+      }
+    ],
+    "securityExpected": [
+      "CONNECT withoutvalidJWT rejected",
+      "SUBSCRIBE /queue/* rejected",
+      "SUBSCRIBE /user/* except /user/queue/messages and /user/queue/calls rejected",
+      "SEND non/app destination rejected",
+      "Nonmember /app/chat.send rejected by ChatService",
+      "Nonmember conversation-topic subscribe and typing SHOULD be rejected; current source lacksmembership checks (CHAT-TOPIC-MEMBERSHIP,CHAT-TYPING-MEMBERSHIP)"
+    ],
+    "integrationChecks": [
+      "A/Bconnect leads presenceisOnlinetrue via REST, disconnect leads false/lastSeen",
+      "A SENDtext -> Bconversationtopic receives fullmessage, Buserqueue unreadcountincrements, BRESThistory persistsmessage+Identityprofile",
+      "Typing sent frommember arrives ontypingtopic",
+      "Call RESTinvitation -> Bprivatecallsqueue RINGING -> Baccept -> bothACCEPTED -> end -> bothENDED"
+    ],
+    "toolingLimit": "Postman Collection v2.1 / Newman is HTTP only; keep STOMP integration as a separate Node runner or manual Postman WebSocket session. Do not invent HTTP message-send route."
+  },
+  "notes": [
+    "All22HTTPendpoints require validJWT; missing/malformed token returns401 {success:false,message:Unauthorized}.",
+    "Conversation/currentUser group-admin authorization errors use400 in implementation, while callauthorization uses403. Document actualbehavior separately fromsecurityexpectations.",
+    "Presence is Redis-backed and requires STOMPconnect to becomeonline; mereHTTP login does notmarkonline.",
+    "Callsuccessresponses include Cache-Control:no-store; errors are routed throughGlobalExceptionHandler and noStore notguaranteed.",
+    "Callstart requires configuredLiveKit values (URLwss://, nonblank key/secret not containingYOUR_, tokenTTL30s..5m). Realprovider networking starts only atvideo-access.",
+    "Default callringtimeout60s, disconnecttimeout45s, media/reconnectgrace frontend15s; maintenance5s.",
+    "Do not persist/exportparticipantToken, accessJWT, refreshJWT or providercredentials in committed artifacts/reports.",
+    "No REST messagecreate/edit/delete endpoint exists in chatservice; history+read only. MessageSEND is STOMP.",
+    "AUTHORIZATION FINDING CHAT-READ-MEMBERSHIP: markMessagesAsRead lacksmembership/existencecheck; outsider/nonexistentconversation currentlyreturns200.",
+    "AUTHORIZATION FINDING CHAT-TOPIC-MEMBERSHIP: WebSocketAuthInterceptor doesn'tvalidate topicconversation membership onSUBSCRIBE; authenticatedoutsider canlikelyreceive messagebroadcasts. Must verifylive ratherthan claim confirmed.",
+    "AUTHORIZATION FINDING CHAT-TYPING-MEMBERSHIP: /app/chat.typing broadcasts for arbitraryconversationId withoutmembershipcheck; verifylive.",
+    "Identity profilefailure is swallowed and represented as Unknownprofiles; integration should assertrealprofilestoavoidfalsepass."
+  ],
+  "bootstrap": {
+    "source": ".verification/LiveKitTestUsers.java",
+    "approach": "Owner-DB integration fixture tool inserts3 temporary verified ACTIVE USERaccounts in identity PostgreSQL withBCryptpasswords and example.invalidemail; useDockerisolateddatabaseonly, notshared.env cloudURLs.",
+    "cleanup": "Existingtool deletesonlymatchingid+livekit-e2e-%@example.invalid rows; adaptfixtureprefix+runmanifest andcleanownedDBfacts forcrossserviceKafkaeventuallycreatedprofiles beforedropisolatedstack.",
+    "requirements": [
+      "Identityuserstable migrated",
+      "PostgreSQLJDBC+SpringSecurityBCryptclasses",
+      "A/B/outsider identities; group tests canreuse3members",
+      "DefaultUserprivacy permitsDM forfreshfixtures orsetfixtureprivacy appropriately"
+    ]
+  }
+}

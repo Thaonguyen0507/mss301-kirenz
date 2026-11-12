@@ -1,0 +1,98 @@
+{
+  "suite": "Kirenz real-service STOMP + HTTP integration",
+  "startedAt": "2026-11-12T14:36:46.154Z",
+  "finishedAt": "2026-11-12T14:36:49.810Z",
+  "environmentFile": "runtime.postman_environment.json",
+  "baseUrl": "http://localhost:18080",
+  "conversationId": "6af5cee9ee31947c9f8fa272",
+  "scope": "Docker localhost only; real chat/User/Identity, MongoDB and Redis. No LiveKit media/provider claims.",
+  "summary": {
+    "total": 13,
+    "passed": 11,
+    "failed": 2,
+    "skipped": 0
+  },
+  "cases": [
+    {
+      "name": "Fixture direct conversation resolves through User/Identity services",
+      "status": "passed",
+      "durationMs": 71,
+      "details": {
+        "participants": 2,
+        "identityProfilesResolved": true
+      }
+    },
+    {
+      "name": "STOMP CONNECT rejects an unauthenticated client",
+      "status": "passed",
+      "durationMs": 165
+    },
+    {
+      "name": "Two authenticated users connect and subscribe",
+      "status": "passed",
+      "durationMs": 259,
+      "details": {
+        "transport": "WebSocket/STOMP"
+      }
+    },
+    {
+      "name": "STOMP sessions update Redis presence visible through gateway HTTP",
+      "status": "passed",
+      "durationMs": 24
+    },
+    {
+      "name": "A message reaches B topic and private unread-summary queue",
+      "status": "passed",
+      "durationMs": 61,
+      "details": {
+        "fullMessageReceived": true,
+        "privateSummaryReceived": true,
+        "unreadCountPositive": true
+      }
+    },
+    {
+      "name": "Delivered STOMP message is persisted and enriched in HTTP history",
+      "status": "passed",
+      "durationMs": 40
+    },
+    {
+      "name": "B HTTP read receipt clears unread count and emits private queue update",
+      "status": "passed",
+      "durationMs": 55
+    },
+    {
+      "name": "Member typing is delivered to B typing topic",
+      "status": "passed",
+      "durationMs": 6
+    },
+    {
+      "name": "Outsider cannot persist or deliver a message to A/B conversation",
+      "status": "passed",
+      "durationMs": 944
+    },
+    {
+      "name": "Outsider conversation-topic subscription does not leak private messages",
+      "status": "failed",
+      "durationMs": 1036,
+      "error": "CHAT-TOPIC-MEMBERSHIP: outsider received a private fixture conversation message\n\ntrue !== false\n",
+      "findingId": "CHAT-TOPIC-MEMBERSHIP"
+    },
+    {
+      "name": "Outsider cannot spoof typing in A/B conversation",
+      "status": "failed",
+      "durationMs": 803,
+      "error": "CHAT-TYPING-MEMBERSHIP: outsider typing was broadcast to private conversation members\n\ntrue !== false\n",
+      "findingId": "CHAT-TYPING-MEMBERSHIP"
+    },
+    {
+      "name": "Direct broker private-queue subscription is rejected",
+      "status": "passed",
+      "durationMs": 157
+    },
+    {
+      "name": "Disconnecting both users clears Redis online presence",
+      "status": "passed",
+      "durationMs": 16
+    }
+  ]
+}

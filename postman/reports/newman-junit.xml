@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Kirenz | Integration &amp; cross-service regression" tests="122" time="12.220">
+  <testsuite name="00 Bootstrap | Identity → Kafka → local email/Redis / Register disposable a" id="c46634c9-ff40-49da-ad6a-7f781ec57072" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.377">
+    <testcase name="HTTP status 201" time="0.377" classname="00BootstrapIdentityKafkaLocalEmailRedisRegisterDisposableA"/>
+    <testcase name="Success envelope" time="0.377" classname="00BootstrapIdentityKafkaLocalEmailRedisRegisterDisposableA"/>
+    <testcase name="Capture user_a_id" time="0.377" classname="00BootstrapIdentityKafkaLocalEmailRedisRegisterDisposableA"/>
+    <testcase name="OTP accepted by local mailbox" time="0.377" classname="00BootstrapIdentityKafkaLocalEmailRedisRegisterDisposableA"/>
+  </testsuite>
+  <testsuite name="00 Bootstrap | Identity → Kafka → local email/Redis / Login a" id="c2ac9336-bb5a-4e54-ab6c-b08ad968f428" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.535">
+    <testcase name="HTTP status 200" time="0.535" classname="00BootstrapIdentityKafkaLocalEmailRedisLoginA"/>
+    <testcase name="Success envelope" time="0.535" classname="00BootstrapIdentityKafkaLocalEmailRedisLoginA"/>
+    <testcase name="Capture access_token_a" time="0.535" classname="00BootstrapIdentityKafkaLocalEmailRedisLoginA"/>
+    <testcase name="Capture refresh_token_a" time="0.535" classname="00BootstrapIdentityKafkaLocalEmailRedisLoginA"/>
+  </testsuite>
+  <testsuite name="00 Bootstrap | Identity → Kafka → local email/Redis / Identity profile a" id="b24cb4f0-8c09-48b4-ac3a-e2158faba77c" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.029">
+    <testcase name="HTTP status 200" time="0.029" classname="00BootstrapIdentityKafkaLocalEmailRedisIdentityProfileA"/>
+    <testcase name="Success envelope" time="0.029" classname="00BootstrapIdentityKafkaLocalEmailRedisIdentityProfileA"/>
+    <testcase name="Capture user_a_id" time="0.029" classname="00BootstrapIdentityKafkaLocalEmailRedisIdentityProfileA"/>
+    <testcase name="Own UUID" time="0.029" classname="00BootstrapIdentityKafkaLocalEmailRedisIdentityProfileA"/>
+  </testsuite>
+  <testsuite name="00 Bootstrap | Identity → Kafka → local email/Redis / Register disposable b" id="c3681a9c-0bb9-4984-a577-4cfdc18a65d5" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.298">
+    <testcase name="HTTP status 201" time="0.298" classname="00BootstrapIdentityKafkaLocalEmailRedisRegisterDisposableB"/>
+    <testcase name="Success envelope" time="0.298" classname="00BootstrapIdentityKafkaLocalEmailRedisRegisterDisposableB"/>
+    <testcase name="Capture user_b_id" time="0.298" classname="00BootstrapIdentityKafkaLocalEmailRedisRegisterDisposableB"/>
+    <testcase name="OTP accepted by local mailbox" time="0.298" classname="00BootstrapIdentityKafkaLocalEmailRedisRegisterDisposableB"/>
+  </testsuite>
+  <testsuite name="00 Bootstrap | Identity → Kafka → local email/Redis / Login b" id="dda6f746-ff21-4fcf-a449-73a7333e8bdf" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.586">
+    <testcase name="HTTP status 200" time="0.586" classname="00BootstrapIdentityKafkaLocalEmailRedisLoginB"/>
+    <testcase name="Success envelope" time="0.586" classname="00BootstrapIdentityKafkaLocalEmailRedisLoginB"/>
+    <testcase name="Capture access_token_b" time="0.586" classname="00BootstrapIdentityKafkaLocalEmailRedisLoginB"/>
+    <testcase name="Capture refresh_token_b" time="0.586" classname="00BootstrapIdentityKafkaLocalEmailRedisLoginB"/>
+  </testsuite>
+  <testsuite name="00 Bootstrap | Identity → Kafka → local email/Redis / Identity profile b" id="ee485a77-5d52-4741-ae71-6237bdd5b3a4" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.051">
+    <testcase name="HTTP status 200" time="0.051" classname="00BootstrapIdentityKafkaLocalEmailRedisIdentityProfileB"/>
+    <testcase name="Success envelope" time="0.051" classname="00BootstrapIdentityKafkaLocalEmailRedisIdentityProfileB"/>
+    <testcase name="Capture user_b_id" time="0.051" classname="00BootstrapIdentityKafkaLocalEmailRedisIdentityProfileB"/>
+    <testcase name="Own UUID" time="0.051" classname="00BootstrapIdentityKafkaLocalEmailRedisIdentityProfileB"/>
+  </testsuite>
+  <testsuite name="00 Bootstrap | Identity → Kafka → local email/Redis / Register disposable outsider" id="fe128363-da53-48a2-a1f1-8799bb5d93ed" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.436">
+    <testcase name="HTTP status 201" time="0.436" classname="00BootstrapIdentityKafkaLocalEmailRedisRegisterDisposableOutsider"/>
+    <testcase name="Success envelope" time="0.436" classname="00BootstrapIdentityKafkaLocalEmailRedisRegisterDisposableOutsider"/>
+    <testcase name="Capture user_outsider_id" time="0.436" classname="00BootstrapIdentityKafkaLocalEmailRedisRegisterDisposableOutsider"/>
+    <testcase name="OTP accepted by local mailbox" time="0.436" classname="00BootstrapIdentityKafkaLocalEmailRedisRegisterDisposableOutsider"/>
+  </testsuite>
+  <testsuite name="00 Bootstrap | Identity → Kafka → local email/Redis / Login outsider" id="4b0b2d2b-4069-48a9-a6b3-ef4d81c9a5a7" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.548">
+    <testcase name="HTTP status 200" time="0.548" classname="00BootstrapIdentityKafkaLocalEmailRedisLoginOutsider"/>
+    <testcase name="Success envelope" time="0.548" classname="00BootstrapIdentityKafkaLocalEmailRedisLoginOutsider"/>
+    <testcase name="Capture access_token_outsider" time="0.548" classname="00BootstrapIdentityKafkaLocalEmailRedisLoginOutsider"/>
+    <testcase name="Capture refresh_token_outsider" time="0.548" classname="00BootstrapIdentityKafkaLocalEmailRedisLoginOutsider"/>
+  </testsuite>
+  <testsuite name="00 Bootstrap | Identity → Kafka → local email/Redis / Identity profile outsider" id="46736121-fb2b-4baf-a540-000095134a7a" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.033">
+    <testcase name="HTTP status 200" time="0.033" classname="00BootstrapIdentityKafkaLocalEmailRedisIdentityProfileOutsider"/>
+    <testcase name="Success envelope" time="0.033" classname="00BootstrapIdentityKafkaLocalEmailRedisIdentityProfileOutsider"/>
+    <testcase name="Capture user_outsider_id" time="0.033" classname="00BootstrapIdentityKafkaLocalEmailRedisIdentityProfileOutsider"/>
+    <testcase name="Own UUID" time="0.033" classname="00BootstrapIdentityKafkaLocalEmailRedisIdentityProfileOutsider"/>
+  </testsuite>
+  <testsuite name="00 Bootstrap | Identity → Kafka → local email/Redis / Read OTP from local Brevo stub (test infrastructure)" id="0b01a01a-476b-4ff6-a3c6-20cac9321d23" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.029">
+    <testcase name="Mailbox HTTP200" time="0.029" classname="00BootstrapIdentityKafkaLocalEmailRedisReadOtpFromLocalBrevoStubTestInfrastructure"/>
+    <testcase name="Generated OTP captured" time="0.029" classname="00BootstrapIdentityKafkaLocalEmailRedisReadOtpFromLocalBrevoStubTestInfrastructure"/>
+  </testsuite>
+  <testsuite name="00 Bootstrap | Identity → Kafka → local email/Redis / Verify actual generated OTP through Redis" id="fdfa07a0-3a08-44a3-a158-7453fd91a988" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.066">
+    <testcase name="HTTP status 200" time="0.066" classname="00BootstrapIdentityKafkaLocalEmailRedisVerifyActualGeneratedOtpThroughRedis"/>
+    <testcase name="Success envelope" time="0.066" classname="00BootstrapIdentityKafkaLocalEmailRedisVerifyActualGeneratedOtpThroughRedis"/>
+  </testsuite>
+  <testsuite name="00 Bootstrap | Identity → Kafka → local email/Redis / Email verification persisted" id="cab251fa-dd5c-4822-ad1d-6d42b19c3008" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.015">
+    <testcase name="HTTP status 200" time="0.015" classname="00BootstrapIdentityKafkaLocalEmailRedisEmailVerificationPersisted"/>
+    <testcase name="Success envelope" time="0.015" classname="00BootstrapIdentityKafkaLocalEmailRedisEmailVerificationPersisted"/>
+    <testcase name="Capture user_a_id" time="0.015" classname="00BootstrapIdentityKafkaLocalEmailRedisEmailVerificationPersisted"/>
+    <testcase name="Verified flag" time="0.015" classname="00BootstrapIdentityKafkaLocalEmailRedisEmailVerificationPersisted"/>
+  </testsuite>
+  <testsuite name="00 Bootstrap | Identity → Kafka → local email/Redis / Refresh actual refresh token" id="acee3322-1e15-4eb1-a656-081fc4c516a0" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.025">
+    <testcase name="HTTP status 200" time="0.025" classname="00BootstrapIdentityKafkaLocalEmailRedisRefreshActualRefreshToken"/>
+    <testcase name="Success envelope" time="0.025" classname="00BootstrapIdentityKafkaLocalEmailRedisRefreshActualRefreshToken"/>
+    <testcase name="Capture access_token_a" time="0.025" classname="00BootstrapIdentityKafkaLocalEmailRedisRefreshActualRefreshToken"/>
+    <testcase name="Capture refresh_token_a" time="0.025" classname="00BootstrapIdentityKafkaLocalEmailRedisRefreshActualRefreshToken"/>
+  </testsuite>
+  <testsuite name="01 Authentication and input boundaries / Anonymous profile rejected" id="4558a0c6-38c3-43c3-a388-c87358a662c1" timestamp="2026-11-12T14:35:59.864Z" tests="1" failures="0" errors="0" time="0.008">
+    <testcase name="HTTP status 401" time="0.008" classname="01AuthenticationAndInputBoundariesAnonymousProfileRejected"/>
+  </testsuite>
+  <testsuite name="01 Authentication and input boundaries / Wrong password rejected" id="da61cf02-8472-4481-ac39-d3e7cd3d9fe3" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.247">
+    <testcase name="HTTP status 401" time="0.247" classname="01AuthenticationAndInputBoundariesWrongPasswordRejected"/>
+    <testcase name="Error envelope" time="0.247" classname="01AuthenticationAndInputBoundariesWrongPasswordRejected"/>
+  </testsuite>
+  <testsuite name="01 Authentication and input boundaries / Registration validation" id="0bf65e54-ee65-4169-af72-815338dfec26" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.039">
+    <testcase name="HTTP status 400" time="0.039" classname="01AuthenticationAndInputBoundariesRegistrationValidation"/>
+    <testcase name="Error envelope" time="0.039" classname="01AuthenticationAndInputBoundariesRegistrationValidation"/>
+  </testsuite>
+  <testsuite name="01 Authentication and input boundaries / Malformed refresh token rejected" id="44c04f27-6a8a-4966-a8bd-124da42aac08" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.017">
+    <testcase name="HTTP status 401" time="0.017" classname="01AuthenticationAndInputBoundariesMalformedRefreshTokenRejected"/>
+    <testcase name="Error envelope" time="0.017" classname="01AuthenticationAndInputBoundariesMalformedRefreshTokenRejected"/>
+  </testsuite>
+  <testsuite name="01 Authentication and input boundaries / Wrong OTP rejected" id="24c2e492-5c87-4b61-aaf3-9ea3f63eb24f" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.012">
+    <testcase name="HTTP status 400" time="0.012" classname="01AuthenticationAndInputBoundariesWrongOtpRejected"/>
+    <testcase name="Error envelope" time="0.012" classname="01AuthenticationAndInputBoundariesWrongOtpRejected"/>
+  </testsuite>
+  <testsuite name="01 Authentication and input boundaries / Update profile used by other services" id="1f5f14f5-853f-4281-a40e-60dec3abae7b" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.053">
+    <testcase name="HTTP status 200" time="0.053" classname="01AuthenticationAndInputBoundariesUpdateProfileUsedByOtherServices"/>
+    <testcase name="Success envelope" time="0.053" classname="01AuthenticationAndInputBoundariesUpdateProfileUsedByOtherServices"/>
+    <testcase name="Profile display name" time="0.053" classname="01AuthenticationAndInputBoundariesUpdateProfileUsedByOtherServices"/>
+  </testsuite>
+  <testsuite name="01 Authentication and input boundaries / User search enriches from Identity" id="e729f3a9-cf5a-4841-a045-ab19a9d996e3" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.054">
+    <testcase name="HTTP status 200" time="0.054" classname="01AuthenticationAndInputBoundariesUserSearchEnrichesFromIdentity"/>
+    <testcase name="Success envelope" time="0.054" classname="01AuthenticationAndInputBoundariesUserSearchEnrichesFromIdentity"/>
+    <testcase name="Search includes actor A" time="0.054" classname="01AuthenticationAndInputBoundariesUserSearchEnrichesFromIdentity"/>
+  </testsuite>
+  <testsuite name="01 Authentication and input boundaries / SECURITY | Access token cannot serve as refresh token" id="fc03a63c-8081-4121-ad97-91c98ae191d8" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="1" errors="0" time="0.024">
+    <testcase name="HTTP status 401" time="0.024" classname="01AuthenticationAndInputBoundariesSecurityAccessTokenCannotServeAsRefreshToken">
+      <failure type="AssertionFailure" message="expected 200 to be one of [ 401 ]">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: 51ce858b-f6ed-4c86-a9b5-65e84c78d31d.]]>
+        <![CDATA[Collection name: Kirenz | Integration & cross-service regression.]]>
+        <![CDATA[Request name: 01 Authentication and input boundaries / SECURITY | Access token cannot serve as refresh token.]]>
+        <![CDATA[Test description: HTTP status 401.]]>
+        <![CDATA[Error message: expected 200 to be one of [ 401 ].]]>
+        <![CDATA[Stacktrace: AssertionError: expected 200 to be one of [ 401 ]
+   at Object.eval sandbox-script.js:1:21).]]>
+      </failure>
+    </testcase>
+    <testcase name="Success envelope" time="0.024" classname="01AuthenticationAndInputBoundariesSecurityAccessTokenCannotServeAsRefreshToken"/>
+  </testsuite>
+  <testsuite name="02 Friendship | User ↔ Identity Feign / A requests friendship with B" id="396e9cc6-e062-47a4-a6df-37faed414ccf" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.180">
+    <testcase name="HTTP status 201" time="0.180" classname="02FriendshipUserIdentityFeignARequestsFriendshipWithB"/>
+    <testcase name="Success envelope" time="0.180" classname="02FriendshipUserIdentityFeignARequestsFriendshipWithB"/>
+    <testcase name="Capture friend_request_id" time="0.180" classname="02FriendshipUserIdentityFeignARequestsFriendshipWithB"/>
+  </testsuite>
+  <testsuite name="02 Friendship | User ↔ Identity Feign / Outsider cannot accept another request" id="f53a80fe-6a49-4d28-a341-bdf661a2c430" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.040">
+    <testcase name="HTTP status 404" time="0.040" classname="02FriendshipUserIdentityFeignOutsiderCannotAcceptAnotherRequest"/>
+    <testcase name="Error envelope" time="0.040" classname="02FriendshipUserIdentityFeignOutsiderCannotAcceptAnotherRequest"/>
+  </testsuite>
+  <testsuite name="02 Friendship | User ↔ Identity Feign / B sees incoming request" id="02d564d8-40fb-4ce1-af5b-fd12945f5370" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.113">
+    <testcase name="HTTP status 200" time="0.113" classname="02FriendshipUserIdentityFeignBSeesIncomingRequest"/>
+    <testcase name="Success envelope" time="0.113" classname="02FriendshipUserIdentityFeignBSeesIncomingRequest"/>
+    <testcase name="Request belongs to current fixture" time="0.113" classname="02FriendshipUserIdentityFeignBSeesIncomingRequest"/>
+  </testsuite>
+  <testsuite name="02 Friendship | User ↔ Identity Feign / B accepts A request" id="e64cbed0-eec7-4b11-a3f3-3450bcb38645" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.064">
+    <testcase name="HTTP status 200" time="0.064" classname="02FriendshipUserIdentityFeignBAcceptsARequest"/>
+    <testcase name="Success envelope" time="0.064" classname="02FriendshipUserIdentityFeignBAcceptsARequest"/>
+    <testcase name="Capture friendship_id" time="0.064" classname="02FriendshipUserIdentityFeignBAcceptsARequest"/>
+  </testsuite>
+  <testsuite name="02 Friendship | User ↔ Identity Feign / Relationship status" id="b5e444ad-607d-4879-af74-b3495e9207af" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.025">
+    <testcase name="HTTP status 200" time="0.025" classname="02FriendshipUserIdentityFeignRelationshipStatus"/>
+    <testcase name="Success envelope" time="0.025" classname="02FriendshipUserIdentityFeignRelationshipStatus"/>
+    <testcase name="Relationship became FRIENDS" time="0.025" classname="02FriendshipUserIdentityFeignRelationshipStatus"/>
+  </testsuite>
+  <testsuite name="02 Friendship | User ↔ Identity Feign / Feign returns updated A profile, no fallback" id="83fb2eeb-1685-46fe-a410-e34cced3bff5" timestamp="2026-11-12T14:35:59.864Z" tests="5" failures="1" errors="0" time="0.049">
+    <testcase name="HTTP status 200" time="0.049" classname="02FriendshipUserIdentityFeignFeignReturnsUpdatedAProfileNoFallback"/>
+    <testcase name="Success envelope" time="0.049" classname="02FriendshipUserIdentityFeignFeignReturnsUpdatedAProfileNoFallback"/>
+    <testcase name="Friend exists" time="0.049" classname="02FriendshipUserIdentityFeignFeignReturnsUpdatedAProfileNoFallback"/>
+    <testcase name="Identity username" time="0.049" classname="02FriendshipUserIdentityFeignFeignReturnsUpdatedAProfileNoFallback">
+      <failure type="AssertionFailure" message="expected 'kirenz_it_mwdnh1814dd9c8_a@example.in…' to deeply equal 'kirenz_it_mwdnh1814dd9c8_a'">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: 51ce858b-f6ed-4c86-a9b5-65e84c78d31d.]]>
+        <![CDATA[Collection name: Kirenz | Integration & cross-service regression.]]>
+        <![CDATA[Request name: 02 Friendship | User ↔ Identity Feign / Feign returns updated A profile, no fallback.]]>
+        <![CDATA[Test description: Identity username.]]>
+        <![CDATA[Error message: expected 'kirenz_it_mwdnh1814dd9c8_a@example.in…' to deeply equal 'kirenz_it_mwdnh1814dd9c8_a'.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 'kirenz_it_mwdnh1814dd9c8_a@example.in…' to deeply equal 'kirenz_it_mwdnh1814dd9c8_a'
+   at Object.eval sandbox-script.js:4:27).]]>
+      </failure>
+    </testcase>
+    <testcase name="Updated Identity display name" time="0.049" classname="02FriendshipUserIdentityFeignFeignReturnsUpdatedAProfileNoFallback"/>
+  </testsuite>
+  <testsuite name="02 Friendship | User ↔ Identity Feign / Get mutual friends" id="18293416-4191-4599-ac0a-705453c6835d" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.023">
+    <testcase name="HTTP status 200" time="0.023" classname="02FriendshipUserIdentityFeignGetMutualFriends"/>
+    <testcase name="Success envelope" time="0.023" classname="02FriendshipUserIdentityFeignGetMutualFriends"/>
+  </testsuite>
+  <testsuite name="02 Friendship | User ↔ Identity Feign / Self friendship rejected" id="733c34bf-a2b2-486f-a307-37d9b3510fcc" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.011">
+    <testcase name="HTTP status 400" time="0.011" classname="02FriendshipUserIdentityFeignSelfFriendshipRejected"/>
+    <testcase name="Error envelope" time="0.011" classname="02FriendshipUserIdentityFeignSelfFriendshipRejected"/>
+  </testsuite>
+  <testsuite name="02 Friendship | User ↔ Identity Feign / B restricts direct messages" id="f1285293-ff3a-4b24-a73f-72941813d427" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.029">
+    <testcase name="HTTP status 200" time="0.029" classname="02FriendshipUserIdentityFeignBRestrictsDirectMessages"/>
+    <testcase name="Success envelope" time="0.029" classname="02FriendshipUserIdentityFeignBRestrictsDirectMessages"/>
+  </testsuite>
+  <testsuite name="02 Friendship | User ↔ Identity Feign / Friend still allowed to message" id="56f02e79-c10a-41ba-a206-a75eb4f4f4e4" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.017">
+    <testcase name="HTTP status 200" time="0.017" classname="02FriendshipUserIdentityFeignFriendStillAllowedToMessage"/>
+    <testcase name="Success envelope" time="0.017" classname="02FriendshipUserIdentityFeignFriendStillAllowedToMessage"/>
+    <testcase name="Friend permission" time="0.017" classname="02FriendshipUserIdentityFeignFriendStillAllowedToMessage"/>
+  </testsuite>
+  <testsuite name="02 Friendship | User ↔ Identity Feign / Nonfriend denied by User privacy" id="594f04d7-9eeb-4364-a1ba-c90e2657c7a2" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.014">
+    <testcase name="HTTP status 200" time="0.014" classname="02FriendshipUserIdentityFeignNonfriendDeniedByUserPrivacy"/>
+    <testcase name="Success envelope" time="0.014" classname="02FriendshipUserIdentityFeignNonfriendDeniedByUserPrivacy"/>
+    <testcase name="Nonfriend permission" time="0.014" classname="02FriendshipUserIdentityFeignNonfriendDeniedByUserPrivacy"/>
+  </testsuite>
+  <testsuite name="02 Friendship | User ↔ Identity Feign / Restore permissive fixture privacy" id="c42d1950-cff5-45c7-a1aa-993a3455c19d" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.029">
+    <testcase name="HTTP status 200" time="0.029" classname="02FriendshipUserIdentityFeignRestorePermissiveFixturePrivacy"/>
+    <testcase name="Success envelope" time="0.029" classname="02FriendshipUserIdentityFeignRestorePermissiveFixturePrivacy"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Create post" id="90569f8b-0da7-4ed6-a62b-21a995a77c22" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.663">
+    <testcase name="HTTP status 201" time="0.663" classname="03SocialKafkaNotificationsFeignProfilesCreatePost"/>
+    <testcase name="Success envelope" time="0.663" classname="03SocialKafkaNotificationsFeignProfilesCreatePost"/>
+    <testcase name="Capture post_id" time="0.663" classname="03SocialKafkaNotificationsFeignProfilesCreatePost"/>
+    <testcase name="Author enriched from Identity" time="0.663" classname="03SocialKafkaNotificationsFeignProfilesCreatePost"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Get public post" id="7349dde2-9afd-41a0-a0dc-6b123664b905" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.090">
+    <testcase name="HTTP status 200" time="0.090" classname="03SocialKafkaNotificationsFeignProfilesGetPublicPost"/>
+    <testcase name="Success envelope" time="0.090" classname="03SocialKafkaNotificationsFeignProfilesGetPublicPost"/>
+    <testcase name="Public detail UUID" time="0.090" classname="03SocialKafkaNotificationsFeignProfilesGetPublicPost"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Nonowner cannot modify post" id="35306718-3d77-418e-a206-1e57116aba3e" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.037">
+    <testcase name="HTTP status 403" time="0.037" classname="03SocialKafkaNotificationsFeignProfilesNonownerCannotModifyPost"/>
+    <testcase name="Error envelope" time="0.037" classname="03SocialKafkaNotificationsFeignProfilesNonownerCannotModifyPost"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / B comment emits notification" id="46f0ae7c-f27a-413a-a185-359a6a1ba9e8" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.726">
+    <testcase name="HTTP status 201" time="0.726" classname="03SocialKafkaNotificationsFeignProfilesBCommentEmitsNotification"/>
+    <testcase name="Success envelope" time="0.726" classname="03SocialKafkaNotificationsFeignProfilesBCommentEmitsNotification"/>
+    <testcase name="Capture comment_id" time="0.726" classname="03SocialKafkaNotificationsFeignProfilesBCommentEmitsNotification"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Poll A notification from real Kafka" id="2231daf9-f439-4fd5-ace6-79337f67d771" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.415">
+    <testcase name="HTTP status 200" time="0.415" classname="03SocialKafkaNotificationsFeignProfilesPollANotificationFromRealKafka"/>
+    <testcase name="Success envelope" time="0.415" classname="03SocialKafkaNotificationsFeignProfilesPollANotificationFromRealKafka"/>
+    <testcase name="Kafka persisted receiver notification" time="0.415" classname="03SocialKafkaNotificationsFeignProfilesPollANotificationFromRealKafka"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Get my unread notification count" id="41fa18ac-648c-4c01-a7a4-79c3aa2bd420" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.020">
+    <testcase name="HTTP status 200" time="0.020" classname="03SocialKafkaNotificationsFeignProfilesGetMyUnreadNotificationCount"/>
+    <testcase name="Success envelope" time="0.020" classname="03SocialKafkaNotificationsFeignProfilesGetMyUnreadNotificationCount"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Get my notification" id="be09dada-f847-425b-a243-f4cbc0be7d48" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.039">
+    <testcase name="HTTP status 200" time="0.039" classname="03SocialKafkaNotificationsFeignProfilesGetMyNotification"/>
+    <testcase name="Success envelope" time="0.039" classname="03SocialKafkaNotificationsFeignProfilesGetMyNotification"/>
+    <testcase name="Notification receiver" time="0.039" classname="03SocialKafkaNotificationsFeignProfilesGetMyNotification"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / SECURITY | Outsider notification access rejected" id="3a2e9221-3d60-42f0-a983-50c818db9b42" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.037">
+    <testcase name="HTTP status 401/403/404" time="0.037" classname="03SocialKafkaNotificationsFeignProfilesSecurityOutsiderNotificationAccessRejected"/>
+    <testcase name="Error envelope" time="0.037" classname="03SocialKafkaNotificationsFeignProfilesSecurityOutsiderNotificationAccessRejected"/>
+    <testcase name="No foreign notification data" time="0.037" classname="03SocialKafkaNotificationsFeignProfilesSecurityOutsiderNotificationAccessRejected"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Mark my notification read" id="dee0a7f2-982f-40cf-a112-158e04f0f9b2" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.031">
+    <testcase name="HTTP status 200" time="0.031" classname="03SocialKafkaNotificationsFeignProfilesMarkMyNotificationRead"/>
+    <testcase name="Success envelope" time="0.031" classname="03SocialKafkaNotificationsFeignProfilesMarkMyNotificationRead"/>
+    <testcase name="Read persisted" time="0.031" classname="03SocialKafkaNotificationsFeignProfilesMarkMyNotificationRead"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Nonowner cannot edit comment" id="5168958e-1d85-4800-adab-655cdd3c8913" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.029">
+    <testcase name="HTTP status 403" time="0.029" classname="03SocialKafkaNotificationsFeignProfilesNonownerCannotEditComment"/>
+    <testcase name="Error envelope" time="0.029" classname="03SocialKafkaNotificationsFeignProfilesNonownerCannotEditComment"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / React to post" id="7e503f1e-736d-46c6-a88e-bf809dfaab8c" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.083">
+    <testcase name="HTTP status 200" time="0.083" classname="03SocialKafkaNotificationsFeignProfilesReactToPost"/>
+    <testcase name="Success envelope" time="0.083" classname="03SocialKafkaNotificationsFeignProfilesReactToPost"/>
+    <testcase name="Current reaction LIKE" time="0.083" classname="03SocialKafkaNotificationsFeignProfilesReactToPost"/>
+    <testcase name="One reaction" time="0.083" classname="03SocialKafkaNotificationsFeignProfilesReactToPost"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Change post reaction" id="ba412313-cc33-4376-a70f-e36a7f396449" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.035">
+    <testcase name="HTTP status 200" time="0.035" classname="03SocialKafkaNotificationsFeignProfilesChangePostReaction"/>
+    <testcase name="Success envelope" time="0.035" classname="03SocialKafkaNotificationsFeignProfilesChangePostReaction"/>
+    <testcase name="Reaction changed to LOVE" time="0.035" classname="03SocialKafkaNotificationsFeignProfilesChangePostReaction"/>
+    <testcase name="Updating does not duplicate" time="0.035" classname="03SocialKafkaNotificationsFeignProfilesChangePostReaction"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / List post reactions" id="7bb7e005-cb57-4f85-a364-82fe0e9a3541" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.062">
+    <testcase name="HTTP status 200" time="0.062" classname="03SocialKafkaNotificationsFeignProfilesListPostReactions"/>
+    <testcase name="Success envelope" time="0.062" classname="03SocialKafkaNotificationsFeignProfilesListPostReactions"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / React to comment" id="75546d80-c37c-477e-aa9f-188e91a8e2ac" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.047">
+    <testcase name="HTTP status 200" time="0.047" classname="03SocialKafkaNotificationsFeignProfilesReactToComment"/>
+    <testcase name="Success envelope" time="0.047" classname="03SocialKafkaNotificationsFeignProfilesReactToComment"/>
+    <testcase name="Comment reaction LIKE" time="0.047" classname="03SocialKafkaNotificationsFeignProfilesReactToComment"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Change comment reaction" id="53a8972f-a2e1-46b4-a4db-e02e7fa3d0a4" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.040">
+    <testcase name="HTTP status 200" time="0.040" classname="03SocialKafkaNotificationsFeignProfilesChangeCommentReaction"/>
+    <testcase name="Success envelope" time="0.040" classname="03SocialKafkaNotificationsFeignProfilesChangeCommentReaction"/>
+    <testcase name="Comment reaction changed" time="0.040" classname="03SocialKafkaNotificationsFeignProfilesChangeCommentReaction"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / List comment reactions" id="268014a0-56fd-420c-a3cf-7a92b684f075" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.041">
+    <testcase name="HTTP status 200" time="0.041" classname="03SocialKafkaNotificationsFeignProfilesListCommentReactions"/>
+    <testcase name="Success envelope" time="0.041" classname="03SocialKafkaNotificationsFeignProfilesListCommentReactions"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Remove my comment reaction" id="23542254-afe0-4d33-a67c-5ee2babc348c" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.053">
+    <testcase name="HTTP status 200" time="0.053" classname="03SocialKafkaNotificationsFeignProfilesRemoveMyCommentReaction"/>
+    <testcase name="Success envelope" time="0.053" classname="03SocialKafkaNotificationsFeignProfilesRemoveMyCommentReaction"/>
+    <testcase name="Comment reaction removed" time="0.053" classname="03SocialKafkaNotificationsFeignProfilesRemoveMyCommentReaction"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Share visible post" id="aa2ba6e2-0eb9-4672-aea2-edff714e12f5" timestamp="2026-11-12T14:35:59.864Z" tests="5" failures="0" errors="0" time="0.104">
+    <testcase name="HTTP status 201" time="0.104" classname="03SocialKafkaNotificationsFeignProfilesShareVisiblePost"/>
+    <testcase name="Success envelope" time="0.104" classname="03SocialKafkaNotificationsFeignProfilesShareVisiblePost"/>
+    <testcase name="Capture shared_post_id" time="0.104" classname="03SocialKafkaNotificationsFeignProfilesShareVisiblePost"/>
+    <testcase name="Share keeps original post" time="0.104" classname="03SocialKafkaNotificationsFeignProfilesShareVisiblePost"/>
+    <testcase name="Share author is B" time="0.104" classname="03SocialKafkaNotificationsFeignProfilesShareVisiblePost"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Get cursor feed page" id="4aadd69e-3194-4f7d-a6ea-82ec0449d9d5" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.084">
+    <testcase name="HTTP status 200" time="0.084" classname="03SocialKafkaNotificationsFeignProfilesGetCursorFeedPage"/>
+    <testcase name="Success envelope" time="0.084" classname="03SocialKafkaNotificationsFeignProfilesGetCursorFeedPage"/>
+    <testcase name="Capture feed_cursor" time="0.084" classname="03SocialKafkaNotificationsFeignProfilesGetCursorFeedPage"/>
+    <testcase name="Cursor page has items" time="0.084" classname="03SocialKafkaNotificationsFeignProfilesGetCursorFeedPage"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Search explore page" id="43953e23-b36f-4078-a8cf-1947cf73c344" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.041">
+    <testcase name="HTTP status 200" time="0.041" classname="03SocialKafkaNotificationsFeignProfilesSearchExplorePage"/>
+    <testcase name="Success envelope" time="0.041" classname="03SocialKafkaNotificationsFeignProfilesSearchExplorePage"/>
+    <testcase name="Capture explore_cursor" time="0.041" classname="03SocialKafkaNotificationsFeignProfilesSearchExplorePage"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / List trending hashtags" id="96c8b66c-a3f4-44ed-a4ca-a6174f609d46" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.030">
+    <testcase name="HTTP status 200" time="0.030" classname="03SocialKafkaNotificationsFeignProfilesListTrendingHashtags"/>
+    <testcase name="Success envelope" time="0.030" classname="03SocialKafkaNotificationsFeignProfilesListTrendingHashtags"/>
+  </testsuite>
+  <testsuite name="03 Social → Kafka → Notifications + Feign profiles / Invalid paging limit rejected" id="d9c471e9-c667-41c2-ae15-ce13fa893039" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.017">
+    <testcase name="HTTP status 400" time="0.017" classname="03SocialKafkaNotificationsFeignProfilesInvalidPagingLimitRejected"/>
+    <testcase name="Error envelope" time="0.017" classname="03SocialKafkaNotificationsFeignProfilesInvalidPagingLimitRejected"/>
+  </testsuite>
+  <testsuite name="04 Privacy and blocking across User/Social/Chat / Create ONLY_ME post" id="54323a5d-f1e9-4fa1-a7b8-6678acd5911a" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.051">
+    <testcase name="HTTP status 201" time="0.051" classname="04PrivacyAndBlockingAcrossUserSocialChatCreateOnlyMePost"/>
+    <testcase name="Success envelope" time="0.051" classname="04PrivacyAndBlockingAcrossUserSocialChatCreateOnlyMePost"/>
+    <testcase name="Capture private_post_id" time="0.051" classname="04PrivacyAndBlockingAcrossUserSocialChatCreateOnlyMePost"/>
+  </testsuite>
+  <testsuite name="04 Privacy and blocking across User/Social/Chat / Nonowner cannot view ONLY_ME" id="e18905a1-1d98-4306-a9c7-4b8f16fb6535" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.035">
+    <testcase name="HTTP status 404" time="0.035" classname="04PrivacyAndBlockingAcrossUserSocialChatNonownerCannotViewOnlyMe"/>
+    <testcase name="Error envelope" time="0.035" classname="04PrivacyAndBlockingAcrossUserSocialChatNonownerCannotViewOnlyMe"/>
+  </testsuite>
+  <testsuite name="04 Privacy and blocking across User/Social/Chat / Anonymous cannot view ONLY_ME" id="c77707e1-7fee-4178-a2b9-e183f17b1b85" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.015">
+    <testcase name="HTTP status 404" time="0.015" classname="04PrivacyAndBlockingAcrossUserSocialChatAnonymousCannotViewOnlyMe"/>
+    <testcase name="Error envelope" time="0.015" classname="04PrivacyAndBlockingAcrossUserSocialChatAnonymousCannotViewOnlyMe"/>
+  </testsuite>
+  <testsuite name="04 Privacy and blocking across User/Social/Chat / Create FRIENDS post" id="fc3da697-4a3c-452f-a82d-d6e7f47958ee" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.032">
+    <testcase name="HTTP status 201" time="0.032" classname="04PrivacyAndBlockingAcrossUserSocialChatCreateFriendsPost"/>
+    <testcase name="Success envelope" time="0.032" classname="04PrivacyAndBlockingAcrossUserSocialChatCreateFriendsPost"/>
+    <testcase name="Capture friends_post_id" time="0.032" classname="04PrivacyAndBlockingAcrossUserSocialChatCreateFriendsPost"/>
+  </testsuite>
+  <testsuite name="04 Privacy and blocking across User/Social/Chat / Friend reads FRIENDS through User Feign" id="64417cf9-ff78-42ab-aaa5-8c36646ec998" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.061">
+    <testcase name="HTTP status 200" time="0.061" classname="04PrivacyAndBlockingAcrossUserSocialChatFriendReadsFriendsThroughUserFeign"/>
+    <testcase name="Success envelope" time="0.061" classname="04PrivacyAndBlockingAcrossUserSocialChatFriendReadsFriendsThroughUserFeign"/>
+  </testsuite>
+  <testsuite name="04 Privacy and blocking across User/Social/Chat / Nonfriend cannot view FRIENDS" id="db238cd4-6552-4f20-a485-05880e021293" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.059">
+    <testcase name="HTTP status 404" time="0.059" classname="04PrivacyAndBlockingAcrossUserSocialChatNonfriendCannotViewFriends"/>
+    <testcase name="Error envelope" time="0.059" classname="04PrivacyAndBlockingAcrossUserSocialChatNonfriendCannotViewFriends"/>
+  </testsuite>
+  <testsuite name="04 Privacy and blocking across User/Social/Chat / A blocks B and removes friendship" id="b9bb2b08-47ef-42d0-a7d0-34bcbf71467d" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.051">
+    <testcase name="HTTP status 201" time="0.051" classname="04PrivacyAndBlockingAcrossUserSocialChatABlocksBAndRemovesFriendship"/>
+    <testcase name="Success envelope" time="0.051" classname="04PrivacyAndBlockingAcrossUserSocialChatABlocksBAndRemovesFriendship"/>
+  </testsuite>
+  <testsuite name="04 Privacy and blocking across User/Social/Chat / Relationship status" id="fe3fcbb0-885f-47aa-afa1-dae1aab549b7" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.019">
+    <testcase name="HTTP status 200" time="0.019" classname="04PrivacyAndBlockingAcrossUserSocialChatRelationshipStatus"/>
+    <testcase name="Success envelope" time="0.019" classname="04PrivacyAndBlockingAcrossUserSocialChatRelationshipStatus"/>
+    <testcase name="Blocked state" time="0.019" classname="04PrivacyAndBlockingAcrossUserSocialChatRelationshipStatus"/>
+  </testsuite>
+  <testsuite name="04 Privacy and blocking across User/Social/Chat / Blocked B cannot read A PUBLIC post" id="c877b489-4690-4dd9-aff1-f17ad8a53c34" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.051">
+    <testcase name="HTTP status 404" time="0.051" classname="04PrivacyAndBlockingAcrossUserSocialChatBlockedBCannotReadAPublicPost"/>
+    <testcase name="Error envelope" time="0.051" classname="04PrivacyAndBlockingAcrossUserSocialChatBlockedBCannotReadAPublicPost"/>
+  </testsuite>
+  <testsuite name="04 Privacy and blocking across User/Social/Chat / SECURITY | Blocked B cannot comment on A post" id="f9e680ef-993f-4325-a008-40c5e13ee2ee" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="1" errors="0" time="0.044">
+    <testcase name="HTTP status 403/404" time="0.044" classname="04PrivacyAndBlockingAcrossUserSocialChatSecurityBlockedBCannotCommentOnAPost">
+      <failure type="AssertionFailure" message="expected 201 to be one of [ 403, 404 ]">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: 51ce858b-f6ed-4c86-a9b5-65e84c78d31d.]]>
+        <![CDATA[Collection name: Kirenz | Integration & cross-service regression.]]>
+        <![CDATA[Request name: 04 Privacy and blocking across User/Social/Chat / SECURITY | Blocked B cannot comment on A post.]]>
+        <![CDATA[Test description: HTTP status 403/404.]]>
+        <![CDATA[Error message: expected 201 to be one of [ 403, 404 ].]]>
+        <![CDATA[Stacktrace: AssertionError: expected 201 to be one of [ 403, 404 ]
+   at Object.eval sandbox-script.js:1:65).]]>
+      </failure>
+    </testcase>
+    <testcase name="Success envelope" time="0.044" classname="04PrivacyAndBlockingAcrossUserSocialChatSecurityBlockedBCannotCommentOnAPost"/>
+  </testsuite>
+  <testsuite name="04 Privacy and blocking across User/Social/Chat / Blocked B cannot start chat with A" id="c32647f8-9e10-4fc7-a95a-886a33e9236e" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="1" errors="0" time="0.850">
+    <testcase name="HTTP status 403" time="0.850" classname="04PrivacyAndBlockingAcrossUserSocialChatBlockedBCannotStartChatWithA">
+      <failure type="AssertionFailure" message="expected 200 to be one of [ 403 ]">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: 51ce858b-f6ed-4c86-a9b5-65e84c78d31d.]]>
+        <![CDATA[Collection name: Kirenz | Integration & cross-service regression.]]>
+        <![CDATA[Request name: 04 Privacy and blocking across User/Social/Chat / Blocked B cannot start chat with A.]]>
+        <![CDATA[Test description: HTTP status 403.]]>
+        <![CDATA[Error message: expected 200 to be one of [ 403 ].]]>
+        <![CDATA[Stacktrace: AssertionError: expected 200 to be one of [ 403 ]
+   at Object.eval sandbox-script.js:1:66).]]>
+      </failure>
+    </testcase>
+    <testcase name="Success envelope" time="0.850" classname="04PrivacyAndBlockingAcrossUserSocialChatBlockedBCannotStartChatWithA"/>
+  </testsuite>
+  <testsuite name="04 Privacy and blocking across User/Social/Chat / Unblock disposable user" id="04069617-5d84-4bf4-af41-366a31600768" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.020">
+    <testcase name="HTTP status 200" time="0.020" classname="04PrivacyAndBlockingAcrossUserSocialChatUnblockDisposableUser"/>
+    <testcase name="Success envelope" time="0.020" classname="04PrivacyAndBlockingAcrossUserSocialChatUnblockDisposableUser"/>
+  </testsuite>
+  <testsuite name="04 Privacy and blocking across User/Social/Chat / Send friend request" id="38b044d8-c717-4870-a7da-2333a91911ff" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.040">
+    <testcase name="HTTP status 201" time="0.040" classname="04PrivacyAndBlockingAcrossUserSocialChatSendFriendRequest"/>
+    <testcase name="Success envelope" time="0.040" classname="04PrivacyAndBlockingAcrossUserSocialChatSendFriendRequest"/>
+    <testcase name="Capture friend_request_id" time="0.040" classname="04PrivacyAndBlockingAcrossUserSocialChatSendFriendRequest"/>
+  </testsuite>
+  <testsuite name="04 Privacy and blocking across User/Social/Chat / Restore friendship for remaining fixtures" id="53985946-ab7c-49d6-a029-17774affcc98" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.039">
+    <testcase name="HTTP status 200" time="0.039" classname="04PrivacyAndBlockingAcrossUserSocialChatRestoreFriendshipForRemainingFixtures"/>
+    <testcase name="Success envelope" time="0.039" classname="04PrivacyAndBlockingAcrossUserSocialChatRestoreFriendshipForRemainingFixtures"/>
+    <testcase name="Capture friendship_id" time="0.039" classname="04PrivacyAndBlockingAcrossUserSocialChatRestoreFriendshipForRemainingFixtures"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Create A/B direct conversation" id="e40b1c5e-1098-47b3-a10f-a5d180fb234d" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.051">
+    <testcase name="HTTP status 200" time="0.051" classname="05ChatRestIdentityUserFeignRedisCallsCreateABDirectConversation"/>
+    <testcase name="Success envelope" time="0.051" classname="05ChatRestIdentityUserFeignRedisCallsCreateABDirectConversation"/>
+    <testcase name="Capture conversation_id" time="0.051" classname="05ChatRestIdentityUserFeignRedisCallsCreateABDirectConversation"/>
+    <testcase name="Both participants enriched" time="0.051" classname="05ChatRestIdentityUserFeignRedisCallsCreateABDirectConversation"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Direct creation is idempotent" id="04fa5475-c819-47c0-ab19-288c94f07ed7" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.042">
+    <testcase name="HTTP status 200" time="0.042" classname="05ChatRestIdentityUserFeignRedisCallsDirectCreationIsIdempotent"/>
+    <testcase name="Success envelope" time="0.042" classname="05ChatRestIdentityUserFeignRedisCallsDirectCreationIsIdempotent"/>
+    <testcase name="Same direct conversation" time="0.042" classname="05ChatRestIdentityUserFeignRedisCallsDirectCreationIsIdempotent"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Get direct conversation details" id="47c34361-9e83-44ce-ad29-3286d6f09699" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.050">
+    <testcase name="HTTP status 200" time="0.050" classname="05ChatRestIdentityUserFeignRedisCallsGetDirectConversationDetails"/>
+    <testcase name="Success envelope" time="0.050" classname="05ChatRestIdentityUserFeignRedisCallsGetDirectConversationDetails"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Get conversation message history" id="2f19a6ca-03ed-49c7-a3a3-e9906db3490f" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.047">
+    <testcase name="HTTP status 200" time="0.047" classname="05ChatRestIdentityUserFeignRedisCallsGetConversationMessageHistory"/>
+    <testcase name="Success envelope" time="0.047" classname="05ChatRestIdentityUserFeignRedisCallsGetConversationMessageHistory"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Outsider cannot read history" id="0e2a9071-3d36-4a55-a3ba-b389bed632fe" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.054">
+    <testcase name="HTTP status 400/403/404" time="0.054" classname="05ChatRestIdentityUserFeignRedisCallsOutsiderCannotReadHistory"/>
+    <testcase name="Error envelope" time="0.054" classname="05ChatRestIdentityUserFeignRedisCallsOutsiderCannotReadHistory"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / SECURITY | Outsider cannot mark another chat read" id="d13bc32b-fcd9-44a3-a6ed-dceaefd31a12" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="1" errors="0" time="0.029">
+    <testcase name="HTTP status 403/404" time="0.029" classname="05ChatRestIdentityUserFeignRedisCallsSecurityOutsiderCannotMarkAnotherChatRead">
+      <failure type="AssertionFailure" message="expected 200 to be one of [ 403, 404 ]">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: 51ce858b-f6ed-4c86-a9b5-65e84c78d31d.]]>
+        <![CDATA[Collection name: Kirenz | Integration & cross-service regression.]]>
+        <![CDATA[Request name: 05 Chat REST + Identity/User Feign + Redis calls / SECURITY | Outsider cannot mark another chat read.]]>
+        <![CDATA[Test description: HTTP status 403/404.]]>
+        <![CDATA[Error message: expected 200 to be one of [ 403, 404 ].]]>
+        <![CDATA[Stacktrace: AssertionError: expected 200 to be one of [ 403, 404 ]
+   at Object.eval sandbox-script.js:1:75).]]>
+      </failure>
+    </testcase>
+    <testcase name="Success envelope" time="0.029" classname="05ChatRestIdentityUserFeignRedisCallsSecurityOutsiderCannotMarkAnotherChatRead"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Set participant nickname" id="65b5dc0d-e44a-4656-a688-76e40f6de643" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.095">
+    <testcase name="HTTP status 200" time="0.095" classname="05ChatRestIdentityUserFeignRedisCallsSetParticipantNickname"/>
+    <testcase name="Success envelope" time="0.095" classname="05ChatRestIdentityUserFeignRedisCallsSetParticipantNickname"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Get users' online presence" id="e2ddc512-514f-4e9e-acc3-1d0a28ad044a" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.028">
+    <testcase name="HTTP status 200" time="0.028" classname="05ChatRestIdentityUserFeignRedisCallsGetUsersOnlinePresence"/>
+    <testcase name="Success envelope" time="0.028" classname="05ChatRestIdentityUserFeignRedisCallsGetUsersOnlinePresence"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Create group conversation" id="cdfc5fd8-8501-444f-a51e-73bfe1eba907" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.117">
+    <testcase name="HTTP status 200" time="0.117" classname="05ChatRestIdentityUserFeignRedisCallsCreateGroupConversation"/>
+    <testcase name="Success envelope" time="0.117" classname="05ChatRestIdentityUserFeignRedisCallsCreateGroupConversation"/>
+    <testcase name="Capture group_conversation_id" time="0.117" classname="05ChatRestIdentityUserFeignRedisCallsCreateGroupConversation"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Rename group conversation" id="6240e547-1169-4693-a48c-8fa6126f0d16" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.060">
+    <testcase name="HTTP status 200" time="0.060" classname="05ChatRestIdentityUserFeignRedisCallsRenameGroupConversation"/>
+    <testcase name="Success envelope" time="0.060" classname="05ChatRestIdentityUserFeignRedisCallsRenameGroupConversation"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Promote group participant to admin" id="62bb6370-0a0d-453b-a67a-7b0a904d2272" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.042">
+    <testcase name="HTTP status 200" time="0.042" classname="05ChatRestIdentityUserFeignRedisCallsPromoteGroupParticipantToAdmin"/>
+    <testcase name="Success envelope" time="0.042" classname="05ChatRestIdentityUserFeignRedisCallsPromoteGroupParticipantToAdmin"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Nonadmin cannot delete group" id="3d3d126a-5575-4fd4-a5cc-4d511c669d63" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.019">
+    <testcase name="HTTP status 400/403/404" time="0.019" classname="05ChatRestIdentityUserFeignRedisCallsNonadminCannotDeleteGroup"/>
+    <testcase name="Error envelope" time="0.019" classname="05ChatRestIdentityUserFeignRedisCallsNonadminCannotDeleteGroup"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Start one-to-one video call" id="24888068-f724-4146-a44e-a3fce574901e" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.130">
+    <testcase name="HTTP status 200" time="0.130" classname="05ChatRestIdentityUserFeignRedisCallsStartOneToOneVideoCall"/>
+    <testcase name="Success envelope" time="0.130" classname="05ChatRestIdentityUserFeignRedisCallsStartOneToOneVideoCall"/>
+    <testcase name="Capture call_id" time="0.130" classname="05ChatRestIdentityUserFeignRedisCallsStartOneToOneVideoCall"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Outsider cannot access call" id="2d58fb35-c716-4435-ac6e-96aaee85ac3e" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.024">
+    <testcase name="HTTP status 403" time="0.024" classname="05ChatRestIdentityUserFeignRedisCallsOutsiderCannotAccessCall"/>
+    <testcase name="Error envelope" time="0.024" classname="05ChatRestIdentityUserFeignRedisCallsOutsiderCannotAccessCall"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Media access before acceptance rejected" id="f3fb596c-2ad8-4476-aded-d3ba915602a3" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.028">
+    <testcase name="HTTP status 409" time="0.028" classname="05ChatRestIdentityUserFeignRedisCallsMediaAccessBeforeAcceptanceRejected"/>
+    <testcase name="Error envelope" time="0.028" classname="05ChatRestIdentityUserFeignRedisCallsMediaAccessBeforeAcceptanceRejected"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Accept incoming call" id="96ef8b90-dc51-4fcd-a40f-e723b6122625" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.046">
+    <testcase name="HTTP status 200" time="0.046" classname="05ChatRestIdentityUserFeignRedisCallsAcceptIncomingCall"/>
+    <testcase name="Success envelope" time="0.046" classname="05ChatRestIdentityUserFeignRedisCallsAcceptIncomingCall"/>
+    <testcase name="Call accepted" time="0.046" classname="05ChatRestIdentityUserFeignRedisCallsAcceptIncomingCall"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Refresh accepted call heartbeat" id="d66e1f68-d29e-4163-a161-2facdad47530" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.021">
+    <testcase name="HTTP status 200" time="0.021" classname="05ChatRestIdentityUserFeignRedisCallsRefreshAcceptedCallHeartbeat"/>
+    <testcase name="Success envelope" time="0.021" classname="05ChatRestIdentityUserFeignRedisCallsRefreshAcceptedCallHeartbeat"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Get current user's active call" id="6d121910-2484-474f-ae25-b5894cf54e92" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.031">
+    <testcase name="HTTP status 200" time="0.031" classname="05ChatRestIdentityUserFeignRedisCallsGetCurrentUsersActiveCall"/>
+    <testcase name="Success envelope" time="0.031" classname="05ChatRestIdentityUserFeignRedisCallsGetCurrentUsersActiveCall"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Provider-unavailable failure is explicit (isolated mode)" id="c1eb1ef5-ae3f-4bc7-ab6d-61bb66ad07e1" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.192">
+    <testcase name="HTTP status 503" time="0.192" classname="05ChatRestIdentityUserFeignRedisCallsProviderUnavailableFailureIsExplicitIsolatedMode"/>
+    <testcase name="Error envelope" time="0.192" classname="05ChatRestIdentityUserFeignRedisCallsProviderUnavailableFailureIsExplicitIsolatedMode"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / End or cancel call" id="133a2a8d-1ec5-41ea-a9ab-d9745b3797cc" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.060">
+    <testcase name="HTTP status 200" time="0.060" classname="05ChatRestIdentityUserFeignRedisCallsEndOrCancelCall"/>
+    <testcase name="Success envelope" time="0.060" classname="05ChatRestIdentityUserFeignRedisCallsEndOrCancelCall"/>
+    <testcase name="Both sides see ended state" time="0.060" classname="05ChatRestIdentityUserFeignRedisCallsEndOrCancelCall"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Get current user's active call" id="d5d2f2e2-da61-44ab-ae29-b85cb67b18c7" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.013">
+    <testcase name="HTTP status 200" time="0.013" classname="05ChatRestIdentityUserFeignRedisCallsGetCurrentUsersActiveCall"/>
+    <testcase name="Success envelope" time="0.013" classname="05ChatRestIdentityUserFeignRedisCallsGetCurrentUsersActiveCall"/>
+    <testcase name="No active call after hangup" time="0.013" classname="05ChatRestIdentityUserFeignRedisCallsGetCurrentUsersActiveCall"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / New call for decline" id="28db4dde-20b8-4deb-a7bf-48195986cc11" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.060">
+    <testcase name="HTTP status 200" time="0.060" classname="05ChatRestIdentityUserFeignRedisCallsNewCallForDecline"/>
+    <testcase name="Success envelope" time="0.060" classname="05ChatRestIdentityUserFeignRedisCallsNewCallForDecline"/>
+    <testcase name="Capture call_id" time="0.060" classname="05ChatRestIdentityUserFeignRedisCallsNewCallForDecline"/>
+  </testsuite>
+  <testsuite name="05 Chat REST + Identity/User Feign + Redis calls / Decline incoming call" id="420c210b-ff29-4562-a7eb-6df37cde1cfe" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.033">
+    <testcase name="HTTP status 200" time="0.033" classname="05ChatRestIdentityUserFeignRedisCallsDeclineIncomingCall"/>
+    <testcase name="Success envelope" time="0.033" classname="05ChatRestIdentityUserFeignRedisCallsDeclineIncomingCall"/>
+    <testcase name="Declined call ended" time="0.033" classname="05ChatRestIdentityUserFeignRedisCallsDeclineIncomingCall"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / Admin authorization ping" id="e590fb36-f3c3-4e5e-ab9b-ddf8a11e18ef" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.020">
+    <testcase name="HTTP status 200" time="0.020" classname="06AdminIdentitySocialKafkaAuditWorkflowsAdminAuthorizationPing"/>
+    <testcase name="Success envelope" time="0.020" classname="06AdminIdentitySocialKafkaAuditWorkflowsAdminAuthorizationPing"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / User summary through identity-service" id="9265caeb-b433-4850-a79d-8cf1edd339c6" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.049">
+    <testcase name="HTTP status 200" time="0.049" classname="06AdminIdentitySocialKafkaAuditWorkflowsUserSummaryThroughIdentityService"/>
+    <testcase name="Success envelope" time="0.049" classname="06AdminIdentitySocialKafkaAuditWorkflowsUserSummaryThroughIdentityService"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / User detail through identity-service" id="77d626ff-9c8a-4d58-ab88-8e9affbfccc6" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.067">
+    <testcase name="HTTP status 200" time="0.067" classname="06AdminIdentitySocialKafkaAuditWorkflowsUserDetailThroughIdentityService"/>
+    <testcase name="Success envelope" time="0.067" classname="06AdminIdentitySocialKafkaAuditWorkflowsUserDetailThroughIdentityService"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / Dashboard aggregate summary" id="745a7ebb-f4cc-4c55-ac99-5e99eef21049" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.056">
+    <testcase name="HTTP status 200" time="0.056" classname="06AdminIdentitySocialKafkaAuditWorkflowsDashboardAggregateSummary"/>
+    <testcase name="Success envelope" time="0.056" classname="06AdminIdentitySocialKafkaAuditWorkflowsDashboardAggregateSummary"/>
+    <testcase name="No partial fallback" time="0.056" classname="06AdminIdentitySocialKafkaAuditWorkflowsDashboardAggregateSummary"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / User growth through identity-service" id="8193559a-d6b7-4f9d-a2b5-f5ea455af930" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.068">
+    <testcase name="HTTP status 200" time="0.068" classname="06AdminIdentitySocialKafkaAuditWorkflowsUserGrowthThroughIdentityService"/>
+    <testcase name="Success envelope" time="0.068" classname="06AdminIdentitySocialKafkaAuditWorkflowsUserGrowthThroughIdentityService"/>
+    <testcase name="Identity growth available" time="0.068" classname="06AdminIdentitySocialKafkaAuditWorkflowsUserGrowthThroughIdentityService"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / Content growth through social-service" id="42a016eb-9687-49a9-a04e-2356e7cf2a61" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.059">
+    <testcase name="HTTP status 200" time="0.059" classname="06AdminIdentitySocialKafkaAuditWorkflowsContentGrowthThroughSocialService"/>
+    <testcase name="Success envelope" time="0.059" classname="06AdminIdentitySocialKafkaAuditWorkflowsContentGrowthThroughSocialService"/>
+    <testcase name="Social growth available" time="0.059" classname="06AdminIdentitySocialKafkaAuditWorkflowsContentGrowthThroughSocialService"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / Submit report" id="03abcc1d-54a5-4c7c-a941-d8df1b2592d5" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.162">
+    <testcase name="HTTP status 201" time="0.162" classname="06AdminIdentitySocialKafkaAuditWorkflowsSubmitReport"/>
+    <testcase name="Success envelope" time="0.162" classname="06AdminIdentitySocialKafkaAuditWorkflowsSubmitReport"/>
+    <testcase name="Capture report_id" time="0.162" classname="06AdminIdentitySocialKafkaAuditWorkflowsSubmitReport"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / List own reports" id="8432f46a-5e3d-489e-a144-187fc38d26c5" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.051">
+    <testcase name="HTTP status 200" time="0.051" classname="06AdminIdentitySocialKafkaAuditWorkflowsListOwnReports"/>
+    <testcase name="Success envelope" time="0.051" classname="06AdminIdentitySocialKafkaAuditWorkflowsListOwnReports"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / Report detail with content enrichment" id="e241b4fa-c126-438a-a74a-273d5150ce1e" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.042">
+    <testcase name="HTTP status 200" time="0.042" classname="06AdminIdentitySocialKafkaAuditWorkflowsReportDetailWithContentEnrichment"/>
+    <testcase name="Success envelope" time="0.042" classname="06AdminIdentitySocialKafkaAuditWorkflowsReportDetailWithContentEnrichment"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / Start report review" id="bf8e2137-7bfb-49d6-a9ef-deae0b440f63" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.064">
+    <testcase name="HTTP status 200" time="0.064" classname="06AdminIdentitySocialKafkaAuditWorkflowsStartReportReview"/>
+    <testcase name="Success envelope" time="0.064" classname="06AdminIdentitySocialKafkaAuditWorkflowsStartReportReview"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / Dismiss report" id="408bda2e-4fff-4397-ad5a-7cc1861c7302" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="1.010">
+    <testcase name="HTTP status 200" time="1.010" classname="06AdminIdentitySocialKafkaAuditWorkflowsDismissReport"/>
+    <testcase name="Success envelope" time="1.010" classname="06AdminIdentitySocialKafkaAuditWorkflowsDismissReport"/>
+    <testcase name="Report dismissed" time="1.010" classname="06AdminIdentitySocialKafkaAuditWorkflowsDismissReport"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / REGRESSION | User can report POST through admin→social" id="9f4d3c06-6b76-40dc-af2c-56e89d7fbe1b" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="1" errors="0" time="0.058">
+    <testcase name="HTTP status 201" time="0.058" classname="06AdminIdentitySocialKafkaAuditWorkflowsRegressionUserCanReportPostThroughAdminsocial">
+      <failure type="AssertionFailure" message="expected 503 to be one of [ 201 ]">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: 51ce858b-f6ed-4c86-a9b5-65e84c78d31d.]]>
+        <![CDATA[Collection name: Kirenz | Integration & cross-service regression.]]>
+        <![CDATA[Request name: 06 Admin → Identity/Social → Kafka audit workflows / REGRESSION | User can report POST through admin→social.]]>
+        <![CDATA[Test description: HTTP status 201.]]>
+        <![CDATA[Error message: expected 503 to be one of [ 201 ].]]>
+        <![CDATA[Stacktrace: AssertionError: expected 503 to be one of [ 201 ]
+   at Object.eval sandbox-script.js:1:104).]]>
+      </failure>
+    </testcase>
+    <testcase name="Error envelope" time="0.058" classname="06AdminIdentitySocialKafkaAuditWorkflowsRegressionUserCanReportPostThroughAdminsocial"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / Warn disposable user" id="7f0c6ec0-caf4-4334-a776-1584206ca0fb" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.074">
+    <testcase name="HTTP status 200" time="0.074" classname="06AdminIdentitySocialKafkaAuditWorkflowsWarnDisposableUser"/>
+    <testcase name="Success envelope" time="0.074" classname="06AdminIdentitySocialKafkaAuditWorkflowsWarnDisposableUser"/>
+    <testcase name="Capture action_id" time="0.074" classname="06AdminIdentitySocialKafkaAuditWorkflowsWarnDisposableUser"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / Read own moderation action" id="1c6007fb-b62d-4406-a3e9-4bc8dfa1f121" timestamp="2026-11-12T14:35:59.864Z" tests="3" failures="0" errors="0" time="0.021">
+    <testcase name="HTTP status 200" time="0.021" classname="06AdminIdentitySocialKafkaAuditWorkflowsReadOwnModerationAction"/>
+    <testcase name="Success envelope" time="0.021" classname="06AdminIdentitySocialKafkaAuditWorkflowsReadOwnModerationAction"/>
+    <testcase name="Private admin note is hidden" time="0.021" classname="06AdminIdentitySocialKafkaAuditWorkflowsReadOwnModerationAction"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / Ban disposable user" id="fc262ccf-47dc-40d7-ad9a-e81c2d39741c" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.065">
+    <testcase name="HTTP status 200" time="0.065" classname="06AdminIdentitySocialKafkaAuditWorkflowsBanDisposableUser"/>
+    <testcase name="Success envelope" time="0.065" classname="06AdminIdentitySocialKafkaAuditWorkflowsBanDisposableUser"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / Identity rejects banned B login" id="d8999812-19a1-484f-aba0-f3a5b08684d1" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.015">
+    <testcase name="HTTP status 403" time="0.015" classname="06AdminIdentitySocialKafkaAuditWorkflowsIdentityRejectsBannedBLogin"/>
+    <testcase name="Error envelope" time="0.015" classname="06AdminIdentitySocialKafkaAuditWorkflowsIdentityRejectsBannedBLogin"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / Unban disposable user" id="4331995f-ce6b-4130-a85e-e4e7d2e9f116" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.057">
+    <testcase name="HTTP status 200" time="0.057" classname="06AdminIdentitySocialKafkaAuditWorkflowsUnbanDisposableUser"/>
+    <testcase name="Success envelope" time="0.057" classname="06AdminIdentitySocialKafkaAuditWorkflowsUnbanDisposableUser"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / B login restored after unban" id="937dda56-d10f-4987-a08b-ee29b7d4fcb9" timestamp="2026-11-12T14:35:59.864Z" tests="4" failures="0" errors="0" time="0.518">
+    <testcase name="HTTP status 200" time="0.518" classname="06AdminIdentitySocialKafkaAuditWorkflowsBLoginRestoredAfterUnban"/>
+    <testcase name="Success envelope" time="0.518" classname="06AdminIdentitySocialKafkaAuditWorkflowsBLoginRestoredAfterUnban"/>
+    <testcase name="Capture access_token_b" time="0.518" classname="06AdminIdentitySocialKafkaAuditWorkflowsBLoginRestoredAfterUnban"/>
+    <testcase name="Capture refresh_token_b" time="0.518" classname="06AdminIdentitySocialKafkaAuditWorkflowsBLoginRestoredAfterUnban"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / User moderation history" id="a9b939b2-4044-4e24-ae58-5d793cdcdde8" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.043">
+    <testcase name="HTTP status 200" time="0.043" classname="06AdminIdentitySocialKafkaAuditWorkflowsUserModerationHistory"/>
+    <testcase name="Success envelope" time="0.043" classname="06AdminIdentitySocialKafkaAuditWorkflowsUserModerationHistory"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / Search admin audit actions" id="bf1ffe2f-8a1b-4761-a71e-5f192053f34f" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.018">
+    <testcase name="HTTP status 200" time="0.018" classname="06AdminIdentitySocialKafkaAuditWorkflowsSearchAdminAuditActions"/>
+    <testcase name="Success envelope" time="0.018" classname="06AdminIdentitySocialKafkaAuditWorkflowsSearchAdminAuditActions"/>
+  </testsuite>
+  <testsuite name="06 Admin → Identity/Social → Kafka audit workflows / USER cannot access admin dashboard" id="b9cf724d-d98a-4b14-ab04-b2153287d29a" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.026">
+    <testcase name="HTTP status 403" time="0.026" classname="06AdminIdentitySocialKafkaAuditWorkflowsUserCannotAccessAdminDashboard"/>
+    <testcase name="Error envelope" time="0.026" classname="06AdminIdentitySocialKafkaAuditWorkflowsUserCannotAccessAdminDashboard"/>
+  </testsuite>
+  <testsuite name="99 Cleanup | only run-scoped API fixtures / Remove my post reaction" id="5f806bb5-630e-4277-af55-5404d41e82ec" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.031">
+    <testcase name="HTTP status 200" time="0.031" classname="99CleanupOnlyRunScopedApiFixturesRemoveMyPostReaction"/>
+    <testcase name="Success envelope" time="0.031" classname="99CleanupOnlyRunScopedApiFixturesRemoveMyPostReaction"/>
+  </testsuite>
+  <testsuite name="99 Cleanup | only run-scoped API fixtures / Delete owned comment and replies" id="d2376555-4073-4ae5-ab24-784d1b6e2cda" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.039">
+    <testcase name="HTTP status 200" time="0.039" classname="99CleanupOnlyRunScopedApiFixturesDeleteOwnedCommentAndReplies"/>
+    <testcase name="Success envelope" time="0.039" classname="99CleanupOnlyRunScopedApiFixturesDeleteOwnedCommentAndReplies"/>
+  </testsuite>
+  <testsuite name="99 Cleanup | only run-scoped API fixtures / Delete B share" id="33b13d95-eb1a-4904-a166-ba2da9b11d96" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.020">
+    <testcase name="HTTP status 200" time="0.020" classname="99CleanupOnlyRunScopedApiFixturesDeleteBShare"/>
+    <testcase name="Success envelope" time="0.020" classname="99CleanupOnlyRunScopedApiFixturesDeleteBShare"/>
+  </testsuite>
+  <testsuite name="99 Cleanup | only run-scoped API fixtures / Delete ONLY_ME fixture" id="295e9690-6009-4b3f-a255-9c450f81e39c" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.017">
+    <testcase name="HTTP status 200" time="0.017" classname="99CleanupOnlyRunScopedApiFixturesDeleteOnlyMeFixture"/>
+    <testcase name="Success envelope" time="0.017" classname="99CleanupOnlyRunScopedApiFixturesDeleteOnlyMeFixture"/>
+  </testsuite>
+  <testsuite name="99 Cleanup | only run-scoped API fixtures / Delete FRIENDS fixture" id="6d1601cd-6841-4965-a48f-d8690d46b929" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.017">
+    <testcase name="HTTP status 200" time="0.017" classname="99CleanupOnlyRunScopedApiFixturesDeleteFriendsFixture"/>
+    <testcase name="Success envelope" time="0.017" classname="99CleanupOnlyRunScopedApiFixturesDeleteFriendsFixture"/>
+  </testsuite>
+  <testsuite name="99 Cleanup | only run-scoped API fixtures / Delete PUBLIC fixture" id="bd686a9a-a79e-4eb8-a5f0-ebc95613f33d" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.020">
+    <testcase name="HTTP status 200" time="0.020" classname="99CleanupOnlyRunScopedApiFixturesDeletePublicFixture"/>
+    <testcase name="Success envelope" time="0.020" classname="99CleanupOnlyRunScopedApiFixturesDeletePublicFixture"/>
+  </testsuite>
+  <testsuite name="99 Cleanup | only run-scoped API fixtures / Delete group conversation" id="e2f1bf97-3673-4c12-a1eb-08a234662145" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.028">
+    <testcase name="HTTP status 200" time="0.028" classname="99CleanupOnlyRunScopedApiFixturesDeleteGroupConversation"/>
+    <testcase name="Success envelope" time="0.028" classname="99CleanupOnlyRunScopedApiFixturesDeleteGroupConversation"/>
+  </testsuite>
+  <testsuite name="99 Cleanup | only run-scoped API fixtures / Remove friendship" id="6653e6af-7f90-4839-ab6d-fcdd2a8c67f5" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.021">
+    <testcase name="HTTP status 200" time="0.021" classname="99CleanupOnlyRunScopedApiFixturesRemoveFriendship"/>
+    <testcase name="Success envelope" time="0.021" classname="99CleanupOnlyRunScopedApiFixturesRemoveFriendship"/>
+  </testsuite>
+  <testsuite name="99 Cleanup | only run-scoped API fixtures / Mark all my notifications read" id="b72a93e9-27a4-4da5-a221-edaac0aef895" timestamp="2026-11-12T14:35:59.864Z" tests="2" failures="0" errors="0" time="0.045">
+    <testcase name="HTTP status 200" time="0.045" classname="99CleanupOnlyRunScopedApiFixturesMarkAllMyNotificationsRead"/>
+    <testcase name="Success envelope" time="0.045" classname="99CleanupOnlyRunScopedApiFixturesMarkAllMyNotificationsRead"/>
+  </testsuite>
+</testsuites>

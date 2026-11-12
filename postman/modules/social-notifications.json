@@ -1,0 +1,1298 @@
+{
+  "source": {
+    "repository": "Thaonguyen0507/mss301-kirenz",
+    "commit": "2af12e55ffad68d583db2aea50ad3949fde76035",
+    "readFrom": "D:/Kirenz-platform"
+  },
+  "services": [
+    "social-service",
+    "notification-service"
+  ],
+  "endpoints": [
+    {
+      "id": "social_public_feed",
+      "service": "social-service",
+      "folder": "Social / Posts",
+      "name": "List public posts",
+      "method": "GET",
+      "path": "/api/posts/public",
+      "auth": "none",
+      "description": "Anonymous feed: at most 50 ACTIVE PUBLIC posts. Response data is an array; anonymous reaction summaries are empty.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "social_public_post",
+      "service": "social-service",
+      "folder": "Social / Posts",
+      "name": "Get public post",
+      "method": "GET",
+      "path": "/api/posts/public/{{post_id}}",
+      "auth": "none",
+      "description": "Anonymous detail for an ACTIVE PUBLIC post. FRIENDS, ONLY_ME, deleted, or nonexistent posts return 404.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "social_create_post",
+      "service": "social-service",
+      "folder": "Social / Posts",
+      "name": "Create post",
+      "method": "POST",
+      "path": "/api/posts",
+      "auth": "user",
+      "description": "Requires nonblank content or nonempty media. Privacy is PUBLIC, FRIENDS, or ONLY_ME; omitted privacy defaults to PUBLIC. Each tagged UUID produces a POST_MENTION Kafka event. Author details are fetched from identity-service.",
+      "expectedStatuses": [
+        201
+      ],
+      "body": {
+        "content": "Kirenz Postman {{run_id}} #kirenztest",
+        "media": [],
+        "privacy": "PUBLIC",
+        "taggedUserIds": []
+      },
+      "captures": [
+        {
+          "variable": "post_id",
+          "path": "data.id"
+        }
+      ]
+    },
+    {
+      "id": "social_feed",
+      "service": "social-service",
+      "folder": "Social / Posts",
+      "name": "List authenticated feed",
+      "method": "GET",
+      "path": "/api/posts",
+      "auth": "user",
+      "description": "Returns an array filtered by privacy, friendship, and blocking. Calls user-service for friendship/block status and identity-service for author profiles.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "social_feed_page",
+      "service": "social-service",
+      "folder": "Social / Posts",
+      "name": "Get cursor feed page",
+      "method": "GET",
+      "path": "/api/posts/feed",
+      "auth": "user",
+      "description": "Returns data {items,nextCursor,hasMore}. Limit must be 1..50. Omit cursor for the first page; use the returned opaque nextCursor for later pages. Invalid limits/cursors return 400.",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "limit",
+          "value": "20",
+          "required": false
+        },
+        {
+          "key": "cursor",
+          "value": "{{feed_cursor}}",
+          "required": false
+        }
+      ],
+      "captures": [
+        {
+          "variable": "feed_cursor",
+          "path": "data.nextCursor"
+        }
+      ]
+    },
+    {
+      "id": "social_explore",
+      "service": "social-service",
+      "folder": "Social / Posts",
+      "name": "Search explore page",
+      "method": "GET",
+      "path": "/api/posts/explore",
+      "auth": "user",
+      "description": "Required q is trimmed, lowercased, and must contain at least two characters after an optional leading #. Searches content/hashtags among the latest 500 visible posts. Returns {items,nextCursor,hasMore}; limit 1..50.",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "q",
+          "value": "kirenztest",
+          "required": true
+        },
+        {
+          "key": "limit",
+          "value": "20",
+          "required": false
+        },
+        {
+          "key": "cursor",
+          "value": "{{explore_cursor}}",
+          "required": false
+        }
+      ],
+      "captures": [
+        {
+          "variable": "explore_cursor",
+          "path": "data.nextCursor"
+        }
+      ]
+    },
+    {
+      "id": "social_trending",
+      "service": "social-service",
+      "folder": "Social / Posts",
+      "name": "List trending hashtags",
+      "method": "GET",
+      "path": "/api/posts/explore/trending",
+      "auth": "user",
+      "description": "Returns [{tag,postCount,windowSize}]. Counts each hashtag once per visible post among the latest 500 posts. Limit must be 1..50.",
+      "expectedStatuses": [
+        200
+      ],
+      "query": [
+        {
+          "key": "limit",
+          "value": "10",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "social_my_posts",
+      "service": "social-service",
+      "folder": "Social / Posts",
+      "name": "List my posts",
+      "method": "GET",
+      "path": "/api/posts/me",
+      "auth": "user",
+      "description": "Returns the current user's ACTIVE posts with author details and reaction summaries.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "social_get_post",
+      "service": "social-service",
+      "folder": "Social / Posts",
+      "name": "Get authenticated post",
+      "method": "GET",
+      "path": "/api/posts/{{post_id}}",
+      "auth": "user",
+      "description": "Returns PostResponse. A nonowner denied by privacy or blocking receives 404. Deleted or nonexistent posts also return 404.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "social_share_post",
+      "service": "social-service",
+      "folder": "Social / Posts",
+      "name": "Share visible post",
+      "method": "POST",
+      "path": "/api/posts/{{post_id}}/shares",
+      "auth": "user",
+      "description": "Optional body {caption}. Creates a PUBLIC wrapper with originalPostId; sharing an existing share resolves the root original post. Caller must be able to view the original. data.sharedPost describes original availability.",
+      "expectedStatuses": [
+        201
+      ],
+      "body": {
+        "caption": "Postman share {{run_id}}"
+      },
+      "captures": [
+        {
+          "variable": "shared_post_id",
+          "path": "data.id"
+        }
+      ]
+    },
+    {
+      "id": "social_update_post",
+      "service": "social-service",
+      "folder": "Social / Posts",
+      "name": "Update owned post",
+      "method": "PATCH",
+      "path": "/api/posts/{{post_id}}",
+      "auth": "user",
+      "description": "Only the post owner can update it; a nonowner receives 403. Omitted media/privacy preserves the previous values. Content is normalized even when omitted, so send content intentionally.",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "content": "Updated Kirenz Postman {{run_id}} #kirenztest",
+        "privacy": "PUBLIC"
+      }
+    },
+    {
+      "id": "social_delete_post",
+      "service": "social-service",
+      "folder": "Social / Posts",
+      "name": "Delete owned post",
+      "method": "DELETE",
+      "path": "/api/posts/{{post_id}}",
+      "auth": "user",
+      "description": "Soft-delete changes status to DELETED and returns 200 with data:null. Only the owner may delete (403 otherwise); a subsequent GET returns 404. Use only IDs created by the current test run.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "social_user_posts",
+      "service": "social-service",
+      "folder": "Social / Posts",
+      "name": "List user profile posts",
+      "method": "GET",
+      "path": "/api/posts/user/{{user_a_id}}",
+      "auth": "user",
+      "description": "Returns a target user's ACTIVE posts filtered for the current viewer using user-service friendship and blocking policies.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "social_user_images",
+      "service": "social-service",
+      "folder": "Social / Posts",
+      "name": "List user profile images",
+      "method": "GET",
+      "path": "/api/posts/user/{{user_a_id}}/images",
+      "auth": "user",
+      "description": "Returns [{postId,url,publicId,createdAt}] from visible ACTIVE posts. Includes IMAGE media only.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "social_create_comment",
+      "service": "social-service",
+      "folder": "Social / Comments",
+      "name": "Create comment",
+      "method": "POST",
+      "path": "/api/posts/{{post_id}}/comments",
+      "auth": "user",
+      "description": "Requires nonblank content. Optional parentCommentId must identify an ACTIVE comment on the same post. Root comments notify the post owner; replies notify the parent author; self-notifications are suppressed. Tags emit COMMENT_MENTION for other users.",
+      "expectedStatuses": [
+        201
+      ],
+      "body": {
+        "content": "Postman comment {{run_id}}",
+        "parentCommentId": null,
+        "taggedUserIds": []
+      },
+      "captures": [
+        {
+          "variable": "comment_id",
+          "path": "data.id"
+        }
+      ]
+    },
+    {
+      "id": "social_list_comments",
+      "service": "social-service",
+      "folder": "Social / Comments",
+      "name": "List visible post comments",
+      "method": "GET",
+      "path": "/api/posts/{{post_id}}/comments",
+      "auth": "user",
+      "description": "Returns ACTIVE comments ordered by createdAt ascending, with parentCommentId and reactionSummary. The viewer must be able to view the containing post.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "social_update_comment",
+      "service": "social-service",
+      "folder": "Social / Comments",
+      "name": "Update owned comment",
+      "method": "PATCH",
+      "path": "/api/posts/{{post_id}}/comments/{{comment_id}}",
+      "auth": "user",
+      "description": "Only the comment owner can change its content (403 otherwise). The containing post must remain visible to the viewer. Blank content returns 400.",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "content": "Updated Postman comment {{run_id}}"
+      }
+    },
+    {
+      "id": "social_delete_comment",
+      "service": "social-service",
+      "folder": "Social / Comments",
+      "name": "Delete owned comment and replies",
+      "method": "DELETE",
+      "path": "/api/posts/{{post_id}}/comments/{{comment_id}}",
+      "auth": "user",
+      "description": "Returns 200 with data:null. Soft-deletes the owned comment and its ACTIVE recursive replies, then decrements post.commentsCount. Post ownership alone does not authorize deletion of another user's comment.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "social_list_post_reactions",
+      "service": "social-service",
+      "folder": "Social / Reactions",
+      "name": "List post reactions",
+      "method": "GET",
+      "path": "/api/posts/{{post_id}}/reactions",
+      "auth": "user",
+      "description": "Returns [{userId,username,displayName,avatarUrl,type,reactedAt}]. Requires target/post visibility and obtains user profiles from identity-service.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "social_react_post",
+      "service": "social-service",
+      "folder": "Social / Reactions",
+      "name": "React to post",
+      "method": "POST",
+      "path": "/api/posts/{{post_id}}/reactions",
+      "auth": "user",
+      "description": "Requires type LIKE, LOVE, HAHA, WOW, SAD, or ANGRY. Returns {totalCount,currentUserReaction,breakdown}. Repeating the same existing type toggles the reaction OFF; a different type changes it. A newly created nonself post reaction emits POST_LIKE; comment reactions do not emit notification events.",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "type": "LIKE"
+      }
+    },
+    {
+      "id": "social_update_post_reaction",
+      "service": "social-service",
+      "folder": "Social / Reactions",
+      "name": "Change post reaction",
+      "method": "PATCH",
+      "path": "/api/posts/{{post_id}}/reactions",
+      "auth": "user",
+      "description": "Alias of POST reaction, including same-type toggle-off behavior. Use a different type to test a change. Returns {totalCount,currentUserReaction,breakdown}.",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "type": "LOVE"
+      }
+    },
+    {
+      "id": "social_remove_post_reaction",
+      "service": "social-service",
+      "folder": "Social / Reactions",
+      "name": "Remove my post reaction",
+      "method": "DELETE",
+      "path": "/api/posts/{{post_id}}/reactions/me",
+      "auth": "user",
+      "description": "Explicitly removes the current user's reaction. Returns a 200 summary with currentUserReaction:null. An already absent reaction is a no-op.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "social_list_comment_reactions",
+      "service": "social-service",
+      "folder": "Social / Reactions",
+      "name": "List comment reactions",
+      "method": "GET",
+      "path": "/api/comments/{{comment_id}}/reactions",
+      "auth": "user",
+      "description": "Returns [{userId,username,displayName,avatarUrl,type,reactedAt}]. Requires target/post visibility and obtains user profiles from identity-service.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "social_react_comment",
+      "service": "social-service",
+      "folder": "Social / Reactions",
+      "name": "React to comment",
+      "method": "POST",
+      "path": "/api/comments/{{comment_id}}/reactions",
+      "auth": "user",
+      "description": "Requires type LIKE, LOVE, HAHA, WOW, SAD, or ANGRY. Returns {totalCount,currentUserReaction,breakdown}. Repeating the same existing type toggles the reaction OFF; a different type changes it. A newly created nonself post reaction emits POST_LIKE; comment reactions do not emit notification events.",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "type": "LIKE"
+      }
+    },
+    {
+      "id": "social_update_comment_reaction",
+      "service": "social-service",
+      "folder": "Social / Reactions",
+      "name": "Change comment reaction",
+      "method": "PATCH",
+      "path": "/api/comments/{{comment_id}}/reactions",
+      "auth": "user",
+      "description": "Alias of POST reaction, including same-type toggle-off behavior. Use a different type to test a change. Returns {totalCount,currentUserReaction,breakdown}.",
+      "expectedStatuses": [
+        200
+      ],
+      "body": {
+        "type": "LOVE"
+      }
+    },
+    {
+      "id": "social_remove_comment_reaction",
+      "service": "social-service",
+      "folder": "Social / Reactions",
+      "name": "Remove my comment reaction",
+      "method": "DELETE",
+      "path": "/api/comments/{{comment_id}}/reactions/me",
+      "auth": "user",
+      "description": "Explicitly removes the current user's reaction. Returns a 200 summary with currentUserReaction:null. An already absent reaction is a no-op.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "social_upload_posts_media",
+      "service": "social-service",
+      "folder": "Social / Media (optional providers)",
+      "name": "Upload post image",
+      "method": "POST",
+      "path": "/api/media/posts",
+      "auth": "user",
+      "description": "Requires multipart field file containing a nonempty image/* up to 10 MiB. Postman/Newman must set the multipart boundary. Requires real Cloudinary configuration; omit from the isolated core test run. Returns MediaUploadResponse with type,url,publicId,width,height,format,bytes. No upload-delete API exists.",
+      "expectedStatuses": [
+        200
+      ],
+      "bodyMode": "formdata",
+      "formData": [
+        {
+          "key": "file",
+          "type": "file",
+          "src": "{{fixture_media_path}}"
+        }
+      ],
+      "tags": [
+        "optional",
+        "cloudinary",
+        "multipart"
+      ],
+      "captures": [
+        {
+          "variable": "media_url",
+          "path": "data.url"
+        },
+        {
+          "variable": "media_public_id",
+          "path": "data.publicId"
+        },
+        {
+          "variable": "media_type",
+          "path": "data.type"
+        }
+      ]
+    },
+    {
+      "id": "social_upload_chat_media",
+      "service": "social-service",
+      "folder": "Social / Media (optional providers)",
+      "name": "Upload chat attachment",
+      "method": "POST",
+      "path": "/api/media/chat",
+      "auth": "user",
+      "description": "Requires multipart field file. Accepts images up to 50 MiB, videos up to 500 MiB, or PDF/DOCX up to 50 MiB. Requires real Cloudinary configuration; omit from the isolated core run. Returns MediaUploadResponse. No upload-delete API exists.",
+      "expectedStatuses": [
+        200
+      ],
+      "bodyMode": "formdata",
+      "formData": [
+        {
+          "key": "file",
+          "type": "file",
+          "src": "{{fixture_media_path}}"
+        }
+      ],
+      "tags": [
+        "optional",
+        "cloudinary",
+        "multipart"
+      ],
+      "captures": [
+        {
+          "variable": "media_url",
+          "path": "data.url"
+        },
+        {
+          "variable": "media_public_id",
+          "path": "data.publicId"
+        },
+        {
+          "variable": "media_type",
+          "path": "data.type"
+        }
+      ]
+    },
+    {
+      "id": "social_internal_metrics",
+      "service": "social-service",
+      "folder": "Social / Internal admin (direct service)",
+      "name": "Get social metrics",
+      "method": "GET",
+      "path": "/api/admin/internal/social/metrics",
+      "auth": "internal",
+      "description": "Direct social-service endpoint requiring an ADMIN bearer token. The gateway /api/admin route belongs to admin-service. Returns data {posts,comments,reactions}.",
+      "expectedStatuses": [
+        200
+      ],
+      "baseUrlVariable": "social_base_url",
+      "tags": [
+        "internal",
+        "admin"
+      ]
+    },
+    {
+      "id": "social_internal_growth",
+      "service": "social-service",
+      "folder": "Social / Internal admin (direct service)",
+      "name": "Get social growth",
+      "method": "GET",
+      "path": "/api/admin/internal/social/growth",
+      "auth": "internal",
+      "description": "Direct social-service ADMIN endpoint. Optional ISO dates from/to default to the last 30 days. MONTH selects monthly buckets; other values select daily buckets. An ordered range of at most two years is required. Returns [{period,posts,comments,reactions}].",
+      "expectedStatuses": [
+        200
+      ],
+      "baseUrlVariable": "social_base_url",
+      "tags": [
+        "internal",
+        "admin"
+      ],
+      "query": [
+        {
+          "key": "from",
+          "value": "{{date_from}}",
+          "required": false
+        },
+        {
+          "key": "to",
+          "value": "{{date_to}}",
+          "required": false
+        },
+        {
+          "key": "granularity",
+          "value": "DAY",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "social_internal_content_detail",
+      "service": "social-service",
+      "folder": "Social / Internal admin (direct service)",
+      "name": "Inspect moderation content",
+      "method": "GET",
+      "path": "/api/admin/internal/content/{{target_type}}/{{post_id}}",
+      "auth": "internal",
+      "description": "Direct social-service ADMIN endpoint. target_type is POST or COMMENT and the ID must match that target type. Includes inactive/deleted content for moderation. Missing content returns 404.",
+      "expectedStatuses": [
+        200
+      ],
+      "baseUrlVariable": "social_base_url",
+      "tags": [
+        "internal",
+        "admin"
+      ]
+    },
+    {
+      "id": "social_internal_hide_content",
+      "service": "social-service",
+      "folder": "Social / Internal admin (direct service)",
+      "name": "Hide moderation content",
+      "method": "POST",
+      "path": "/api/admin/internal/content/{{target_type}}/{{post_id}}/hide",
+      "auth": "internal",
+      "description": "ADMIN only. Requires moderationReason: SPAM, HARASSMENT, HATE_SPEECH, VIOLENCE, NUDITY, FALSE_INFORMATION, IMPERSONATION, or OTHER. Optional note is at most 2000 characters. ACTIVE -> INACTIVE; other states return 400. Returns {content,previousStatus}. This internal adapter does not itself create an admin audit.",
+      "expectedStatuses": [
+        200
+      ],
+      "baseUrlVariable": "social_base_url",
+      "body": {
+        "moderationReason": "SPAM",
+        "note": "Postman {{run_id}} test fixture only"
+      },
+      "tags": [
+        "internal",
+        "admin",
+        "destructive-fixture-only"
+      ]
+    },
+    {
+      "id": "social_internal_remove_content",
+      "service": "social-service",
+      "folder": "Social / Internal admin (direct service)",
+      "name": "Remove moderation content",
+      "method": "POST",
+      "path": "/api/admin/internal/content/{{target_type}}/{{post_id}}/remove",
+      "auth": "internal",
+      "description": "ADMIN only. Soft-deletes ACTIVE/INACTIVE -> DELETED; already deleted content returns 400. Same moderationReason and note validation as hide. Returns {content,previousStatus}. Use only dedicated test-run fixture IDs.",
+      "expectedStatuses": [
+        200
+      ],
+      "baseUrlVariable": "social_base_url",
+      "body": {
+        "moderationReason": "SPAM",
+        "note": "Postman {{run_id}} test fixture only"
+      },
+      "tags": [
+        "internal",
+        "admin",
+        "destructive-fixture-only"
+      ]
+    },
+    {
+      "id": "notification_list",
+      "service": "notification-service",
+      "folder": "Notifications",
+      "name": "List my notifications",
+      "method": "GET",
+      "path": "/api/notifications",
+      "auth": "user",
+      "description": "Returns the current receiver's notifications, newest first, excluding MESSAGE type. Fields: id,receiverId,actorId,actorName,actorAvatar,type,targetId,message,isRead,createdAt. Poll for a matching targetId/type/actorId after Kafka-producing actions.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "notification_unread_count",
+      "service": "notification-service",
+      "folder": "Notifications",
+      "name": "Get my unread notification count",
+      "method": "GET",
+      "path": "/api/notifications/unread-count",
+      "auth": "user",
+      "description": "Returns a numeric unread count, excluding MESSAGE type. Use fresh dedicated test actors for deterministic count assertions.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "notification_get",
+      "service": "notification-service",
+      "folder": "Notifications",
+      "name": "Get my notification",
+      "method": "GET",
+      "path": "/api/notifications/{{notification_id}}",
+      "auth": "user",
+      "description": "Returns 200 only when the notification belongs to the authenticated receiver. The source throws an unhandled IllegalArgumentException for foreign/missing IDs; security tests should require a 4xx response and report a possible 500 as a defect.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "notification_mark_read",
+      "service": "notification-service",
+      "folder": "Notifications",
+      "name": "Mark my notification read",
+      "method": "PATCH",
+      "path": "/api/notifications/{{notification_id}}/read",
+      "auth": "user",
+      "description": "Returns NotificationResponse with isRead=true. Repeated reads remain true. Repository lookup enforces ownership; foreign/missing IDs have the same unhandled-exception defect as GET.",
+      "expectedStatuses": [
+        200
+      ]
+    },
+    {
+      "id": "notification_mark_all_read",
+      "service": "notification-service",
+      "folder": "Notifications",
+      "name": "Mark all my notifications read",
+      "method": "PATCH",
+      "path": "/api/notifications/read-all",
+      "auth": "user",
+      "description": "Returns 200 with data:null. Marks the current receiver's non-MESSAGE unread notifications as read and pushes the unread count. Run only with dedicated integration-test actors.",
+      "expectedStatuses": [
+        200
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "name": "Public post CRUD and author ownership",
+      "description": "Identity-authenticated A creates own sourcefixture; verify social authorenrichment, guestread, B ownerdenial, ownerupdate and deletion.",
+      "steps": [
+        {
+          "endpointId": "social_create_post",
+          "actor": "a",
+          "assertions": [
+            "201 success=true; data.id nonempty; data.author.id equals user_a_id; data.content contains run_id; privacy PUBLIC"
+          ]
+        },
+        {
+          "endpointId": "social_public_post",
+          "actor": "outsider",
+          "overrides": {
+            "auth": "none"
+          },
+          "assertions": [
+            "200; data.id equals post_id; author enrichment matches A identityprofile"
+          ]
+        },
+        {
+          "endpointId": "social_get_post",
+          "actor": "b",
+          "assertions": [
+            "200 for PUBLIC while user-service healthy/unblocked"
+          ]
+        },
+        {
+          "endpointId": "social_update_post",
+          "actor": "b",
+          "overrides": {
+            "expectedStatuses": [
+              403
+            ]
+          },
+          "assertions": [
+            "Forbidden; post remains owned by A"
+          ]
+        },
+        {
+          "endpointId": "social_update_post",
+          "actor": "a",
+          "assertions": [
+            "200; changed content persisted; same id"
+          ]
+        },
+        {
+          "endpointId": "social_delete_post",
+          "actor": "a",
+          "assertions": [
+            "200 success=true data=null"
+          ]
+        },
+        {
+          "endpointId": "social_public_post",
+          "actor": "outsider",
+          "overrides": {
+            "auth": "none",
+            "expectedStatuses": [
+              404
+            ]
+          },
+          "assertions": [
+            "Deletedpost inaccessible"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Social comments/reactions to asynchronous notification delivery",
+      "description": "Real path social-service -> Kafka notification-events -> notification-service -> identity-service actorenrichment. Use fresh PUBLIC fixture, poll GET notifications by type,targetId,actorId; bound pollingtimeout.",
+      "steps": [
+        {
+          "endpointId": "social_create_post",
+          "actor": "a",
+          "overrides": {
+            "body": {
+              "content": "Postman {{run_id}} #kirenztest",
+              "media": [],
+              "privacy": "PUBLIC",
+              "taggedUserIds": [
+                "{{user_b_id}}"
+              ]
+            }
+          },
+          "assertions": [
+            "201; post_id captured; B expected POST_MENTION"
+          ]
+        },
+        {
+          "endpointId": "notification_list",
+          "actor": "b",
+          "overrides": {
+            "poll": {
+              "timeoutMs": 20000,
+              "intervalMs": 500,
+              "match": {
+                "type": "POST_MENTION",
+                "targetId": "{{post_id}}",
+                "actorId": "{{user_a_id}}"
+              }
+            }
+          },
+          "assertions": [
+            "Matchingreceiver B notification eventually present; actorName not blank; capture notification_id from matchingrow"
+          ]
+        },
+        {
+          "endpointId": "social_create_comment",
+          "actor": "b",
+          "assertions": [
+            "201; data.author.id=user_b_id; postId=post_id; comment_id captured"
+          ]
+        },
+        {
+          "endpointId": "social_react_post",
+          "actor": "b",
+          "assertions": [
+            "200; currentUserReaction LIKE; totalCount1"
+          ]
+        },
+        {
+          "endpointId": "notification_list",
+          "actor": "a",
+          "overrides": {
+            "poll": {
+              "timeoutMs": 20000,
+              "intervalMs": 500,
+              "match": {
+                "type": "POST_COMMENT",
+                "targetId": "{{post_id}}",
+                "actorId": "{{user_b_id}}"
+              }
+            }
+          },
+          "assertions": [
+            "POST_COMMENT and POST_LIKE notifications eventually present for A"
+          ]
+        },
+        {
+          "endpointId": "notification_mark_read",
+          "actor": "b",
+          "assertions": [
+            "200 data.isRead=true for own POST_MENTION"
+          ]
+        },
+        {
+          "endpointId": "notification_mark_read",
+          "actor": "b",
+          "assertions": [
+            "Repeated read remains isRead=true"
+          ]
+        },
+        {
+          "endpointId": "notification_mark_all_read",
+          "actor": "a",
+          "assertions": [
+            "200 data=null"
+          ]
+        },
+        {
+          "endpointId": "notification_unread_count",
+          "actor": "a",
+          "assertions": [
+            "200 data=0 for dedicatedfreshactor"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reaction change, toggle and explicit removal",
+      "description": "Same-type POST/PATCH toggles off; this is intentional actualimplementation, not idempotentupsert.",
+      "steps": [
+        {
+          "endpointId": "social_create_post",
+          "actor": "a"
+        },
+        {
+          "endpointId": "social_react_post",
+          "actor": "b",
+          "assertions": [
+            "LIKE, totalCount1"
+          ]
+        },
+        {
+          "endpointId": "social_update_post_reaction",
+          "actor": "b",
+          "assertions": [
+            "LOVE, totalCount1; breakdown.LOVE=1"
+          ]
+        },
+        {
+          "endpointId": "social_update_post_reaction",
+          "actor": "b",
+          "assertions": [
+            "Second identical LOVE toggles off; currentUserReaction null,totalCount0"
+          ]
+        },
+        {
+          "endpointId": "social_react_post",
+          "actor": "b",
+          "assertions": [
+            "LIKE totalCount1"
+          ]
+        },
+        {
+          "endpointId": "social_remove_post_reaction",
+          "actor": "b",
+          "assertions": [
+            "currentUserReaction null,totalCount0"
+          ]
+        },
+        {
+          "endpointId": "social_remove_post_reaction",
+          "actor": "b",
+          "assertions": [
+            "Removal idempotent, totalCount0"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Privacy, friendship and block cross-service visibility",
+      "description": "Requires identity+user+social services; integrate userfriendship/block request endpoints from identity-user inventory. Visibility failures mustbe404, not success/500.",
+      "steps": [
+        {
+          "endpointId": "social_create_post",
+          "actor": "a",
+          "overrides": {
+            "body": {
+              "content": "Private fixture {{run_id}}",
+              "media": [],
+              "privacy": "ONLY_ME",
+              "taggedUserIds": []
+            }
+          },
+          "assertions": [
+            "201"
+          ]
+        },
+        {
+          "endpointId": "social_get_post",
+          "actor": "b",
+          "overrides": {
+            "expectedStatuses": [
+              404
+            ]
+          },
+          "assertions": [
+            "ONLY_ME hidden from B"
+          ]
+        },
+        {
+          "endpointId": "social_public_post",
+          "actor": "outsider",
+          "overrides": {
+            "auth": "none",
+            "expectedStatuses": [
+              404
+            ]
+          },
+          "assertions": [
+            "ONLY_ME hidden from anonymous"
+          ]
+        },
+        {
+          "endpointId": "social_update_post",
+          "actor": "a",
+          "overrides": {
+            "body": {
+              "content": "Friends fixture {{run_id}}",
+              "privacy": "FRIENDS"
+            }
+          },
+          "assertions": [
+            "200"
+          ]
+        },
+        {
+          "endpointId": "social_get_post",
+          "actor": "b",
+          "overrides": {
+            "expectedStatuses": [
+              404
+            ]
+          },
+          "assertions": [
+            "Before acceptingfriendship B cannotread FRIENDS"
+          ]
+        },
+        {
+          "endpointId": "social_get_post",
+          "actor": "b",
+          "overrides": {
+            "prerequisite": "User-service A/B friendship accepted"
+          },
+          "assertions": [
+            "After user-service FRIENDS status, B can read FRIENDS post"
+          ]
+        },
+        {
+          "endpointId": "social_get_post",
+          "actor": "outsider",
+          "overrides": {
+            "expectedStatuses": [
+              404
+            ]
+          },
+          "assertions": [
+            "Nonfriend cannotread"
+          ]
+        },
+        {
+          "endpointId": "social_get_post",
+          "actor": "b",
+          "overrides": {
+            "prerequisite": "A blocks B via user-service",
+            "expectedStatuses": [
+              404
+            ]
+          },
+          "assertions": [
+            "Blocked B cannotread even formerlyfriend"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Feed/explore paging and validation",
+      "description": "Create multiple unique-run posts beforefirstpage; use returnedopaque cursor only; assert no duplicate IDs betweenpages and filteredprivacy.",
+      "steps": [
+        {
+          "endpointId": "social_create_post",
+          "actor": "a"
+        },
+        {
+          "endpointId": "social_feed_page",
+          "actor": "a",
+          "overrides": {
+            "query": [
+              {
+                "key": "limit",
+                "value": "1",
+                "required": false
+              }
+            ]
+          },
+          "assertions": [
+            "data.items array <=1; hasMore boolean; nextCursor string ornull"
+          ]
+        },
+        {
+          "endpointId": "social_feed_page",
+          "actor": "a",
+          "assertions": [
+            "When nextCursor exists, nextpage doesnot repeat firstpage ID"
+          ]
+        },
+        {
+          "endpointId": "social_explore",
+          "actor": "a",
+          "assertions": [
+            "Only visible matches; items array; cursor fieldsvalid"
+          ]
+        },
+        {
+          "endpointId": "social_feed_page",
+          "actor": "a",
+          "overrides": {
+            "query": [
+              {
+                "key": "limit",
+                "value": "0",
+                "required": false
+              }
+            ],
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "Reject invalidlimit"
+          ]
+        },
+        {
+          "endpointId": "social_explore",
+          "actor": "a",
+          "overrides": {
+            "query": [
+              {
+                "key": "q",
+                "value": "x",
+                "required": true
+              }
+            ],
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "Reject query under2characters"
+          ]
+        },
+        {
+          "endpointId": "social_feed_page",
+          "actor": "a",
+          "overrides": {
+            "query": [
+              {
+                "key": "cursor",
+                "value": "invalid-cursor",
+                "required": false
+              }
+            ],
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "Reject invalidcursor"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Negative authorization and requestvalidation",
+      "description": "Expectedsecuritybehavior; do not mark500orunauthorizedsuccess as passing.",
+      "steps": [
+        {
+          "endpointId": "social_create_post",
+          "actor": "a",
+          "overrides": {
+            "auth": "none",
+            "expectedStatuses": [
+              401
+            ]
+          },
+          "assertions": [
+            "Missingbearer rejected"
+          ]
+        },
+        {
+          "endpointId": "social_create_post",
+          "actor": "a",
+          "overrides": {
+            "body": {
+              "content": "",
+              "media": []
+            },
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "Postneeds contentormedia"
+          ]
+        },
+        {
+          "endpointId": "social_create_comment",
+          "actor": "b",
+          "overrides": {
+            "body": {
+              "content": ""
+            },
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "Blankcomment rejected"
+          ]
+        },
+        {
+          "endpointId": "social_react_post",
+          "actor": "b",
+          "overrides": {
+            "body": {},
+            "expectedStatuses": [
+              400
+            ]
+          },
+          "assertions": [
+            "Missingtype field rejected"
+          ]
+        },
+        {
+          "endpointId": "social_update_comment",
+          "actor": "outsider",
+          "overrides": {
+            "expectedStatuses": [
+              403
+            ]
+          },
+          "assertions": [
+            "Nonowner cannotmutate comment"
+          ]
+        },
+        {
+          "endpointId": "social_internal_metrics",
+          "actor": "a",
+          "overrides": {
+            "expectedStatuses": [
+              403
+            ]
+          },
+          "assertions": [
+            "USER cannotcall ADMIN internalendpoint"
+          ]
+        },
+        {
+          "endpointId": "notification_get",
+          "actor": "outsider",
+          "overrides": {
+            "expectedStatuses": [
+              403,
+              404
+            ]
+          },
+          "assertions": [
+            "Otherreceiver cannotread notification;500 isbug notpassing"
+          ]
+        },
+        {
+          "endpointId": "notification_mark_read",
+          "actor": "outsider",
+          "overrides": {
+            "expectedStatuses": [
+              403,
+              404
+            ]
+          },
+          "assertions": [
+            "Otherreceiver cannotmarkread;ownerstateunchanged"
+          ]
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "38 distinct HTTP operations: social-service 33 (posts 14, comments 4, reactions 8, media 2, internal admin 5), notification-service 5. The source has no stories HTTP controller.",
+    "Success responses wrap {success:true,message,data}. Social 400/403/404 errors wrap {success:false,message} without data. Missing-bearer 401 returns {success:false,message:'Unauthorized'}. Invalid enum/JSON or missing multipart parameters may use Spring's default error response, so do not assume every 4xx has the same envelope.",
+    "PostResponse: id,slug,author,content,privacy,originalPostId,sharedPost,media,taggedUserIds,taggedUsers,reactionsCount,reactionSummary,commentsCount,status,createdAt,updatedAt. CommentResponse: id,postId,parentCommentId,author,content,taggedUserIds,reactionsCount,reactionSummary,status,createdAt,updatedAt. Author objects use id,username,displayName,avatarUrl.",
+    "Cross-service author profiles use GET /api/users/internal/profiles; friendship uses GET /api/friends/status/{targetUserId}; blocking uses GET /api/blocks/status/{targetUserId}. Eureka resolves Feign service names and forwarding configuration passes the request JWT.",
+    "PostService fails closed when a block lookup fails and treats a failed friendship lookup as not friends. Therefore B reading even a PUBLIC post depends on a healthy user-service.",
+    "Potential security gap: PostService checks blocking, while CommentService and ReactionService only check privacy/friendship. Add blocked comment/reaction regression tests that expect denial; report any unauthorized success as a finding.",
+    "Notification service has no global exception handler for IllegalArgumentException in getNotification/markAsRead. A foreign or missing notification ID can yield 500. Tests should demand a 4xx response and expose this defect.",
+    "Kafka topic notification-events carries POST_MENTION, POST_COMMENT, COMMENT_REPLY, COMMENT_MENTION, and POST_LIKE. POST_LIKE is emitted only when a reaction is first created, not when its type changes. Comment reactions produce no notification event. Poll matching type/targetId/actorId with a bounded timeout.",
+    "Notification list, unread-count, and read-all exclude MESSAGE by design. Do not assert chat MESSAGE delivery through this list. The user-created Kafka topic also creates WELCOME notifications asynchronously.",
+    "Media requests belong in an optional provider folder. Metadata uses bodyMode:'formdata' and formData with file source fixture_media_path. Do not hardcode multipart Content-Type. Core isolated integration tests must not require real Cloudinary credentials.",
+    "Internal social admin endpoints require an ADMIN JWT and direct social_base_url. Do not send them through the gateway /api/admin route, which belongs to admin-service.",
+    "Deletes are soft-deletes. Delete only IDs generated by the current run. These services expose no API to delete notification rows, uploaded Cloudinary assets, or users."
+  ],
+  "responseSchemas": {
+    "PostPrivacy": [
+      "PUBLIC",
+      "FRIENDS",
+      "ONLY_ME"
+    ],
+    "ReactionType": [
+      "LIKE",
+      "LOVE",
+      "HAHA",
+      "WOW",
+      "SAD",
+      "ANGRY"
+    ],
+    "NotificationType": [
+      "FRIEND_REQUEST",
+      "FRIEND_ACCEPT",
+      "POST_COMMENT",
+      "POST_LIKE",
+      "COMMENT_REPLY",
+      "POST_MENTION",
+      "COMMENT_MENTION",
+      "BIRTHDAY",
+      "WELCOME",
+      "ADMIN_WARNING",
+      "ADMIN_SUSPENSION",
+      "ADMIN_BAN",
+      "REPORT_UPDATE",
+      "CONTENT_MODERATION",
+      "MESSAGE"
+    ]
+  }
+}

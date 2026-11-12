@@ -1,0 +1,20 @@
+{
+  "name": "kirenz-postman-integration",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-collections.mjs",
+    "validate": "node scripts/validate.mjs",
+    "local": "node scripts/run-local.mjs",
+    "test": "node scripts/run-newman.mjs",
+    "test:ws": "node scripts/test-websocket.mjs",
+    "test:events": "node scripts/test-event-projection.mjs"
+  },
+  "devDependencies": {
+    "ajv": "8.17.1",
+    "ajv-draft-04": "1.0.0",
+    "newman": "6.2.1",
+    "ws": "8.18.3"
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "createdAt": "2026-11-12T15:15:23.942Z",
+  "sourceTree": "5e439abc2ded3f0efdefbce0941f6ce07dd0bbcf",
+  "excluded": [
+    ".local",
+    "node_modules",
+    "raw console/build logs"
+  ],
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 394,
+      "sha256": "ba4976ccc24d5a0388929a70cf0a7b071f070d1ae1a0255ff9f2176d4e9dac5e"
+    },
+    {
+      "path": "README.md",
+      "bytes": 11554,
+      "sha256": "1797b6b114ea1c82ab1168530f265a6990e6a408250e76d4901675645074a931"
+    },
+    {
+      "path": "package.json",
+      "bytes": 536,
+      "sha256": "96f4ed94b08a57f276177b026902879d3c47876ca4043ab510a2f37716c3c432"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 53650,
+      "sha256": "f6435b4e0379760e0ccc675c0e6426ec944efac57380bdecf628d49732d300e7"
+    },
+    {
+      "path": "compose.integration.json",
+      "bytes": 17969,
+      "sha256": "ee3b1bb3fb944e22fff771e8af532633b591829d3a3f26e0668f4806f0d6b62c"
+    },
+    {
+      "path": "Kirenz-API.postman_collection.json",
+      "bytes": 348662,
+      "sha256": "c5ca82f1ab232c28fd490a72a74791a823af78169f42d5c43e4a3fdd68d0f2ec"
+    },
+    {
+      "path": "Kirenz-Integration.postman_collection.json",
+      "bytes": 344720,
+      "sha256": "10d356e2e3a727d1a1ce704826b8af5a08981446a89a8eb58523a62daaac15b1"
+    },
+    {
+      "path": "Kirenz-Local.postman_environment.json",
+      "bytes": 7937,
+      "sha256": "a205501fb9f54f31c1e202671692a568214a5e1b69588f93d1ae05233303b9b7"
+    },
+    {
+      "path": "docker/init-databases.sql",
+      "bytes": 129,
+      "sha256": "1d310062584d00cf990f4257e3344e4db1da606e589cd2b5a5a9c15474023552"
+    },
+    {
+      "path": "docker/mailbox.py",
+      "bytes": 1605,
+      "sha256": "9f1dc180b40253bb340e8f9427661c06717d5e309e02142d6a867421e31c966b"
+    },
+    {
+      "path": "modules/admin.json",
+      "bytes": 34182,
+      "sha256": "5193abb064fa3a08afe3ca8427e9af3648bb1131ab79d07310f430136a2f2f10"
+    },
+    {
+      "path": "modules/chat.json",
+      "bytes": 39603,
+      "sha256": "d7f8d624a39c5aefb8d55a531f9b96316532ea1675a4d458471e653564b56031"
+    },
+    {
+      "path": "modules/identity-user.json",
+      "bytes": 49120,
+      "sha256": "69316e552cc1565f3cd2eb6912da1c3b93d3f5c0ec892635b524647f4959ef83"
+    },
+    {
+      "path": "modules/social-notifications.json",
+      "bytes": 42134,
+      "sha256": "c7d1fabaebf0aa3e86a4e7389029dce77b09c566866e643ca414314f2d8d1be9"
+    },
+    {
+      "path": "schema/collection.v2.1.schema.json",
+      "bytes": 40703,
+      "sha256": "2df214741cc1a6d4f30184d0606a913cc07f52e282ac43d8cef4b4f9ac6d6204"
+    },
+    {
+      "path": "scripts/build-collections.mjs",
+      "bytes": 23130,
+      "sha256": "b6f6ca5e82cb16fb69b9a905fb97ff3512af26ad4cec02a73f196a33f696662b"
+    },
+    {
+      "path": "scripts/package-kit.mjs",
+      "bytes": 2389,
+      "sha256": "5ef26e4b48221407ca4008a628c499e2691a40a7a8ba5258b0a580b15d42c30a"
+    },
+    {
+      "path": "scripts/run-local.mjs",
+      "bytes": 11352,
+      "sha256": "4a770910dc35a993706a126e11cde814040c0c3aef10d6c612910110996484db"
+    },
+    {
+      "path": "scripts/run-newman.mjs",
+      "bytes": 6489,
+      "sha256": "bdd13c7d0a5eaaae4f76acf4b0b7e7220b6b43f20501acf57457aca264f2e588"
+    },
+    {
+      "path": "scripts/summarize.mjs",
+      "bytes": 4210,
+      "sha256": "16512b4afcc17968be631a89fcb50650ec3fb4797a9befa43362460b75e0b403"
+    },
+    {
+      "path": "scripts/test-event-projection.mjs",
+      "bytes": 9786,
+      "sha256": "e6999e95edcf0d55d8543de9f82b93b4d6d5fea711c90ace44a2450ecd7992e7"
+    },
+    {
+      "path": "scripts/test-resilience.mjs",
+      "bytes": 13091,
+      "sha256": "28aaefcd44e758756a59312857a9daefd485922284983177dc827382c772796a"
+    },
+    {
+      "path": "scripts/test-websocket.mjs",
+      "bytes": 23594,
+      "sha256": "feb1ca3d15fc533d8b77b57c5306586cd594def366df9bea5567fd28ebe4b9ff"
+    },
+    {
+      "path": "scripts/validate.mjs",
+      "bytes": 17129,
+      "sha256": "a26436b5ee6789218cc769a9faef85d087e65b6a3399da7862da23bc7ccc67eb"
+    },
+    {
+      "path": "reports/collection-coverage.json",
+      "bytes": 1281,
+      "sha256": "2fcaa66c5f501f7e533c2481f9995221dc09eaf57a86545f74633e82fd520fcc"
+    },
+    {
+      "path": "reports/newman-report.json",
+      "bytes": 49366,
+      "sha256": "2313701aea2db2021972654850b526c869d619161750fc0e9b7d772f84acd722"
+    },
+    {
+      "path": "reports/newman-junit.xml",
+      "bytes": 74855,
+      "sha256": "f702f67478ac12f9c699a27dab4d3b1c25da5ca323575c7d0ebfc6e6badfc0eb"
+    },
+    {
+      "path": "reports/websocket-report.json",
+      "bytes": 2944,
+      "sha256": "8263072d3d970b650d7ed92a30e6d2ac61234247b0a61f87a469fe6a92aabd67"
+    },
+    {
+      "path": "reports/event-projection-report.json",
+      "bytes": 3257,
+      "sha256": "4f6111ef6213e10cf25a2d0b67352eb09ddb3321039fd6ba7f7c5e74c90db7cd"
+    },
+    {
+      "path": "reports/resilience-report.json",
+      "bytes": 2617,
+      "sha256": "4ac26ebeee5f16bf9f6128379a1a99af2191dec743805c44af50f5051a529a09"
+    },
+    {
+      "path": "reports/summary.json",
+      "bytes": 1582,
+      "sha256": "3ba420d801003704b539a22e4731e49dbf90ed9de306f4220e9fcdcb3f2127ff"
+    },
+    {
+      "path": "reports/TEST-RESULTS.md",
+      "bytes": 1874,
+      "sha256": "1ca943bb130bc28504636c1cf77bff0014238db24361b6339473734459fdb9dd"
+    },
+    {
+      "path": "reports/findings.md",
+      "bytes": 5549,
+      "sha256": "3f376c52167c8007c1c727a289c9508818779e47bcd18931ded6f5c960ea950a"
+    },
+    {
+      "path": "reports/chat-findings.md",
+      "bytes": 7464,
+      "sha256": "b5d86e4ec3bbee2bcc5fbcf81ca70b66579276cd11efb733be73bf7c658eb621"
+    },
+    {
+      "path": "reports/social-findings.md",
+      "bytes": 4855,
+      "sha256": "5efb36d3e06327f336c7a02d32756faa662544d3458c4d7c150819e49eec97a5"
+    },
+    {
+      "path": "reports/.gitkeep",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "suite": "Kirenz controlled cross-service dependency failure and recovery",
+  "startedAt": "2026-11-12T14:37:00.238Z",
+  "finishedAt": "2026-11-12T14:37:26.693Z",
+  "sourceTree": "5e439abc2ded3f0efdefbce0941f6ce07dd0bbcf",
+  "scope": "Only loopback kirenz-integration Docker Identity container; no production or external provider calls.",
+  "target": "http://localhost:18080",
+  "environmentFile": "runtime.postman_environment.json",
+  "summary": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0,
+    "stoppedServiceRestored": true
+  },
+  "actions": [
+    {
+      "at": "2026-11-12T14:37:01.042Z",
+      "action": "stop",
+      "project": "kirenz-integration",
+      "service": "identity-service",
+      "container": "71520d0f6a5d"
+    },
+    {
+      "at": "2026-11-12T14:37:06.503Z",
+      "action": "start",
+      "project": "kirenz-integration",
+      "service": "identity-service",
+      "container": "71520d0f6a5d"
+    }
+  ],
+  "cases": [
+    {
+      "name": "Validate isolated environment and exact Docker targets",
+      "status": "passed",
+      "durationMs": 591,
+      "details": {
+        "project": "kirenz-integration",
+        "stoppedService": "identity-service",
+        "cacheTtl": "PT0S"
+      }
+    },
+    {
+      "name": "Dashboard baseline has all owner services",
+      "status": "passed",
+      "durationMs": 128,
+      "details": {
+        "httpStatus": 200,
+        "partialData": false,
+        "totalUsers": 29
+      }
+    },
+    {
+      "name": "Stop only isolated Identity to inject dependency failure",
+      "status": "passed",
+      "durationMs": 4446,
+      "details": {
+        "containerRunning": false
+      }
+    },
+    {
+      "name": "Admin exposes partial dashboard while Identity is unavailable",
+      "status": "passed",
+      "durationMs": 1034,
+      "details": {
+        "attempts": 1,
+        "httpStatus": 200,
+        "partialData": true,
+        "unavailableComponents": [
+          "identity"
+        ]
+      }
+    },
+    {
+      "name": "Restart the same isolated Identity container in finally",
+      "status": "passed",
+      "durationMs": 1257,
+      "details": {
+        "containerRunning": true
+      }
+    },
+    {
+      "name": "Identity health recovers after restart",
+      "status": "passed",
+      "durationMs": 18375,
+      "details": {
+        "attempts": 18,
+        "status": "UP"
+      }
+    },
+    {
+      "name": "Dashboard returns complete data after Identity recovery",
+      "status": "passed",
+      "durationMs": 618,
+      "details": {
+        "attempts": 1,
+        "httpStatus": 200,
+        "partialData": false
+      }
+    }
+  ]
+}

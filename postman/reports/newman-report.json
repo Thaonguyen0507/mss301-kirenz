@@ -1,0 +1,2375 @@
+{
+  "generatedAt": "2026-11-12T14:36:45.927Z",
+  "sourceTree": "5e439abc2ded3f0efdefbce0941f6ce07dd0bbcf",
+  "target": "http://localhost:18080",
+  "runId": "mwdnh1814dd9c8",
+  "providers": {
+    "database": "isolated real PostgreSQL/MongoDB",
+    "messaging": "real Kafka/Redis/Eureka/Feign",
+    "email": "local Brevo HTTP stub",
+    "livekit": "provider-unavailable; orchestration only, not media"
+  },
+  "stats": {
+    "iterations": {
+      "total": 1,
+      "pending": 0,
+      "failed": 0
+    },
+    "items": {
+      "total": 122,
+      "pending": 0,
+      "failed": 0
+    },
+    "scripts": {
+      "total": 265,
+      "pending": 0,
+      "failed": 0
+    },
+    "prerequests": {
+      "total": 122,
+      "pending": 0,
+      "failed": 0
+    },
+    "requests": {
+      "total": 122,
+      "pending": 0,
+      "failed": 0
+    },
+    "tests": {
+      "total": 122,
+      "pending": 0,
+      "failed": 0
+    },
+    "assertions": {
+      "total": 321,
+      "pending": 0,
+      "failed": 6
+    },
+    "testScripts": {
+      "total": 122,
+      "pending": 0,
+      "failed": 0
+    },
+    "prerequestScripts": {
+      "total": 143,
+      "pending": 0,
+      "failed": 0
+    }
+  },
+  "timings": {
+    "responseAverage": 100.16393442622953,
+    "responseMin": 8,
+    "responseMax": 1010,
+    "responseSd": 173.71412169516785,
+    "dnsAverage": 0,
+    "dnsMin": 0,
+    "dnsMax": 0,
+    "dnsSd": 0,
+    "firstByteAverage": 0,
+    "firstByteMin": 0,
+    "firstByteMax": 0,
+    "firstByteSd": 0,
+    "started": 1794494159864,
+    "completed": 1794494205760
+  },
+  "requests": [
+    {
+      "name": "Register disposable a",
+      "method": "POST",
+      "status": 201,
+      "durationMs": 377,
+      "assertions": [
+        {
+          "name": "HTTP status 201",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture user_a_id",
+          "passed": true
+        },
+        {
+          "name": "OTP accepted by local mailbox",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Login a",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 535,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture access_token_a",
+          "passed": true
+        },
+        {
+          "name": "Capture refresh_token_a",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Identity profile a",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 29,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture user_a_id",
+          "passed": true
+        },
+        {
+          "name": "Own UUID",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Register disposable b",
+      "method": "POST",
+      "status": 201,
+      "durationMs": 298,
+      "assertions": [
+        {
+          "name": "HTTP status 201",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture user_b_id",
+          "passed": true
+        },
+        {
+          "name": "OTP accepted by local mailbox",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Login b",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 586,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture access_token_b",
+          "passed": true
+        },
+        {
+          "name": "Capture refresh_token_b",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Identity profile b",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 51,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture user_b_id",
+          "passed": true
+        },
+        {
+          "name": "Own UUID",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Register disposable outsider",
+      "method": "POST",
+      "status": 201,
+      "durationMs": 436,
+      "assertions": [
+        {
+          "name": "HTTP status 201",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture user_outsider_id",
+          "passed": true
+        },
+        {
+          "name": "OTP accepted by local mailbox",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Login outsider",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 548,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture access_token_outsider",
+          "passed": true
+        },
+        {
+          "name": "Capture refresh_token_outsider",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Identity profile outsider",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 33,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture user_outsider_id",
+          "passed": true
+        },
+        {
+          "name": "Own UUID",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Read OTP from local Brevo stub (test infrastructure)",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 29,
+      "assertions": [
+        {
+          "name": "Mailbox HTTP200",
+          "passed": true
+        },
+        {
+          "name": "Generated OTP captured",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Verify actual generated OTP through Redis",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 66,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Email verification persisted",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 15,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture user_a_id",
+          "passed": true
+        },
+        {
+          "name": "Verified flag",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Refresh actual refresh token",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 25,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture access_token_a",
+          "passed": true
+        },
+        {
+          "name": "Capture refresh_token_a",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Anonymous profile rejected",
+      "method": "GET",
+      "status": 401,
+      "durationMs": 8,
+      "assertions": [
+        {
+          "name": "HTTP status 401",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Wrong password rejected",
+      "method": "POST",
+      "status": 401,
+      "durationMs": 247,
+      "assertions": [
+        {
+          "name": "HTTP status 401",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Registration validation",
+      "method": "POST",
+      "status": 400,
+      "durationMs": 39,
+      "assertions": [
+        {
+          "name": "HTTP status 400",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Malformed refresh token rejected",
+      "method": "POST",
+      "status": 401,
+      "durationMs": 17,
+      "assertions": [
+        {
+          "name": "HTTP status 401",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Wrong OTP rejected",
+      "method": "POST",
+      "status": 400,
+      "durationMs": 12,
+      "assertions": [
+        {
+          "name": "HTTP status 400",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Update profile used by other services",
+      "method": "PATCH",
+      "status": 200,
+      "durationMs": 53,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Profile display name",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "User search enriches from Identity",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 54,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Search includes actor A",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "SECURITY | Access token cannot serve as refresh token",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 24,
+      "assertions": [
+        {
+          "name": "HTTP status 401",
+          "passed": false,
+          "error": "expected 200 to be one of [ 401 ]"
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "A requests friendship with B",
+      "method": "POST",
+      "status": 201,
+      "durationMs": 180,
+      "assertions": [
+        {
+          "name": "HTTP status 201",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture friend_request_id",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Outsider cannot accept another request",
+      "method": "POST",
+      "status": 404,
+      "durationMs": 40,
+      "assertions": [
+        {
+          "name": "HTTP status 404",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "B sees incoming request",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 113,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Request belongs to current fixture",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "B accepts A request",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 64,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture friendship_id",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Relationship status",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 25,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Relationship became FRIENDS",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Feign returns updated A profile, no fallback",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 49,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Friend exists",
+          "passed": true
+        },
+        {
+          "name": "Identity username",
+          "passed": false,
+          "error": "expected 'kirenz_it_mwdnh1814dd9c8_a@example.in…' to deeply equal 'kirenz_it_mwdnh1814dd9c8_a'"
+        },
+        {
+          "name": "Updated Identity display name",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Get mutual friends",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 23,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Self friendship rejected",
+      "method": "POST",
+      "status": 400,
+      "durationMs": 11,
+      "assertions": [
+        {
+          "name": "HTTP status 400",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "B restricts direct messages",
+      "method": "PUT",
+      "status": 200,
+      "durationMs": 29,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Friend still allowed to message",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 17,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Friend permission",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Nonfriend denied by User privacy",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 14,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Nonfriend permission",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Restore permissive fixture privacy",
+      "method": "PUT",
+      "status": 200,
+      "durationMs": 29,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Create post",
+      "method": "POST",
+      "status": 201,
+      "durationMs": 663,
+      "assertions": [
+        {
+          "name": "HTTP status 201",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture post_id",
+          "passed": true
+        },
+        {
+          "name": "Author enriched from Identity",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Get public post",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 90,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Public detail UUID",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Nonowner cannot modify post",
+      "method": "PATCH",
+      "status": 403,
+      "durationMs": 37,
+      "assertions": [
+        {
+          "name": "HTTP status 403",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "B comment emits notification",
+      "method": "POST",
+      "status": 201,
+      "durationMs": 726,
+      "assertions": [
+        {
+          "name": "HTTP status 201",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture comment_id",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Poll A notification from real Kafka",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 415,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Kafka persisted receiver notification",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Get my unread notification count",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 20,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Get my notification",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 39,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Notification receiver",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "SECURITY | Outsider notification access rejected",
+      "method": "GET",
+      "status": 401,
+      "durationMs": 37,
+      "assertions": [
+        {
+          "name": "HTTP status 401/403/404",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        },
+        {
+          "name": "No foreign notification data",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Mark my notification read",
+      "method": "PATCH",
+      "status": 200,
+      "durationMs": 31,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Read persisted",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Nonowner cannot edit comment",
+      "method": "PATCH",
+      "status": 403,
+      "durationMs": 29,
+      "assertions": [
+        {
+          "name": "HTTP status 403",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "React to post",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 83,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Current reaction LIKE",
+          "passed": true
+        },
+        {
+          "name": "One reaction",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Change post reaction",
+      "method": "PATCH",
+      "status": 200,
+      "durationMs": 35,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Reaction changed to LOVE",
+          "passed": true
+        },
+        {
+          "name": "Updating does not duplicate",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "List post reactions",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 62,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "React to comment",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 47,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Comment reaction LIKE",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Change comment reaction",
+      "method": "PATCH",
+      "status": 200,
+      "durationMs": 40,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Comment reaction changed",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "List comment reactions",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 41,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Remove my comment reaction",
+      "method": "DELETE",
+      "status": 200,
+      "durationMs": 53,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Comment reaction removed",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Share visible post",
+      "method": "POST",
+      "status": 201,
+      "durationMs": 104,
+      "assertions": [
+        {
+          "name": "HTTP status 201",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture shared_post_id",
+          "passed": true
+        },
+        {
+          "name": "Share keeps original post",
+          "passed": true
+        },
+        {
+          "name": "Share author is B",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Get cursor feed page",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 84,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture feed_cursor",
+          "passed": true
+        },
+        {
+          "name": "Cursor page has items",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Search explore page",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 41,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture explore_cursor",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "List trending hashtags",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 30,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Invalid paging limit rejected",
+      "method": "GET",
+      "status": 400,
+      "durationMs": 17,
+      "assertions": [
+        {
+          "name": "HTTP status 400",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Create ONLY_ME post",
+      "method": "POST",
+      "status": 201,
+      "durationMs": 51,
+      "assertions": [
+        {
+          "name": "HTTP status 201",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture private_post_id",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Nonowner cannot view ONLY_ME",
+      "method": "GET",
+      "status": 404,
+      "durationMs": 35,
+      "assertions": [
+        {
+          "name": "HTTP status 404",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Anonymous cannot view ONLY_ME",
+      "method": "GET",
+      "status": 404,
+      "durationMs": 15,
+      "assertions": [
+        {
+          "name": "HTTP status 404",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Create FRIENDS post",
+      "method": "POST",
+      "status": 201,
+      "durationMs": 32,
+      "assertions": [
+        {
+          "name": "HTTP status 201",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture friends_post_id",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Friend reads FRIENDS through User Feign",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 61,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Nonfriend cannot view FRIENDS",
+      "method": "GET",
+      "status": 404,
+      "durationMs": 59,
+      "assertions": [
+        {
+          "name": "HTTP status 404",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "A blocks B and removes friendship",
+      "method": "POST",
+      "status": 201,
+      "durationMs": 51,
+      "assertions": [
+        {
+          "name": "HTTP status 201",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Relationship status",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 19,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Blocked state",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Blocked B cannot read A PUBLIC post",
+      "method": "GET",
+      "status": 404,
+      "durationMs": 51,
+      "assertions": [
+        {
+          "name": "HTTP status 404",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "SECURITY | Blocked B cannot comment on A post",
+      "method": "POST",
+      "status": 201,
+      "durationMs": 44,
+      "assertions": [
+        {
+          "name": "HTTP status 403/404",
+          "passed": false,
+          "error": "expected 201 to be one of [ 403, 404 ]"
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Blocked B cannot start chat with A",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 850,
+      "assertions": [
+        {
+          "name": "HTTP status 403",
+          "passed": false,
+          "error": "expected 200 to be one of [ 403 ]"
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Unblock disposable user",
+      "method": "DELETE",
+      "status": 200,
+      "durationMs": 20,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Send friend request",
+      "method": "POST",
+      "status": 201,
+      "durationMs": 40,
+      "assertions": [
+        {
+          "name": "HTTP status 201",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture friend_request_id",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Restore friendship for remaining fixtures",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 39,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture friendship_id",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Create A/B direct conversation",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 51,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture conversation_id",
+          "passed": true
+        },
+        {
+          "name": "Both participants enriched",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Direct creation is idempotent",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 42,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Same direct conversation",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Get direct conversation details",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 50,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Get conversation message history",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 47,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Outsider cannot read history",
+      "method": "GET",
+      "status": 400,
+      "durationMs": 54,
+      "assertions": [
+        {
+          "name": "HTTP status 400/403/404",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "SECURITY | Outsider cannot mark another chat read",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 29,
+      "assertions": [
+        {
+          "name": "HTTP status 403/404",
+          "passed": false,
+          "error": "expected 200 to be one of [ 403, 404 ]"
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Set participant nickname",
+      "method": "PATCH",
+      "status": 200,
+      "durationMs": 95,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Get users' online presence",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 28,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Create group conversation",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 117,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture group_conversation_id",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Rename group conversation",
+      "method": "PATCH",
+      "status": 200,
+      "durationMs": 60,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Promote group participant to admin",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 42,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Nonadmin cannot delete group",
+      "method": "DELETE",
+      "status": 400,
+      "durationMs": 19,
+      "assertions": [
+        {
+          "name": "HTTP status 400/403/404",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Start one-to-one video call",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 130,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture call_id",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Outsider cannot access call",
+      "method": "GET",
+      "status": 403,
+      "durationMs": 24,
+      "assertions": [
+        {
+          "name": "HTTP status 403",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Media access before acceptance rejected",
+      "method": "POST",
+      "status": 409,
+      "durationMs": 28,
+      "assertions": [
+        {
+          "name": "HTTP status 409",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Accept incoming call",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 46,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Call accepted",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Refresh accepted call heartbeat",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 21,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Get current user's active call",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 31,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Provider-unavailable failure is explicit (isolated mode)",
+      "method": "POST",
+      "status": 503,
+      "durationMs": 192,
+      "assertions": [
+        {
+          "name": "HTTP status 503",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "End or cancel call",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 60,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Both sides see ended state",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Get current user's active call",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 13,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "No active call after hangup",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "New call for decline",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 60,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture call_id",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Decline incoming call",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 33,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Declined call ended",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Admin authorization ping",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 20,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "User summary through identity-service",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 49,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "User detail through identity-service",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 67,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Dashboard aggregate summary",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 56,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "No partial fallback",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "User growth through identity-service",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 68,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Identity growth available",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Content growth through social-service",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 59,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Social growth available",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Submit report",
+      "method": "POST",
+      "status": 201,
+      "durationMs": 162,
+      "assertions": [
+        {
+          "name": "HTTP status 201",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture report_id",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "List own reports",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 51,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Report detail with content enrichment",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 42,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Start report review",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 64,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Dismiss report",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 1010,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Report dismissed",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "REGRESSION | User can report POST through admin→social",
+      "method": "POST",
+      "status": 503,
+      "durationMs": 58,
+      "assertions": [
+        {
+          "name": "HTTP status 201",
+          "passed": false,
+          "error": "expected 503 to be one of [ 201 ]"
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Warn disposable user",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 74,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture action_id",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Read own moderation action",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 21,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Private admin note is hidden",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Ban disposable user",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 65,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Identity rejects banned B login",
+      "method": "POST",
+      "status": 403,
+      "durationMs": 15,
+      "assertions": [
+        {
+          "name": "HTTP status 403",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Unban disposable user",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 57,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "B login restored after unban",
+      "method": "POST",
+      "status": 200,
+      "durationMs": 518,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        },
+        {
+          "name": "Capture access_token_b",
+          "passed": true
+        },
+        {
+          "name": "Capture refresh_token_b",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "User moderation history",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 43,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Search admin audit actions",
+      "method": "GET",
+      "status": 200,
+      "durationMs": 18,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "USER cannot access admin dashboard",
+      "method": "GET",
+      "status": 403,
+      "durationMs": 26,
+      "assertions": [
+        {
+          "name": "HTTP status 403",
+          "passed": true
+        },
+        {
+          "name": "Error envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Remove my post reaction",
+      "method": "DELETE",
+      "status": 200,
+      "durationMs": 31,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Delete owned comment and replies",
+      "method": "DELETE",
+      "status": 200,
+      "durationMs": 39,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Delete B share",
+      "method": "DELETE",
+      "status": 200,
+      "durationMs": 20,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Delete ONLY_ME fixture",
+      "method": "DELETE",
+      "status": 200,
+      "durationMs": 17,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Delete FRIENDS fixture",
+      "method": "DELETE",
+      "status": 200,
+      "durationMs": 17,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Delete PUBLIC fixture",
+      "method": "DELETE",
+      "status": 200,
+      "durationMs": 20,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Delete group conversation",
+      "method": "DELETE",
+      "status": 200,
+      "durationMs": 28,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Remove friendship",
+      "method": "DELETE",
+      "status": 200,
+      "durationMs": 21,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Mark all my notifications read",
+      "method": "PATCH",
+      "status": 200,
+      "durationMs": 45,
+      "assertions": [
+        {
+          "name": "HTTP status 200",
+          "passed": true
+        },
+        {
+          "name": "Success envelope",
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "failures": [
+    {
+      "source": "SECURITY | Access token cannot serve as refresh token",
+      "test": "HTTP status 401",
+      "message": "expected 200 to be one of [ 401 ]"
+    },
+    {
+      "source": "Feign returns updated A profile, no fallback",
+      "test": "Identity username",
+      "message": "expected 'kirenz_it_mwdnh1814dd9c8_a@example.in…' to deeply equal 'kirenz_it_mwdnh1814dd9c8_a'"
+    },
+    {
+      "source": "SECURITY | Blocked B cannot comment on A post",
+      "test": "HTTP status 403/404",
+      "message": "expected 201 to be one of [ 403, 404 ]"
+    },
+    {
+      "source": "Blocked B cannot start chat with A",
+      "test": "HTTP status 403",
+      "message": "expected 200 to be one of [ 403 ]"
+    },
+    {
+      "source": "SECURITY | Outsider cannot mark another chat read",
+      "test": "HTTP status 403/404",
+      "message": "expected 200 to be one of [ 403, 404 ]"
+    },
+    {
+      "source": "REGRESSION | User can report POST through admin→social",
+      "test": "HTTP status 201",
+      "message": "expected 503 to be one of [ 201 ]"
+    }
+  ]
+}
