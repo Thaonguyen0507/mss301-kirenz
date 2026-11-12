@@ -35,8 +35,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
         if (authorization != null && authorization.startsWith("Bearer ")) {
             String token = authorization.substring(7);
-            log.info("Token length: {}, First 20 chars: {}", token.length(), 
-                token.length() > 20 ? token.substring(0, 20) : token);
             
             try {
                 JwtPrincipal principal = jwtService.parse(token);

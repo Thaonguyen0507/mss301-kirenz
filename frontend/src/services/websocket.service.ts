@@ -1,6 +1,7 @@
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { Attachment, ConversationUpdateMessage, Message } from '../types/chat';
+import type { VideoCall } from '../types/call';
 
 type SubscriptionHandle = { unsubscribe: () => void };
 type PresenceUpdate = { userId: string, status: 'ONLINE' | 'OFFLINE', lastSeen?: number };
@@ -17,10 +18,14 @@ class WebSocketService {
   private userQueueCallbacks: Set<(update: ConversationUpdateMessage) => void> = new Set();
   private presenceCallbacks: Set<(data: PresenceUpdate) => void> = new Set();
   private activeUserId: string | null = null;
+  private callSubscription: SubscriptionHandle | null = null;
+  private callCallbacks = new Set<(call: VideoCall) => void>();
 
   async connect(token: string, userId: string): Promise<void> {
     if (this.client?.connected && this.activeUserId === userId) return Promise.resolve();
     if (this.connectionPromise && this.activeUserId === userId) return this.connectionPromise;
+    // An active client owns its reconnect loop. Reuse it rather than creating a second socket.
+    if (this.client?.active && this.activeUserId === userId) return Promise.resolve();
 
     if (this.client && this.activeUserId !== userId) {
       this.disconnect();
@@ -34,9 +39,7 @@ class WebSocketService {
         connectHeaders: {
           Authorization: `Bearer ${token}`,
         },
-        debug: (str) => {
-          console.log('STOMP: ' + str);
-        },
+        debug: () => {}, // STOMP frames contain auth headers; never log them.
         reconnectDelay: 5000,
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000,
@@ -46,6 +49,10 @@ class WebSocketService {
         console.log('Connected to WebSocket');
         this.restoreSubscriptions();
         resolve();
+      };
+      this.client.beforeConnect = () => {
+        const freshToken = localStorage.getItem('access_token') || token;
+        if (this.client) this.client.connectHeaders = { Authorization: `Bearer ${freshToken}` };
       };
 
       this.client.onStompError = (frame) => {
@@ -58,6 +65,7 @@ class WebSocketService {
         this.connectionPromise = null;
         this.userQueueSubscription = null;
         this.presenceSubscription = null;
+        this.callSubscription = null;
         this.conversationSubscriptions.clear();
         this.typingSubscriptions.clear();
       };
@@ -66,6 +74,26 @@ class WebSocketService {
     });
 
     return this.connectionPromise;
+  }
+
+  subscribeToCalls(callback: (call: VideoCall) => void): SubscriptionHandle {
+    this.callCallbacks.add(callback);
+    if (!this.callSubscription && this.client?.connected) this.subscribeCalls();
+    return { unsubscribe: () => {
+      this.callCallbacks.delete(callback);
+      if (this.callCallbacks.size === 0) {
+        this.callSubscription?.unsubscribe();
+        this.callSubscription = null;
+      }
+    } };
+  }
+
+  private subscribeCalls() {
+    this.callSubscription?.unsubscribe();
+    this.callSubscription = this.client!.subscribe('/user/queue/calls', message => {
+      const call: VideoCall = JSON.parse(message.body);
+      this.callCallbacks.forEach(callback => callback(call));
+    });
   }
 
   subscribeToUserQueue(userId: string, callback: (update: ConversationUpdateMessage) => void): SubscriptionHandle {
@@ -173,6 +201,9 @@ class WebSocketService {
   }
 
   disconnect() {
+    this.callSubscription?.unsubscribe();
+    this.callSubscription = null;
+    this.callCallbacks.clear();
     this.userQueueSubscription?.unsubscribe();
     this.userQueueSubscription = null;
     this.presenceSubscription?.unsubscribe();
@@ -192,6 +223,7 @@ class WebSocketService {
   }
 
   private restoreSubscriptions() {
+    if (this.callCallbacks.size > 0) this.subscribeCalls();
     if (this.userQueueCallbacks.size > 0) {
       this.subscribeUserQueue();
     }

@@ -42,6 +42,14 @@ eureka:
 jwt:
   secret: ${JWT_SECRET}
 
+livekit:
+  url: ${LIVEKIT_URL:}
+  api-key: ${LIVEKIT_API_KEY:}
+  api-secret: ${LIVEKIT_API_SECRET:}
+  token-ttl: ${LIVEKIT_TOKEN_TTL:PT2M}
+  ring-timeout: ${LIVEKIT_RING_TIMEOUT:PT60S}
+  disconnect-timeout: ${LIVEKIT_DISCONNECT_TIMEOUT:PT45S}
+
 resilience4j:
   circuitbreaker:
     configs:

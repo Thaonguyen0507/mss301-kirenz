@@ -47,8 +47,23 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
                     accessor.setUser(authentication);
                     log.info("WebSocket connection authenticated for user: {}", principal.username());
                 } catch (Exception e) {
-                    log.error("WebSocket authentication failed: {}", e.getMessage());
+                    throw new org.springframework.security.access.AccessDeniedException("WebSocket authentication required");
                 }
+            } else throw new org.springframework.security.access.AccessDeniedException("WebSocket authentication required");
+        }
+        if (accessor != null && (StompCommand.SUBSCRIBE.equals(accessor.getCommand())
+                || StompCommand.SEND.equals(accessor.getCommand()))) {
+            if (accessor.getUser() == null) throw new org.springframework.security.access.AccessDeniedException("Authentication required");
+            String destination = accessor.getDestination();
+            // Physical broker queues may include another session's suffix. Only subscribe via /user/queue.
+            if (StompCommand.SUBSCRIBE.equals(accessor.getCommand()) && destination != null
+                && (destination.startsWith("/queue/") || destination.startsWith("/user/")
+                    && !List.of("/user/queue/messages", "/user/queue/calls").contains(destination))) {
+                throw new org.springframework.security.access.AccessDeniedException("Private queue access denied");
+            }
+            if (StompCommand.SEND.equals(accessor.getCommand()) && destination != null
+                && !destination.startsWith("/app/")) {
+                throw new org.springframework.security.access.AccessDeniedException("Broker destinations are server-only");
             }
         }
         return message;

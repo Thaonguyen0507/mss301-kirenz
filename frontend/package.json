@@ -8,11 +8,12 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
-    ,"test": "vitest run --environment jsdom"
+    "lint": "tsc --noEmit",
+    "test": "vitest run --environment jsdom"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
+    "@livekit/components-react": "2.9.24",
     "@stomp/stompjs": "^7.3.0",
     "@tailwindcss/vite": "^4.1.14",
     "@tanstack/react-query": "^5.101.0",
@@ -21,6 +22,7 @@
     "axios": "^1.18.0",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
+    "livekit-client": "2.20.1",
     "lucide-react": "^0.546.0",
     "motion": "^12.40.0",
     "react": "^19.2.7",

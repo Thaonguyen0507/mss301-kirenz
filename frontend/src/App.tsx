@@ -26,6 +26,7 @@ import Monitoring from './Monitoring';
 import Audit from './Audit';
 import ModerationDetailPage from './ModerationDetail';
 import { initTheme } from './utils/theme';
+import { VideoCallProvider } from './components/calls/VideoCallProvider';
 
 export default function App() {
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <VideoCallProvider>
       <div className="fixed top-0 left-0 right-0 bg-surface-container border-b border-outline-variant p-2 flex justify-center gap-4 z-[100] text-sm hidden">
         <Link to="/login" className="text-primary font-bold hover:underline">Login</Link>
         <span className="text-on-surface-variant">|</span>
@@ -79,6 +81,7 @@ export default function App() {
           </Route>
         </Routes>
       </div>
+      </VideoCallProvider>
     </BrowserRouter>
   );
 }

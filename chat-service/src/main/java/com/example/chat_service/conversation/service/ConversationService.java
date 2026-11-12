@@ -228,6 +228,10 @@ public class ConversationService {
     }
 
 
+    public void recordCallSummary(String conversationId, UUID actorId, String content) {
+        createAndBroadcastSystemMessage(requireParticipant(conversationId, actorId), actorId, content);
+    }
+
     private void createAndBroadcastSystemMessage(Conversation conversation, UUID actorId, String content) {
         Instant now = Instant.now();
         List<MessageStatus> statusList = conversation.getParticipantIds().stream()

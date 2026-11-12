@@ -1,0 +1,51 @@
+.call-backdrop { position: fixed; inset: 0; z-index: 150; display: grid; place-items: center; padding: 24px; background: rgb(9 12 23 / .78); backdrop-filter: blur(16px); color: #f5f7ff; }
+.call-dialog { width: min(100%, 440px); max-height: calc(100dvh - 48px); overflow: auto; background: radial-gradient(ellipse at top, #28344d, #131b2d 65%); border: 1px solid #ffffff20; border-radius: 28px; box-shadow: 0 32px 120px #0008; outline: none; }
+.call-dialog-media { width: min(100%, 1040px); }
+.call-topline { display: flex; justify-content: space-between; align-items: center; padding: 22px 24px; gap: 16px; }
+.call-brand { display: flex; align-items: center; gap: 9px; font-size: 11px; font-weight: 800; letter-spacing: .17em; color: #bac8e2; }
+.call-direction { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #bfcae0; }
+.call-lobby { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 36px 24px 26px; }
+.call-avatar { display: grid; place-items: center; width: 112px; height: 112px; border-radius: 50%; overflow: hidden; background: linear-gradient(130deg, #667eea, #9980fa); font-size: 42px; font-weight: 700; box-shadow: 0 0 0 1px #ffffff25; flex-shrink: 0; }
+.call-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.call-ringing-avatar { border: 1px solid #b3c1ff40; padding: 15px; border-radius: 50%; box-shadow: 0 0 0 14px #b3c1ff09; animation: call-pulse 2.2s ease-in-out infinite; }
+.call-lobby h3, .call-remote-placeholder h3 { font-size: 25px; font-weight: 700; margin: 30px 0 8px; overflow-wrap: anywhere; }
+.call-status { color: #e3e9f8; font-size: 15px; }
+.call-hint { color: #a9b6ce; font-size: 13px; line-height: 1.6; margin-top: 10px; max-width: 300px; }
+.call-countdown { margin-top: 14px; color: #92a3bf; font-size: 12px; font-variant-numeric: tabular-nums; }
+.call-actions, .call-controls { display: flex; align-items: center; justify-content: center; gap: 42px; margin-top: 42px; }
+.call-actions > div, .call-controls > div { display: flex; align-items: center; flex-direction: column; gap: 10px; }
+.call-actions span, .call-controls span { color: #c2cee3; font-size: 12px; }
+.call-round-button { border: none; border-radius: 50%; width: 60px; height: 60px; background: #34425e; color: #fff; display: grid; place-items: center; cursor: pointer; transition: transform .15s, filter .15s; }
+.call-round-button:hover { filter: brightness(1.15); transform: translateY(-2px); }
+.call-round-button:active { transform: scale(.95); }
+.call-answer { background: #31be83 !important; color: #071c14 !important; }
+.call-danger { background: #eb5264 !important; color: white; }
+.call-muted { background: #eff2f9; color: #1f2b41; }
+.call-icon-button { background: transparent; border: none; padding: 6px; border-radius: 50%; color: #dbe5fc; cursor: pointer; }
+.call-pill-button, .call-text-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #ffffff25; border-radius: 30px; padding: 13px 22px; font-size: 14px; font-weight: 600; color: #edf2ff; background: #34425e; cursor: pointer; }
+.call-text-button { margin: 16px auto 0; padding: 9px 16px; font-size: 12px; }
+.call-footer { display: flex; justify-content: center; align-items: center; gap: 7px; color: #91a0bc; font-size: 11px; padding: 22px; }
+.call-room { display: flex; flex-direction: column; }
+.call-video-stage { position: relative; aspect-ratio: 16/9; min-height: 280px; margin: 0 16px; overflow: hidden; border-radius: 18px; background: #0b101e; }
+.call-remote-video { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: contain; }
+.call-video-name { position: absolute; bottom: 18px; left: 20px; font-size: 14px; font-weight: 600; text-shadow: 0 2px 8px #000; }
+.call-remote-placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(ellipse, #2b354d, #0c1222); }
+.call-remote-placeholder h3 { font-size: 20px; margin: 20px 0 6px; }
+.call-remote-placeholder p { color: #aab7cc; font-size: 13px; }
+.call-local-preview { position: absolute; bottom: 16px; right: 16px; width: 22%; min-width: 100px; max-width: 220px; aspect-ratio: 4/3; border-radius: 13px; overflow: hidden; background: #29344b; box-shadow: 0 4px 20px #0007; border: 1px solid #ffffff30; }
+.call-local-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+.call-local-preview > span { position: absolute; bottom: 5px; left: 9px; font-size: 11px; text-shadow: 0 2px 5px #000; }
+.call-local-placeholder { display: flex; height: 100%; align-items: center; justify-content: center; gap: 12px; color: #b5c3df; }
+.call-local-placeholder .call-avatar { width: 42px; height: 42px; font-size: 20px; }
+.call-connection-badge { display: flex; align-items: center; gap: 7px; position: absolute; left: 16px; top: 16px; background: #070c19a8; padding: 7px 12px; border-radius: 30px; font-size: 12px; font-variant-numeric: tabular-nums; }
+.call-controls { margin: 24px 0 0; gap: 24px; }
+.call-error { margin: 18px 24px 0; border: 1px solid #ffb6bd45; background: #66324050; color: #ffd5da; padding: 12px 16px; border-radius: 12px; font-size: 13px; line-height: 1.6; text-align: center; }
+.call-loading { min-height: 340px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+.call-spin { animation: call-spin 1s linear infinite; }
+.call-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+.call-dialog button:focus-visible { outline: 3px solid #a9baff; outline-offset: 4px; }
+.call-dialog button:disabled { opacity: .5; cursor: wait; }
+@keyframes call-pulse { 50% { box-shadow: 0 0 0 22px #b3c1ff04; } }
+@keyframes call-spin { to { transform: rotate(360deg); } }
+@media (max-width: 600px) { .call-backdrop { padding: 12px; } .call-dialog { max-height: calc(100dvh - 24px); border-radius: 22px; } .call-video-stage { aspect-ratio: 3/4; margin: 0 10px; } .call-local-preview { width: 32%; bottom: 12px; right: 12px; } .call-topline { padding: 18px; } .call-lobby { padding-top: 24px; } }
+@media (prefers-reduced-motion: reduce) { .call-ringing-avatar, .call-spin { animation: none; } }

@@ -100,6 +100,7 @@ The platform demonstrates expertise in distributed systems design, real-time com
 - **Message delivery status tracking** (Sent → Delivered → Read)
 - **Media attachments** in messages with Cloudinary integration
 - **Online/offline presence tracking** via Redis
+- **One-to-one video calls** via LiveKit Cloud with incoming ringtone, accept/decline, camera/microphone controls, and synchronized hangup. See the [call setup and API guide](docs/livekit-calls.md) and [server environment example](.env.livekit.example).
 
 ### 📸 Stories
 - **Ephemeral content** with time-based expiration

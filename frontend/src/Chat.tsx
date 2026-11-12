@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { 
-  Search, Bell, Menu, Phone, Video, Info, 
+  Search, Bell, Menu, Video, Info,
   MessageSquare, PlusCircle, Smile, Send, X, Edit3, Loader2,
   Users, UserPlus, Check, Image as ImageIcon, Download, FileText, Shield, UserMinus, LogOut, Trash2
 } from 'lucide-react';
@@ -8,6 +8,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import Layout from './components/Layout';
 import { useAuthStore } from './store/authStore';
+import { useVideoCall } from './components/calls/VideoCallProvider';
 import { useChat, useConversationMessages } from './hooks/useChat';
 import { Attachment, Conversation, MessageType, PendingChatMedia } from './types/chat';
 import { ConfirmDialog } from './components/common/ConfirmDialog';
@@ -92,6 +93,7 @@ const downloadOriginalFile = async (url: string, fileName: string) => {
 };
 
 export default function Chat() {
+  const { startCall, call: activeCall, busy: callBusy } = useVideoCall();
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -922,12 +924,13 @@ export default function Chat() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <button className="p-2 md:p-3 text-on-surface-variant hover:bg-surface-container transition-colors rounded-full active:scale-95">
-                      <Phone size={20} />
-                    </button>
-                    <button className="p-2 md:p-3 text-on-surface-variant hover:bg-surface-container transition-colors rounded-full active:scale-95">
-                      <Video size={20} />
-                    </button>
+                    {selectedConversation?.type === 'DIRECT' && <button type="button"
+                      onClick={() => void startCall(selectedConversation)}
+                      disabled={callBusy || !directMessageAllowed || (!!activeCall && activeCall.status !== 'ENDED')}
+                      title="Start video call" aria-label="Start video call"
+                      className="p-2 md:p-3 text-primary hover:bg-surface-container transition-colors rounded-full active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+                      {callBusy ? <Loader2 size={20} className="animate-spin" /> : <Video size={20} />}
+                    </button>}
                     <button
                       type="button"
                       onClick={() => setShowConversationSettings(true)}
