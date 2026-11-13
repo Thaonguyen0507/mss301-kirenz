@@ -1,5 +1,7 @@
 # Kirenz: Postman và kiểm thử tích hợp
 
+Demo ngắn cho báo cáo: import collection/environment `Kirenz-DM-Block-Demo`, rồi chạy setup → success → block/403 → unblock/success theo [DEMO-DM-BLOCK.md](DEMO-DM-BLOCK.md). Có thể chạy tự động bằng `npm.cmd run test:dm-demo`; HTTP 403 đúng kỳ vọng vẫn là test PASS.
+
 Bộ kiểm thử đối chiếu với source tree `5e439abc2ded3f0efdefbce0941f6ce07dd0bbcf` của Kirenz, gồm Identity, User, Social, Chat, Notification, Admin, API Gateway và Eureka.
 
 | Tệp | Mục đích |

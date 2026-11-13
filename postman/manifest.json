@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-11-13T06:22:26.345Z",
+  "createdAt": "2026-11-13T06:32:48.420Z",
   "sourceTree": "5e439abc2ded3f0efdefbce0941f6ce07dd0bbcf",
   "excluded": [
     ".local",
@@ -14,13 +14,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 12101,
-      "sha256": "b0ed58c9c6dc9a4472004f5b059365bfad5eeabf7c36fc9eb3ba76abbf2e8486"
+      "bytes": 12405,
+      "sha256": "fb9534bc73e96e70f28ffdf77f52cfed0ba2a758e5fbc7fd4fdf08841a09781c"
     },
     {
       "path": "package.json",
-      "bytes": 591,
-      "sha256": "9791f4fc91fffbb1c8be0bc10f715c27b72fb176233f9c4c169463c8fb8cf1f1"
+      "bytes": 818,
+      "sha256": "2b43f6a6802a46d959a14de9d097f1dff9e3a45e873778f02168af0a444ba19b"
     },
     {
       "path": "package-lock.json",
@@ -191,6 +191,26 @@
       "path": "scripts/test-dm-block.mjs",
       "bytes": 14115,
       "sha256": "4cbab10cce7526db6109d4ac2a6903705dadc53df55e8a1589cb8cd47436f980"
+    },
+    {
+      "path": "scripts/build-dm-demo.mjs",
+      "bytes": 8615,
+      "sha256": "7528d9ea86fc0f08bc53a4e7491b6c3cc70ed3bd388fe63e830e0ab219213d5c"
+    },
+    {
+      "path": "Kirenz-DM-Block-Demo.postman_collection.json",
+      "bytes": 45676,
+      "sha256": "8353bd8a04d1de48fb243ecc391c971297c230e7a8464123f7b498c6e783fe48"
+    },
+    {
+      "path": "Kirenz-DM-Block-Demo.postman_environment.json",
+      "bytes": 1712,
+      "sha256": "205a1e886e58075b7a9a1d556eacfd6edf663f56438ea0de29d4ee817c70d614"
+    },
+    {
+      "path": "DEMO-DM-BLOCK.md",
+      "bytes": 3228,
+      "sha256": "7bbfa1a59e2f1bb329d60e8fdf441cdffa7535bff7cf685a905ded67188c92e3"
     }
   ],
   "fileEncoding": "UTF-8 with LF line endings"
