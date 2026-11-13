@@ -885,7 +885,7 @@
       "expectedStatuses": [
         200
       ],
-      "description": "ApiResponse.data is boolean; false if receiver disallows anyone and pair are not friends. Does not itself apply block check; chat-service separately applies relationship checks.",
+      "description": "ApiResponse.data is boolean; a block in either direction returns false before privacy or friendship is checked. Without a block, false means the receiver disallows strangers and the pair are not friends.",
       "source": "user-service/src/main/java/com/kirenz/user_service/privacy/controller/PrivacySettingController.java"
     },
     {
@@ -1492,7 +1492,7 @@
     "Internal profile and privacy endpoints are permitAll at owning service security, whereas /api/users/internal/admin/** requires ADMIN. Verify gateway blocks internal access before counting it as secure.",
     "Frontend and service auth currently allow unverified-email account login; OTP verification must not be represented as required bootstrap behavior unless code is changed.",
     "Friend-service profile enrichment swallows Feign errors and may return username:null/displayName:'Kirenz User'; assert values to detect cross-service failure.",
-    "Privacy permission endpoint does not evaluate block repository; chat-service must apply separate block/relationship checks.",
+    "The public and internal DM permission endpoints share the User-service policy: either block direction denies contact before receiver privacy or friendship is evaluated.",
     "Registration user-created producer catches Kafka send exceptions and is not transactionally guaranteed. GET privacy/me creates defaults synchronously, so a200 here cannot prove asynchronous user-created delivery; use Kafka/DB fixture observation or downstream birthday scheduling verification.",
     "Refresh endpoint lacks explicit token-type validation; a negative security test using accessToken as refreshToken should flag acceptance rather than treating it as a supported contract.",
     "Fresh run-scoped fixtures prevent duplicate request409 and avoid modifying real friendships/privacy or re-registering a real unverified account. No actual credentials or environment secrets are included."
