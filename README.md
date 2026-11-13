@@ -110,7 +110,7 @@ The platform demonstrates expertise in distributed systems design, real-time com
 ### 👥 Social Graph
 - **Friend request system** (send, accept, reject, cancel)
 - **Friends list** with mutual friends
-- **User blocking** functionality
+- **User blocking** prevents direct messaging and starting or accepting video calls in either direction, regardless of permissive privacy settings.
 - **Privacy settings** for profile visibility control
 
 ### 👤 User Profiles
