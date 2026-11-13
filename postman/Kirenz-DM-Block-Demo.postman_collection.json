@@ -1,0 +1,1234 @@
+{
+  "info": {
+    "_postman_id": "efc59625-64af-4473-a924-b0b3a310a910",
+    "name": "Kirenz | DEMO DM Block - Success va Tu choi",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Demo co thu tu tren Gateway local18080 va User-service da sua block. Moi folder la mot phan trinh bay: setup tai khoan moi, success, B block A bi tu choi403, unblock success. HTTP403 mong doi van la test PASS. Khong goi video-access, khong kiem tra media LiveKit. Run collection de khong vuot thoi han ringing60s/heartbeat45s; hoac gui tungrequesttheothutu."
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "(()=>{",
+          "const base=pm.environment.get('base_url');",
+          "if(!['http://localhost:18080','http://127.0.0.1:18080'].includes(base)) throw new Error('Chon environment Kirenz | DM Block Demo, base_url=http://localhost:18080.');",
+          "})();"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "00 SETUP - tao A/B moi va hoi thoai",
+      "item": [
+        {
+          "id": "f8d57612-460b-4324-a452-842e96107a80",
+          "name": "00.1 Dang ky tai khoan A moi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{base_url}}/api/auth/register",
+            "description": "Request nay khoi tao run_id moi va reset cac bien demo. Luon chay setup tu request dau tien.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{demo_email_a}}\",\n  \"username\": \"{{demo_username_a}}\",\n  \"password\": \"{{demo_password_a}}\",\n  \"displayName\": \"Kirenz demo A {{demo_run_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "const run=Date.now().toString(36)+Math.random().toString(36).slice(2,7);",
+                  "pm.environment.set('demo_run_id',run);",
+                  "for(const actor of ['a','b']){",
+                  "  pm.environment.set('demo_email_'+actor,'kirenz_demo_'+run+'_'+actor+'@example.invalid');",
+                  "  pm.environment.set('demo_username_'+actor,'kirenz_demo_'+run+'_'+actor);",
+                  "  pm.environment.set('demo_password_'+actor,'KirenzDemo!'+run+'_'+actor);",
+                  "  pm.environment.set('demo_access_token_'+actor,'');",
+                  "  pm.environment.set('demo_user_'+actor+'_id','');",
+                  "}",
+                  "pm.environment.set('demo_conversation_id','');",
+                  "pm.environment.set('demo_call_id','');",
+                  "})();"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 201',()=>pm.expect(pm.response.code).to.eql(201));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===201 && pm.response.code<300){",
+                  "  for(const capture of [{\"key\":\"demo_user_a_id\",\"path\":\"data.id\"}]){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "4871b35b-8259-464f-a267-b07c9b165206",
+          "name": "00.2 Dang nhap A - tu luu token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{base_url}}/api/auth/login",
+            "description": "Token chi luu trong environment local. Neu qua 15 phut, chay lai Login cho A va B.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{demo_email_a}}\",\n  \"password\": \"{{demo_password_a}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of [{\"key\":\"demo_access_token_a\",\"path\":\"data.accessToken\"}]){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "50e8056e-1958-41ad-a3e0-b425d02495e4",
+          "name": "00.3 Dang ky tai khoan B moi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{base_url}}/api/auth/register",
+            "description": "Tao actor B rieng biet trong cung run.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{demo_email_b}}\",\n  \"username\": \"{{demo_username_b}}\",\n  \"password\": \"{{demo_password_b}}\",\n  \"displayName\": \"Kirenz demo B {{demo_run_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 201',()=>pm.expect(pm.response.code).to.eql(201));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===201 && pm.response.code<300){",
+                  "  for(const capture of [{\"key\":\"demo_user_b_id\",\"path\":\"data.id\"}]){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "5c72c8ac-8c35-4a5f-a1dc-320ed799083c",
+          "name": "00.4 Dang nhap B - tu luu token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{base_url}}/api/auth/login",
+            "description": "Token chi luu trong environment local. Neu qua 15 phut, chay lai Login cho A va B.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{demo_email_b}}\",\n  \"password\": \"{{demo_password_b}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of [{\"key\":\"demo_access_token_b\",\"path\":\"data.accessToken\"}]){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "021f141e-8320-467e-a3b5-ce602ac0fc36",
+          "name": "00.5 B cho phep moi nguoi lien lac",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_b}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/privacy/me",
+            "description": "Co y cho phep DM, de phan sau chung minh BLOCK van uu tien hon privacy permissive.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"allowDirectMessages\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of []){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "pm.test(\"B allows DM\",()=>pm.expect(response.data.allowDirectMessages).to.eql(true));",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "d711706d-907f-48e3-a53c-689b564dc818",
+          "name": "00.6 Tao hoi thoai A-B - tu luu conversation ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_a}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/conversations/direct/{{demo_user_b_id}}",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of [{\"key\":\"demo_conversation_id\",\"path\":\"data.id\"}]){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "pm.test(\"DIRECT A-B\",()=>{pm.expect(response.data.type).to.eql(\"DIRECT\");pm.expect(response.data.participants.map(p=>p.userId)).to.include.members([pm.environment.get(\"demo_user_a_id\"),pm.environment.get(\"demo_user_b_id\")]);});",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "01 SUCCESS - khong block, A goi B",
+      "item": [
+        {
+          "id": "f7417571-03de-4994-a6dd-94b9042306fb",
+          "name": "01.0 A duoc phep lien lac B - data true",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_a}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/privacy/can-message/{{demo_user_b_id}}",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of []){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "pm.test('DM permission true',()=>pm.expect(response.data).to.eql(true));",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "48675365-98f3-45e7-afb0-204ed002c04e",
+          "name": "01.1 A bat dau goi - 200 RINGING",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_a}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/calls",
+            "description": "Chat hoi User-service ve DM, lay profile Identity, khoa Redis va luu video_call MongoDB. Chua truyen media.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"conversationId\": \"{{demo_conversation_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of [{\"key\":\"demo_call_id\",\"path\":\"data.id\"}]){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "pm.test('Call state RINGING',()=>pm.expect(response.data.status).to.eql('RINGING'));",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "767fb826-1fc7-427a-a080-6af62bf53e7a",
+          "name": "01.2 B nhan cuoc goi - 200 ACCEPTED",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_b}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/calls/{{demo_call_id}}/accept",
+            "description": "Gui trong 60 giay sau Start. Chat kiem tra lai quyen DM qua User-service."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of []){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "pm.test('Call state ACCEPTED',()=>pm.expect(response.data.status).to.eql('ACCEPTED'));",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "a2d9660c-1416-4bbb-a162-d968dcf8e9a8",
+          "name": "01.3 A ket thuc - 200 ENDED",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_a}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/calls/{{demo_call_id}}/end",
+            "description": "Ket thuc ngay sau Accept de tranh heartbeat timeout 45 giay. Demo khong yeu cau video-access."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of []){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "pm.test('Call state ENDED',()=>pm.expect(response.data.status).to.eql('ENDED'));",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 NEGATIVE - B block A, API tu choi dung 403",
+      "item": [
+        {
+          "id": "48944ffc-846f-42b8-a6cd-777564d36eb6",
+          "name": "02.1 B block A - 201",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_b}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/blocks/{{demo_user_a_id}}",
+            "description": "Actor B la blocker; A la blocked. Day la thay doi duy nhat so voi success."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 201',()=>pm.expect(pm.response.code).to.eql(201));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===201 && pm.response.code<300){",
+                  "  for(const capture of []){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "94ac5791-3901-4f65-a602-2e436b4a5f5f",
+          "name": "02.2 Quyen A sang B - 200 va data false",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_a}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/privacy/can-message/{{demo_user_b_id}}",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of []){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "pm.test('DM permission false',()=>pm.expect(response.data).to.eql(false));",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "513a23b9-0db1-44af-a51d-519472ff8287",
+          "name": "02.3 Quyen B sang A - 200 va data false",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_b}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/privacy/can-message/{{demo_user_a_id}}",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of []){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "pm.test('DM permission false',()=>pm.expect(response.data).to.eql(false));",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "d615baae-4ba7-44ef-afd6-ad416676016a",
+          "name": "02.4 A goi B bi tu choi - 403, test PASS",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_a}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/calls",
+            "description": "403 la ket qua dung vi cap A/B dang co block. Neu200 thi test FAIL va can kiem tra dang chay code cu.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"conversationId\": \"{{demo_conversation_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 403',()=>pm.expect(pm.response.code).to.eql(403));",
+                  "const response=pm.response.json();",
+                  "pm.test('Rejected envelope',()=>pm.expect(response.success).to.eql(false));",
+                  "if(pm.response.code===403 && pm.response.code<300){",
+                  "  for(const capture of []){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "ea96bfe5-abd8-4a37-a489-7cc5900600db",
+          "name": "02.5 B goi A cung bi tu choi - 403, test PASS",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_b}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/calls",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"conversationId\": \"{{demo_conversation_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 403',()=>pm.expect(pm.response.code).to.eql(403));",
+                  "const response=pm.response.json();",
+                  "pm.test('Rejected envelope',()=>pm.expect(response.success).to.eql(false));",
+                  "if(pm.response.code===403 && pm.response.code<300){",
+                  "  for(const capture of []){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "5011cc10-8f98-42de-aaf8-d0072bbc1c5a",
+          "name": "02.6 A mo lai hoi thoai voi B bi tu choi - 403",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_a}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/conversations/direct/{{demo_user_b_id}}",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 403',()=>pm.expect(pm.response.code).to.eql(403));",
+                  "const response=pm.response.json();",
+                  "pm.test('Rejected envelope',()=>pm.expect(response.success).to.eql(false));",
+                  "if(pm.response.code===403 && pm.response.code<300){",
+                  "  for(const capture of []){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 RESTORE - B unblock A, goi thanh cong lai",
+      "item": [
+        {
+          "id": "00b79315-d830-4685-ad28-82ae8d2d2fb4",
+          "name": "03.0 B unblock A - 200",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_b}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/blocks/{{demo_user_a_id}}",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of []){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "473f07d0-25f8-4001-ae65-1a6452a8a36c",
+          "name": "03.1 Quyen A sang B duoc khoi phuc - data true",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_a}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/privacy/can-message/{{demo_user_b_id}}",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of []){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "pm.test('DM permission true',()=>pm.expect(response.data).to.eql(true));",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c903dc77-3fd3-4090-a4aa-18a3af026667",
+          "name": "03.1 A bat dau goi - 200 RINGING",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_a}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/calls",
+            "description": "Chat hoi User-service ve DM, lay profile Identity, khoa Redis va luu video_call MongoDB. Chua truyen media.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"conversationId\": \"{{demo_conversation_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of [{\"key\":\"demo_call_id\",\"path\":\"data.id\"}]){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "pm.test('Call state RINGING',()=>pm.expect(response.data.status).to.eql('RINGING'));",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c36e485e-d7c3-4e69-aadf-c2e1836834e1",
+          "name": "03.2 B nhan cuoc goi - 200 ACCEPTED",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_b}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/calls/{{demo_call_id}}/accept",
+            "description": "Gui trong 60 giay sau Start. Chat kiem tra lai quyen DM qua User-service."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of []){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "pm.test('Call state ACCEPTED',()=>pm.expect(response.data.status).to.eql('ACCEPTED'));",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "fa65156e-c248-48bf-a413-df95378159c2",
+          "name": "03.3 A ket thuc - 200 ENDED",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "type": "string",
+                  "value": "{{demo_access_token_a}}"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/calls/{{demo_call_id}}/end",
+            "description": "Ket thuc ngay sau Accept de tranh heartbeat timeout 45 giay. Demo khong yeu cau video-access."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(()=>{",
+                  "pm.test('HTTP 200',()=>pm.expect(pm.response.code).to.eql(200));",
+                  "const response=pm.response.json();",
+                  "pm.test('Success envelope',()=>pm.expect(response.success).to.eql(true));",
+                  "if(pm.response.code===200 && pm.response.code<300){",
+                  "  for(const capture of []){",
+                  "    const value=capture.path.split('.').reduce((v,k)=>v==null?undefined:v[k],response);",
+                  "    pm.test('Capture '+capture.key,()=>pm.expect(value).to.be.a('string').and.not.empty);",
+                  "    if(typeof value==='string' && value)pm.environment.set(capture.key,value);",
+                  "  }",
+                  "}",
+                  "pm.test('Call state ENDED',()=>pm.expect(response.data.status).to.eql('ENDED'));",
+                  "})();"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:18080",
+      "type": "string"
+    },
+    {
+      "key": "demo_run_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "demo_conversation_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "demo_call_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "demo_email_a",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "demo_username_a",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "demo_password_a",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "demo_access_token_a",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "demo_email_b",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "demo_username_b",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "demo_password_b",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "demo_access_token_b",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "demo_user_a_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "demo_user_b_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

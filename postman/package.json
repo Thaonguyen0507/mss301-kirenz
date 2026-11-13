@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build-collections.mjs",
+    "build:dm-demo": "node scripts/build-dm-demo.mjs",
     "validate": "node scripts/validate.mjs",
     "local": "node scripts/run-local.mjs",
     "test": "node scripts/run-newman.mjs",
     "test:ws": "node scripts/test-websocket.mjs",
     "test:events": "node scripts/test-event-projection.mjs",
-    "test:dm-block": "node scripts/test-dm-block.mjs"
+    "test:dm-block": "node scripts/test-dm-block.mjs",
+    "test:dm-demo": "newman run Kirenz-DM-Block-Demo.postman_collection.json -e Kirenz-DM-Block-Demo.postman_environment.json --delay-request 150 --timeout-request 15000"
   },
   "devDependencies": {
     "ajv": "8.17.1",
