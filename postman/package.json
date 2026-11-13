@@ -9,7 +9,8 @@
     "local": "node scripts/run-local.mjs",
     "test": "node scripts/run-newman.mjs",
     "test:ws": "node scripts/test-websocket.mjs",
-    "test:events": "node scripts/test-event-projection.mjs"
+    "test:events": "node scripts/test-event-projection.mjs",
+    "test:dm-block": "node scripts/test-dm-block.mjs"
   },
   "devDependencies": {
     "ajv": "8.17.1",

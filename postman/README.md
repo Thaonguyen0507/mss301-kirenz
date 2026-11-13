@@ -75,6 +75,8 @@ node scripts/test-resilience.mjs
 node scripts/summarize.mjs
 ```
 
+Regression cho quyền DM khi block: chạy `npm.cmd run test:dm-block` sau khi stack local đã lên với User-service được build từ nhánh sửa lỗi. Script tạo hai tài khoản fixture mới và kiểm tra privacy, hội thoại, bắt đầu/nhận cuộc gọi qua Gateway và OpenFeign thật ở cả hai chiều block, rồi kiểm tra unblock. Kết quả ở `reports/dm-block-report.json`; không dùng provider media thật. Các báo cáo ngày 12/11 bên dưới là bằng chứng lịch sử trước bản sửa này.
+
 `npm test` chờ Gateway và các service đăng ký Eureka, tạo actor quản trị test, rồi chạy collection integration theo thứ tự. Runner kiểm tra URL loopback và nhãn Compose project trước khi cấp quyền ADMIN cho đúng row fixture trong PostgreSQL local. Đây là bước chuẩn bị dữ liệu test; public registration vẫn chỉ tạo USER.
 
 Collection tạo A, B và outsider bằng email/username riêng cho từng `run_id`. Login thu token thật; các request tiếp theo dùng token và ID do API trả về. Không sửa account hay nội dung người dùng có sẵn.

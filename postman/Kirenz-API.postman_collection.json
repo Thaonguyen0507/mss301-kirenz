@@ -4472,7 +4472,7 @@
               ]
             },
             "url": "{{base_url}}/api/privacy/can-message/{{user_b_id}}",
-            "description": "Endpoint: user_can_message\n\nApiResponse.data is boolean; false if receiver disallows anyone and pair are not friends. Does not itself apply block check; chat-service separately applies relationship checks.\n\nSource: user-service/src/main/java/com/kirenz/user_service/privacy/controller/PrivacySettingController.java"
+            "description": "Endpoint: user_can_message\n\nApiResponse.data is boolean; a block in either direction returns false before privacy or friendship is checked. Without a block, false means the receiver disallows strangers and the pair are not friends.\n\nSource: user-service/src/main/java/com/kirenz/user_service/privacy/controller/PrivacySettingController.java"
           },
           "event": [
             {

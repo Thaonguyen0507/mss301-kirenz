@@ -1,6 +1,7 @@
 package com.kirenz.user_service.privacy.service;
 
 import com.kirenz.user_service.auth.CurrentUser;
+import com.kirenz.user_service.block.repository.BlockRepository;
 import com.kirenz.user_service.privacy.dto.PrivacySettingResponse;
 import com.kirenz.user_service.privacy.dto.UpdatePrivacySettingRequest;
 import com.kirenz.user_service.privacy.model.PrivacySetting;
@@ -21,6 +22,7 @@ public class PrivacySettingService {
 
     private final PrivacySettingRepository privacySettingRepository;
     private final FriendshipRepository friendshipRepository;
+    private final BlockRepository blockRepository;
     private final CurrentUser currentUser;
 
     @Transactional(readOnly = true)
@@ -57,6 +59,11 @@ public class PrivacySettingService {
 
     @Transactional(readOnly = true)
     public boolean canSendDirectMessage(UUID senderId, UUID receiverId) {
+        if (blockRepository.existsByBlockerIdAndBlockedId(senderId, receiverId)
+            || blockRepository.existsByBlockerIdAndBlockedId(receiverId, senderId)) {
+            return false;
+        }
+
         boolean allowsAnyone = privacySettingRepository.findByUserId(receiverId)
             .map(PrivacySetting::getAllowDirectMessages)
             .orElse(true); // Default to true for existing users without settings

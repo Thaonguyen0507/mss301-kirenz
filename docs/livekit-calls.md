@@ -13,6 +13,7 @@ Missing/placeholder credentials keep ordinary chat operational. Starting a call 
 
 ## Behavior
 
+- A block in either direction denies starting or accepting a call through the shared User-service direct-message permission check. Unblocking restores the receiver's privacy/friendship policy. Existing accepted media sessions are not automatically terminated by a later block.
 - A starts: B receives an incoming overlay and ringtone, A hears ringback. If autoplay is blocked, **Enable ringtone** enables sound after a user gesture. Notifications work while the app is open and signed in; closed-browser push calls are outside this implementation.
 - B accepts: both use the same random room with separate opaque participant identities. A and B pressing Call simultaneously accepts the existing invitation rather than creating competing rooms.
 - Decline, caller cancellation, no answer after 60 seconds, and either user hanging up update both clients and add a system entry to the conversation.

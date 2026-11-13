@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-11-12T15:15:23.942Z",
+  "createdAt": "2026-11-13T06:22:26.345Z",
   "sourceTree": "5e439abc2ded3f0efdefbce0941f6ce07dd0bbcf",
   "excluded": [
     ".local",
@@ -14,13 +14,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 11554,
-      "sha256": "1797b6b114ea1c82ab1168530f265a6990e6a408250e76d4901675645074a931"
+      "bytes": 12101,
+      "sha256": "b0ed58c9c6dc9a4472004f5b059365bfad5eeabf7c36fc9eb3ba76abbf2e8486"
     },
     {
       "path": "package.json",
-      "bytes": 536,
-      "sha256": "96f4ed94b08a57f276177b026902879d3c47876ca4043ab510a2f37716c3c432"
+      "bytes": 591,
+      "sha256": "9791f4fc91fffbb1c8be0bc10f715c27b72fb176233f9c4c169463c8fb8cf1f1"
     },
     {
       "path": "package-lock.json",
@@ -34,13 +34,13 @@
     },
     {
       "path": "Kirenz-API.postman_collection.json",
-      "bytes": 348662,
-      "sha256": "c5ca82f1ab232c28fd490a72a74791a823af78169f42d5c43e4a3fdd68d0f2ec"
+      "bytes": 348688,
+      "sha256": "4999cb4e747476c79524acc2281148367f64a66ddb56b33509fa878db932332e"
     },
     {
       "path": "Kirenz-Integration.postman_collection.json",
-      "bytes": 344720,
-      "sha256": "10d356e2e3a727d1a1ce704826b8af5a08981446a89a8eb58523a62daaac15b1"
+      "bytes": 344772,
+      "sha256": "5292cd01043762a8d6a19b8778cb71aee1ba1151543adad02b18f15b0defdbce"
     },
     {
       "path": "Kirenz-Local.postman_environment.json",
@@ -69,8 +69,8 @@
     },
     {
       "path": "modules/identity-user.json",
-      "bytes": 49120,
-      "sha256": "69316e552cc1565f3cd2eb6912da1c3b93d3f5c0ec892635b524647f4959ef83"
+      "bytes": 49191,
+      "sha256": "17bdea78a60920f2c09a600d07791b5b88aa08a8eacea96ba7421d50e3cc5004"
     },
     {
       "path": "modules/social-notifications.json",
@@ -186,6 +186,12 @@
       "path": "reports/.gitkeep",
       "bytes": 0,
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "scripts/test-dm-block.mjs",
+      "bytes": 14115,
+      "sha256": "4cbab10cce7526db6109d4ac2a6903705dadc53df55e8a1589cb8cd47436f980"
     }
-  ]
+  ],
+  "fileEncoding": "UTF-8 with LF line endings"
 }
